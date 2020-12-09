@@ -1,3 +1,0 @@
-files:
---- Update docstrings to be clearer
---- Add recursive option
