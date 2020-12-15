@@ -4,7 +4,7 @@ import os
 
 # Local imports
 from maven_iuvs.files.files import Files
-from maven_iuvs.aux.aux_files import aux_path
+from aux.aux_files import aux_path
 
 
 class TestFiles(unittest.TestCase):
