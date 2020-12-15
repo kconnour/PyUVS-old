@@ -1,5 +1,5 @@
 # Built-in imports
-from unittest import TestCase, mock
+from unittest import TestCase
 from datetime import date, timedelta
 
 # Local imports
@@ -19,7 +19,7 @@ class TestScienceWeekInit(TestScienceWeek):
         self.assertTrue(len(self.science_week.__dict__.keys()), 1)
 
     def test_maven_arrival_is_2014_11_11(self):
-        self.assertEqual(self.science_week.maven_arrival_date, date(2014, 11, 11))
+        self.assertEqual(date(2014, 11, 11), self.science_week.maven_arrival_date)
 
 
 class TestGetScienceWeekFromDate(TestScienceWeek):
@@ -31,20 +31,21 @@ class TestGetScienceWeekFromDate(TestScienceWeek):
         self.assertRaises(ValueError, lambda: self.science_week.get_science_week_from_date(pre_arrival_date))
 
     def test_mission_start_date_is_week_0(self):
-        self.assertEqual(self.science_week.get_science_week_from_date(self.science_week.maven_arrival_date), 0)
+        self.assertEqual(0, self.science_week.get_science_week_from_date(self.science_week.maven_arrival_date))
 
     def test_randomly_chosen_date_is_known_science_week(self):
         test_date = date(2020, 12, 14)
-        self.assertEqual(self.science_week.get_science_week_from_date(test_date), 317)
+        self.assertEqual(317, self.science_week.get_science_week_from_date(test_date))
 
 
-'''# I cannot figure out how to properly mock a date such that ScienceWeek knows about my mock
+# I cannot figure out how to properly mock a date such that ScienceWeek knows about my mock
 class TestGetCurrentScienceWeek(TestScienceWeek):
-    def test_science_week_of_today(self):
-        with mock.patch('datetime.date') as mock_date:
+    pass
+    '''def test_science_week_of_today(self):
+        with mock.patch('maven_iuvs.science_week.science_week.datetime.date') as mock_date:
             mock_date.today.return_value = date(2020, 1, 1)
             #self.assertEqual(mock_date.today(), date(2020, 1, 1))   # this works
-            self.assertEqual(268, self.science_week.get_current_science_week())    # This doesn't since mock_date'''
+            self.assertEqual(268, self.science_week.get_current_science_week())  # This doesn't about mock_date'''
 
 
 class TestGetScienceWeekStartDate(TestScienceWeek):
@@ -55,10 +56,10 @@ class TestGetScienceWeekStartDate(TestScienceWeek):
         self.assertRaises(ValueError, lambda: self.science_week.get_science_week_start_date(-1))
 
     def test_start_week_0_is_mission_arrival_date(self):
-        self.assertEqual(self.science_week.get_science_week_start_date(0), self.science_week.maven_arrival_date)
+        self.assertEqual(self.science_week.maven_arrival_date, self.science_week.get_science_week_start_date(0))
 
     def test_randomly_chosen_week_matches_known_start_date(self):
-        self.assertEqual(self.science_week.get_science_week_start_date(317), date(2020, 12, 8))
+        self.assertEqual(date(2020, 12, 8), self.science_week.get_science_week_start_date(317))
 
 
 class TestGetScienceWeekEndDate(TestScienceWeek):
@@ -69,11 +70,11 @@ class TestGetScienceWeekEndDate(TestScienceWeek):
         self.assertRaises(ValueError, lambda: self.science_week.get_science_week_end_date(-1))
 
     def test_week_of_mission_arrival(self):
-        self.assertEqual(self.science_week.get_science_week_end_date(0),
-                         self.science_week.maven_arrival_date + timedelta(days=6))
+        self.assertEqual(self.science_week.maven_arrival_date + timedelta(days=6),
+                         self.science_week.get_science_week_end_date(0))
 
     def test_randomly_chosen_week_matches_known_start_date(self):
-        self.assertEqual(self.science_week.get_science_week_end_date(317), date(2020, 12, 14))
+        self.assertEqual(date(2020, 12, 14), self.science_week.get_science_week_end_date(317))
 
 
 class TestGetScienceWeekDateRange(TestScienceWeek):
