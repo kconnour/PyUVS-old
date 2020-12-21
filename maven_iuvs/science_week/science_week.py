@@ -1,105 +1,112 @@
 # Built-in imports
 from datetime import date, timedelta
+import warnings
+
+# 3rd-party imports
+import numpy as np
 
 
 class ScienceWeek:
-    """A ScienceWeek object can convert dates into MAVEN science weeks"""
+    # TODO: Decide if I want to prohibit users from inputting negative science weeks, or dates that result in them
+    # TODO: Decide how to handle future science week (should I warn if they request science week from a future date?)
     def __init__(self):
-        """
-        Attributes
+        """ A ScienceWeek object can convert dates into MAVEN science weeks.
+
+        Properties
         ----------
-        maven_arrival_date: datetime.date
-            The date when MAVEN arrived at Mars
+        science_start_date: datetime.date
+            The date when IUVS began performing science.
         """
-        self.maven_arrival_date = date(2014, 11, 11)
+        self.__science_start_date = date(2014, 11, 11)
+
+    @property
+    def science_start_date(self):
+        return self.__science_start_date
 
     def get_science_week_from_date(self, some_date):
-        """Get the science week number at an input date
+        """ Get the science week number at an input date.
 
         Parameters
         ----------
         some_date: datetime.date
-            The date at which to get the science week
+            The date at which to get the science week.
 
         Returns
         -------
-        int of the science week
+        science_week: int
+            The science week at the input date.
         """
-        self.__check_input_is_datetime_date(some_date, 'some_date')
-        self.__check_date_not_before_mission_arrival(some_date)
-        return (some_date - self.maven_arrival_date).days // 7
+        try:
+            science_week = (some_date - self.__science_start_date).days // 7
+            return science_week
+        except TypeError:
+            raise TypeError('some_date should be of type datetime.date')
 
     def get_current_science_week(self):
-        """Get the science week number for today
+        """ Get the science week number for today.
 
         Returns
         -------
-        int of the science week
+        science_week: int
+            The current science week.
         """
-        return self.get_science_week_from_date(date.today())
+        science_week = self.get_science_week_from_date(date.today())
+        return science_week
 
     def get_science_week_start_date(self, week):
-        """Get the date when a science week began
+        """ Get the date when the requested science week began.
 
         Parameters
         ----------
         week: int
-            The science week
+            The science week.
 
         Returns
         -------
-        datetime.date of day the science week started
+        science_week_start: datetime.date
+            The date when the science week started.
         """
-        self.__check_science_week_is_int(week)
-        self.__check_science_week_is_nonnegative(week)
-        return self.maven_arrival_date + timedelta(days=week * 7)
+        try:
+            rounded_week = int(np.floor(week))
+            if week != rounded_week:
+                warnings.warn('This is a non-integer week. Converting it to integer...')
+            science_week_start = self.__science_start_date + timedelta(days=rounded_week * 7)
+            return science_week_start
+        except TypeError:
+            raise TypeError(f'week should be an int, not a {type(week)}.')
 
     def get_science_week_end_date(self, week):
-        """Get the date when a science week ended
+        """ Get the date when the requested science week ended.
 
         Parameters
         ----------
         week: int
-            The science week
+            The science week.
 
         Returns
         -------
-        datetime.date of day the science week ended
+        science_week_end: datetime.date
+            The date when the science week ended.
         """
-        self.__check_science_week_is_int(week)
-        self.__check_science_week_is_nonnegative(week)
         return self.get_science_week_start_date(week + 1) - timedelta(days=1)
 
     def get_science_week_date_range(self, week):
-        """Get the date range corresponding to the input science week
+        """ Get the date range corresponding to the input science week.
 
         Parameters
         ----------
         week: int
-            The science week
+            The science week.
 
         Returns
         -------
-        The science week start and end dates
+        date_range: tuple
+            The start and end dates of the science week.
         """
-        return self.get_science_week_start_date(week), self.get_science_week_end_date(week)
+        date_range = self.get_science_week_start_date(week), self.get_science_week_end_date(week)
+        return date_range
 
-    @staticmethod
-    def __check_input_is_datetime_date(some_date, date_name):
-        if not isinstance(some_date, date):
-            raise TypeError(f'{date_name} must be a datetime.date.')
 
-    @staticmethod
-    def __check_science_week_is_int(week):
-        if not isinstance(week, int):
-            raise TypeError('week must be an int.')
-
-    def __check_date_not_before_mission_arrival(self, some_date):
-        time_delta = (some_date - self.maven_arrival_date).days
-        if time_delta < 0:
-            raise ValueError('The input date is before MAVEN arrived at Mars.')
-
-    @staticmethod
-    def __check_science_week_is_nonnegative(week):
-        if week < 0:
-            raise ValueError('week cannot be a negative value')
+# TODO: Decide if I want a subclass to handle requests related to science week (ex. get_orbit_range_from_science_week)
+# Pro: It's easy to code after making the database and it'd be helpful
+# Con: It might be easier to make 1 utility for database searching and tell users to apply it to science week
