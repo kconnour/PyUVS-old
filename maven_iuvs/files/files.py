@@ -39,10 +39,12 @@ class Files:
 
     @property
     def absolute_file_paths(self):
+        """ Get absolute_file_paths """
         return self.__absolute_paths
 
     @property
     def filenames(self):
+        """ Get filenames """
         return self.__filenames
 
     def get_absolute_paths_of_filenames_containing_pattern(self, pattern):
@@ -102,8 +104,7 @@ class Files:
 
     @staticmethod
     def __get_filenames_from_absolute_paths(absolute_paths):
-        # TODO: splitting on / is not OS independent, not that I think many users will use Windows
-        return [f.split('/')[-1] for f in absolute_paths]
+        return [os.path.basename(f) for f in absolute_paths]
 
     @staticmethod
     def __warn_if_no_files_found(absolute_paths):
@@ -215,10 +216,12 @@ class L1bFiles(IUVSDataFiles):
 
     @property
     def maximum_mirror_angle(self):
+        """ Get maximum_mirror_angle """
         return self.__maximum_mirror_angle
 
     @property
     def minimum_mirror_angle(self):
+        """ Get minimum_mirror_angle """
         return self.__minimum_mirror_angle
 
     def __check_files_are_l1b_iuvs_data_files(self):
@@ -236,8 +239,8 @@ class L1bFiles(IUVSDataFiles):
         """
         relay_files = []
         for counter, f in enumerate(self.absolute_file_paths):
-            hdulist = fits.open(f)
-            relay_files.append(self.__check_if_hdulist_is_relay_swath(hdulist))
+            with fits.open(f) as hdulist:
+                relay_files.append(self.__check_if_hdulist_is_relay_swath(hdulist))
         return relay_files
 
     def check_if_all_files_are_relays(self):
@@ -310,14 +313,17 @@ class SingleOrbitModeSequenceL1bFiles(L1bFiles):
 
     @property
     def sequence(self):
+        """ Get sequence """
         return self.__sequence
 
     @property
     def orbit(self):
+        """ Get orbit """
         return self.__orbit
 
     @property
     def mode(self):
+        """ Get mode """
         return self.__mode
 
     def __check_files_are_a_single_sequence(self):
@@ -345,59 +351,3 @@ class SingleOrbitModeSequenceL1bFiles(L1bFiles):
     def __check_files_are_a_single_mode(self):
         modes = ['ech', 'fuv', 'muv']
         return self.__check_all_files_contain_one_of_patterns(modes, 'mode')
-
-
-def single_segment(path, orbit, mode='muv', sequence='apoapse'):
-    """ Make a SingleOrbitModeSequenceL1bFiles for files matching an input orbit, mode, and sequence
-
-    Parameters
-    ----------
-    path: str
-        The location where to start looking for files.
-    orbit: int
-        The orbit to get files from
-    mode: str
-        The observing mode to get files from
-    sequence: str
-        The observing sequence to get files from
-
-    Returns
-    -------
-    files: SingleOrbitModeSequenceL1bFiles:
-        A SingleOrbitModeSequenceL1bFiles containing files from the requested orbit, mode, and sequence
-    """
-    pattern = f'**/*{sequence}*{orbit}*{mode}*'
-    files = SingleOrbitModeSequenceL1bFiles(path, pattern)
-    return files
-
-
-# Example 1: Just get files
-'''f = Files('/Users/kyco2464/maven_iuvs/PyUVS/ancillary', '*')
-for asdf in f.filenames:
-    print(asdf)
-print('~'*30)
-
-# Example 2: Look for .npy IUVS files
-g = IUVSFiles('/Users/kyco2464/maven_iuvs/PyUVS/ancillary', '*.npy')
-for asdf in g.absolute_file_paths:
-    print(asdf)
-print('~'*30)
-
-# Example 3: there's a mars_surface_map.jpg file so this should fail
-h = IUVSFiles('/Users/kyco2464/maven_iuvs/PyUVS/ancillary', '*')
-for asdf in h.absolute_file_paths:
-    print(asdf)'''
-
-
-
-#f = Files('/Users/kyco2464/iuvsdata', '**/*.fits*')
-#g = IUVSFiles('/Users/kyco2464/maven_iuvs/PyUVS/ancillary/', '**/*.npy')
-#h = IUVSDataFiles('/Users/kyco2464/maven_iuvs/PyUVS/ancillary/', '**/*.npy')
-#h = SingleOrbitModeSequenceL1bFiles('/Volumes/Samsung_T5/IUVS_data/orbit03400', '*apoapse*3453*muv*')
-#print(h.sequence)
-#print(h.orbit)
-#print(h.mode)
-
-#k = single_segment('/Volumes/Samsung_T5/IUVS_data/orbit03400', 3453)
-#print(k.minimum_mirror_angle)
-#print(k.filenames)
