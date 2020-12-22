@@ -1,13 +1,13 @@
 # Built-in imports
-import os
 import fnmatch as fnm
+import glob
+import os
+import warnings
 
 
-class Files:
-    """A Files object is a container for storing absolute paths of files"""
-
+'''class Files:
     def __init__(self, pattern, path, recursive=False):
-        """
+        """ A Files object is a container for storing absolute paths of files
         Parameters
         ----------
         pattern: str
@@ -93,10 +93,10 @@ class Files:
             print('No files found matching the input pattern')
 
     def __get_filenames_from_absolute_paths(self):
-        return [f.split('/')[-1] for f in self.file_paths]
+        return [f.split('/')[-1] for f in self.file_paths]'''
 
 
-class IUVSFiles(Files):
+'''class IUVSFiles(Files):
     """An IUVSFiles object is a container for storing absolute paths of IUVS data files"""
 
     def __init__(self, pattern, path, recursive=False):
@@ -123,10 +123,10 @@ class IUVSFiles(Files):
     def __check_files_are_iuvs_data_files(self):
         iuvs_files = self.get_abs_path_of_filenames_containing_pattern('mvn_iuv*')
         if self.file_paths != iuvs_files:
-            raise ValueError('Some of the files are not IUVS files')
+            raise ValueError('Some of the files are not IUVS files')'''
 
 
-class L1bFiles(IUVSFiles):
+'''class L1bFiles(IUVSFiles):
     """An L1bFiles object is a container for storing absolute paths of level 1b IUVS data files"""
 
     def __init__(self, pattern, path, recursive=False):
@@ -156,10 +156,10 @@ class L1bFiles(IUVSFiles):
             raise ValueError('Not all the IUVS files are l1b files')
         iuvs_data_files = self.get_abs_path_of_filenames_containing_pattern('*fits.gz')
         if self.file_paths != iuvs_data_files:
-            raise ValueError('Not all the l1b files are .fits files')
+            raise ValueError('Not all the l1b files are .fits files')'''
 
 
-class SingleOrbitL1bFiles(L1bFiles):
+'''class SingleOrbitL1bFiles(L1bFiles):
     """A SingleOrbitL1bFiles object is a container for storing absolute paths of level 1b IUVS data files for a single
     orbit"""
 
@@ -212,4 +212,105 @@ class SingleOrbitL1bFiles(L1bFiles):
     def __check_mode_is_valid(mode):
         modes = ['fuv', 'muv']
         if mode not in modes:
-            raise ValueError(f'mode must be one of {modes}')
+            raise ValueError(f'mode must be one of {modes}')'''
+
+
+class Files:
+    def __init__(self, path, pattern):
+        """ A Files object stores the absolute paths to files, along with some file handling routines.
+
+        Parameters
+        ----------
+        path: str
+            The location where to start looking for files.
+        pattern: str
+            The regex pattern to match filenames to.
+
+        Properties
+        ----------
+        absolute_file_paths: list
+            Absolute file paths of all files matching pattern in path.
+        filenames: list
+            Filenames of all files matching pattern in path.
+
+        Notes
+        -----
+        This class used glob-style matching, so '**/*.pdf' will recursively search for .pdf files starting from path
+        """
+        self.__check_path_exists(path)
+        self.__absolute_paths = self.__get_absolute_file_paths_matching_pattern_in_path(path, pattern)
+        self.__filenames = self.__get_filenames_from_absolute_paths(self.__absolute_paths)
+        self.__warn_if_no_files_found(self.__absolute_paths)
+
+    @property
+    def absolute_file_paths(self):
+        return self.__absolute_paths
+
+    @property
+    def filenames(self):
+        return self.__filenames
+
+    def get_absolute_paths_of_filenames_containing_pattern(self, pattern):
+        """ Get the absolute paths of filenames that contain a requested pattern.
+
+        Parameters
+        ----------
+        pattern: str
+            A regex pattern to search filenames for.
+
+        Returns
+        -------
+        matching_file_paths: list
+            A list of absolute paths of filenames that match pattern.
+        """
+        try:
+            matching_file_paths = []
+            for counter, file in enumerate(self.__filenames):
+                if fnm.fnmatch(file, pattern):
+                    matching_file_paths.append(self.__absolute_paths[counter])
+            self.__warn_if_no_files_found(matching_file_paths)
+            return matching_file_paths
+        except TypeError:
+            raise TypeError('pattern must be a string.')
+
+    def get_filenames_containing_pattern(self, pattern):
+        """ Get the filenames that contain a requested pattern.
+
+        Parameters
+        ----------
+        pattern: str
+            A regex pattern to search filenames for.
+
+        Returns
+        -------
+        matching_filenames: list
+            A list of filenames that match pattern.
+        """
+        absolute_paths = self.get_absolute_paths_of_filenames_containing_pattern(pattern)
+        matching_filenames = self.__get_filenames_from_absolute_paths(absolute_paths)
+        return matching_filenames
+
+    @staticmethod
+    def __check_path_exists(path):
+        try:
+            if not os.path.exists(path):
+                raise OSError(f'The path {path} does not exist on this computer.')
+        except TypeError:
+            raise TypeError('The input value of path should be a string.')
+
+    @staticmethod
+    def __get_absolute_file_paths_matching_pattern_in_path(path, pattern):
+        try:
+            return glob.glob(os.path.join(path, pattern), recursive=True)
+        except TypeError:
+            raise TypeError('Cannot join path and pattern. The inputs are probably not strings.')
+
+    @staticmethod
+    def __get_filenames_from_absolute_paths(absolute_paths):
+        # TODO: splitting on / is not OS independent, not that I think many users will use Windows
+        return [f.split('/')[-1] for f in absolute_paths]
+
+    @staticmethod
+    def __warn_if_no_files_found(absolute_paths):
+        if not absolute_paths:
+            warnings.warn('No files found matching the input pattern.')
