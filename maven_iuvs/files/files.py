@@ -11,29 +11,29 @@ import numpy as np
 
 class Files:
     """ A Files object stores the absolute paths to files, along with some file handling routines."""
-    def __init__(self, path, pattern):
+    def __init__(self, path, patterns):
         """
         Parameters
         ----------
         path: str
             The location where to start looking for files.
-        pattern: str
-            The regex pattern to match filenames to.
+        patterns: list
+            List of strings of regex patterns to match filenames to.
 
         Properties
         ----------
         absolute_file_paths: list
-            Absolute file paths of all files matching pattern in path.
+            Absolute file paths of all files matching patterns in path.
         filenames: list
-            Filenames of all files matching pattern in path.
+            Filenames of all files matching patterns in path.
 
         Notes
         -----
-        This class used glob-style matching, so a pattern of '**/*.pdf' will recursively search for .pdf files
-        starting from path
+        This class used glob-style matching, so a pattern of ['**/*.pdf'] will recursively search for .pdf files
+        starting from path.
         """
         self.__check_path_exists(path)
-        self.__absolute_paths = self.__get_absolute_file_paths_matching_pattern_in_path(path, pattern)
+        self.__absolute_paths = self.__get_absolute_file_paths_matching_patterns_in_path(path, patterns)
         self.__filenames = self.__get_filenames_from_absolute_paths(self.__absolute_paths)
         self.__raise_value_error_if_no_files_found(self.__absolute_paths)
 
@@ -85,7 +85,7 @@ class Files:
         """
         absolute_paths = self.get_absolute_paths_of_filenames_containing_pattern(pattern)
         matching_filenames = self.__get_filenames_from_absolute_paths(absolute_paths)
-        return sorted(matching_filenames)
+        return matching_filenames
 
     @staticmethod
     def __check_path_exists(path):
@@ -96,11 +96,14 @@ class Files:
             raise TypeError('The input value of path should be a string.')
 
     @staticmethod
-    def __get_absolute_file_paths_matching_pattern_in_path(path, pattern):
+    def __get_absolute_file_paths_matching_patterns_in_path(path, patterns):
         try:
-            return sorted(glob.glob(os.path.join(path, pattern), recursive=True))
+            all_paths = []
+            for i in patterns:
+                all_paths.extend(glob.glob(os.path.join(path, i), recursive=True))
+            return sorted(all_paths)
         except TypeError:
-            raise TypeError('Cannot join path and pattern. The inputs are probably not strings.')
+            raise TypeError('Cannot join path and patterns. The inputs are probably not strings.')
 
     @staticmethod
     def __get_filenames_from_absolute_paths(absolute_paths):
@@ -119,28 +122,28 @@ class Files:
 
 class IUVSFiles(Files):
     """ An IUVSFiles object stores the absolute paths to files and performs checks that the files are IUVS files."""
-    def __init__(self, path, pattern):
+    def __init__(self, path, patterns):
         """
         Parameters
         ----------
         path: str
             The location where to start looking for files.
-        pattern: str
-            The regex pattern to match filenames to.
+        patterns: list
+            List of strings of regex patterns to match filenames to.
 
         Properties
         ----------
         absolute_file_paths: list
-            Absolute file paths of all files matching pattern in path.
+            Absolute file paths of all files matching patterns in path.
         filenames: list
-            Filenames of all files matching pattern in path.
+            Filenames of all files matching patterns in path.
 
         Notes
         -----
-        This class used glob-style matching, so a pattern of '**/*.pdf' will recursively search for .pdf files
-        starting from path
+        This class used glob-style matching, so a pattern of ['**/*.pdf'] will recursively search for .pdf files
+        starting from path.
         """
-        super().__init__(path, pattern)
+        super().__init__(path, patterns)
         self.__check_files_are_iuvs_files()
 
     def __check_files_are_iuvs_files(self):
@@ -152,28 +155,28 @@ class IUVSFiles(Files):
 class IUVSDataFiles(IUVSFiles):
     """ An IUVSDataFiles object stores the absolute paths to files and performs checks that the files are IUVS data
     files."""
-    def __init__(self, path, pattern):
+    def __init__(self, path, patterns):
         """
         Parameters
         ----------
         path: str
             The location where to start looking for files.
-        pattern: str
-            The regex pattern to match filenames to.
+        patterns: list
+            List of strings of regex patterns to match filenames to.
 
         Properties
         ----------
         absolute_file_paths: list
-            Absolute file paths of all files matching pattern in path.
+            Absolute file paths of all files matching patterns in path.
         filenames: list
-            Filenames of all files matching pattern in path.
+            Filenames of all files matching patterns in path.
 
         Notes
         -----
-        This class used glob-style matching, so a pattern of '**/*.pdf' will recursively search for .pdf files
-        starting from path
+        This class used glob-style matching, so a pattern of ['**/*.pdf'] will recursively search for .pdf files
+        starting from path.
         """
-        super().__init__(path, pattern)
+        super().__init__(path, patterns)
         self.__check_files_are_iuvs_data_files()
 
     def __check_files_are_iuvs_data_files(self):
@@ -184,21 +187,21 @@ class IUVSDataFiles(IUVSFiles):
 
 class L1bFiles(IUVSDataFiles):
     """ An L1bFiles object stores the absolute paths to files and performs checks that the files are IUVS l1b files."""
-    def __init__(self, path, pattern):
+    def __init__(self, path, patterns):
         """
         Parameters
         ----------
         path: str
             The location where to start looking for files.
-        pattern: str
-            The regex pattern to match filenames to.
+        patterns: list
+            List of strings of regex patterns to match filenames to.
 
         Properties
         ----------
         absolute_file_paths: list
-            Absolute file paths of all files matching pattern in path.
+            Absolute file paths of all files matching patterns in path.
         filenames: list
-            Filenames of all files matching pattern in path.
+            Filenames of all files matching patterns in path.
         maximum_mirror_angle: float
             The maximum mirror angle [degrees] of the IUVS mirror.
         minimum_mirror_angle: float
@@ -206,10 +209,10 @@ class L1bFiles(IUVSDataFiles):
 
         Notes
         -----
-        This class used glob-style matching, so a pattern of '**/*.pdf' will recursively search for .pdf files
-        starting from path
+        This class used glob-style matching, so a pattern of ['**/*.pdf'] will recursively search for .pdf files
+        starting from path.
         """
-        super().__init__(path, pattern)
+        super().__init__(path, patterns)
         self.__maximum_mirror_angle = 59.6502685546875
         self.__minimum_mirror_angle = 30.2508544921875
         self.__check_files_are_l1b_iuvs_data_files()
@@ -230,7 +233,7 @@ class L1bFiles(IUVSDataFiles):
             raise ValueError('Not all the IUVS files are l1b files.')
 
     def get_which_files_are_relay_files(self):
-        """ Check which files associated with this object are relay files.
+        """ Get which files associated with this object are relay files.
 
         Returns
         -------
@@ -274,39 +277,39 @@ class L1bFiles(IUVSDataFiles):
 
 class SingleOrbitModeSequenceL1bFiles(L1bFiles):
     """ A SingleOrbitModeSequenceL1bFiles object stores the absolute paths to files and performs checks that the files
-    are IUVS files from a single orbit, mode, and sequence."""
-    def __init__(self, path, pattern):
+    are IUVS files from a single orbit, mode, and sequence. """
+    def __init__(self, path, patterns):
         """
         Parameters
         ----------
         path: str
             The location where to start looking for files.
-        pattern: str
-            The regex pattern to match filenames to.
+        patterns: list
+            List of strings of regex patterns to match filenames to.
 
         Properties
         ----------
         absolute_file_paths: list
-            Absolute file paths of all files matching pattern in path.
+            Absolute file paths of all files matching patterns in path.
         filenames: list
-            Filenames of all files matching pattern in path.
+            Filenames of all files matching patterns in path.
         maximum_mirror_angle: float
-            The maximum mirror angle of the IUVS mirror.
+            The maximum mirror angle [degrees] of the IUVS mirror.
         minimum_mirror_angle: float
-            The minimum mirror angle of the IUVS mirror.
+            The minimum mirror angle [degrees] of the IUVS mirror.
         mode: str
-            The mode for all files
+            The mode for all files.
         orbit: int
-            The orbit for all files
+            The orbit for all files.
         sequence: str
-            The sequence for all files
+            The sequence for all files.
 
         Notes
         -----
-        This class used glob-style matching, so a pattern of '**/*.pdf' will recursively search for .pdf files
-        starting from path
+        This class used glob-style matching, so a pattern of ['**/*.pdf'] will recursively search for .pdf files
+        starting from path.
         """
-        super().__init__(path, pattern)
+        super().__init__(path, patterns)
         self.__sequence = self.__check_files_are_a_single_sequence()
         self.__orbit = self.__check_files_are_a_single_orbit()
         self.__mode = self.__check_files_are_a_single_mode()
