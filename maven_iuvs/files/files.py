@@ -1,3 +1,6 @@
+# TODO: Configure Pycharm (on my desktop) to use 79 characters per line.
+# TODO: Change all code here and in science_week to adhere to 79 character limit.
+
 # Built-in imports
 import fnmatch as fnm
 import glob
@@ -9,6 +12,8 @@ from astropy.io import fits
 import numpy as np
 
 
+# TODO: Mike says this is a reimplementation of pathlib.Path... see if that's true and if I can simplify or remove this
+#     : class altogether
 class Files:
     """ A Files object stores the absolute paths to files, along with some file handling routines."""
     def __init__(self, path, patterns):
@@ -18,7 +23,7 @@ class Files:
         path: str
             The location where to start looking for files.
         patterns: list
-            List of strings of regex patterns to match filenames to.
+            List of strings of glob patterns to match filenames to.
 
         Properties
         ----------
@@ -29,6 +34,7 @@ class Files:
 
         Notes
         -----
+        # TODO: changed "used" to "uses" in all subsequent docstrings.
         This class used glob-style matching, so a pattern of ['**/*.pdf'] will recursively search for .pdf files
         starting from path.
         """
@@ -37,15 +43,20 @@ class Files:
         self.__filenames = self.__get_filenames_from_absolute_paths(self.__absolute_paths)
         self.__raise_value_error_if_no_files_found(self.__absolute_paths)
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def absolute_file_paths(self):
-        """ Get absolute_file_paths """
+        """ Retrieve the absolute paths of files created upon class instantiation. This property is read-only; it has
+        no setter """
         return self.__absolute_paths
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def filenames(self):
-        """ Get filenames """
+        """ Retrieve the filenames created upon class instantiation. This property is read-only; it has no setter """
         return self.__filenames
+
+    # TODO: add n_files property
 
     def get_absolute_paths_of_filenames_containing_pattern(self, pattern):
         """ Get the absolute paths of filenames that contain a requested pattern.
@@ -53,7 +64,7 @@ class Files:
         Parameters
         ----------
         pattern: str
-            A regex pattern to search filenames for.
+            A glob pattern to search filenames for.
 
         Returns
         -------
@@ -76,7 +87,7 @@ class Files:
         Parameters
         ----------
         pattern: str
-            A regex pattern to search filenames for.
+            A glob pattern to search filenames for.
 
         Returns
         -------
@@ -129,7 +140,7 @@ class IUVSFiles(Files):
         path: str
             The location where to start looking for files.
         patterns: list
-            List of strings of regex patterns to match filenames to.
+            List of strings of glob patterns to match filenames to.
 
         Properties
         ----------
@@ -162,7 +173,7 @@ class IUVSDataFiles(IUVSFiles):
         path: str
             The location where to start looking for files.
         patterns: list
-            List of strings of regex patterns to match filenames to.
+            List of strings of glob patterns to match filenames to.
 
         Properties
         ----------
@@ -194,7 +205,7 @@ class L1bFiles(IUVSDataFiles):
         path: str
             The location where to start looking for files.
         patterns: list
-            List of strings of regex patterns to match filenames to.
+            List of strings of glob patterns to match filenames to.
 
         Properties
         ----------
@@ -217,14 +228,18 @@ class L1bFiles(IUVSDataFiles):
         self.__minimum_mirror_angle = 30.2508544921875
         self.__check_files_are_l1b_iuvs_data_files()
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def maximum_mirror_angle(self):
-        """ Get maximum_mirror_angle """
+        """ Retrieve the maximum mirror angle created upon class instantiation. This property is read-only; it has no
+        setter """
         return self.__maximum_mirror_angle
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def minimum_mirror_angle(self):
-        """ Get minimum_mirror_angle """
+        """ Retrieve the minimum mirror angle created upon class instantiation. This property is read-only; it has no
+        setter """
         return self.__minimum_mirror_angle
 
     def __check_files_are_l1b_iuvs_data_files(self):
@@ -285,7 +300,7 @@ class SingleOrbitModeSequenceL1bFiles(L1bFiles):
         path: str
             The location where to start looking for files.
         patterns: list
-            List of strings of regex patterns to match filenames to.
+            List of strings of glob patterns to match filenames to.
 
         Properties
         ----------
@@ -314,19 +329,25 @@ class SingleOrbitModeSequenceL1bFiles(L1bFiles):
         self.__orbit = self.__check_files_are_a_single_orbit()
         self.__mode = self.__check_files_are_a_single_mode()
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def sequence(self):
-        """ Get sequence """
+        """ Retrieve the observing sequence associated with the input files created upon class instantiation. This
+        property is read-only; it has no setter """
         return self.__sequence
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def orbit(self):
-        """ Get orbit """
+        """ Retrieve the orbit number associated with the input files created upon class instantiation. This property
+        is read-only; it has no setter """
         return self.__orbit
 
+    # TODO: Move constructor docstring properties to these docstrings
     @property
     def mode(self):
-        """ Get mode """
+        """ Retrieve the observing mode associated with the input files created upon class instantiation. This
+        property is read-only; it has no setter """
         return self.__mode
 
     def __check_files_are_a_single_sequence(self):
