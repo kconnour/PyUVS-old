@@ -8,17 +8,14 @@ import warnings
 from astropy.io import fits
 import numpy as np
 
-
-# TODO: Pycharm hates my "Attributes"... better solution?
-# TODO: Make functions that replicate my old ones
-# TODO: Add a method to combine multiple objects together by combining lists
-#     : of attributes. Or a function instead?
-# TODO: See if I can make attributes read-only after I make the most
-#     : specialized class.
+# TODO: It seems like a good design choice to me to make `filenames` and
+#     : `absolute_paths' read-only, but this would break methods that remove
+#     : undesireable files and break the functions that create these classes.
+#     : I may consider making a "add_files" method and do something clever with
+#     : getters and setters. It'd also fix Pycharm's issue hating attributes.
 class Files:
     """ A Files object stores the absolute paths to files, along with some file
-    handling routines."""
-
+    handling routines. """
     def __init__(self, path, pattern):
         """
         Parameters
@@ -38,8 +35,8 @@ class Files:
 
         Notes
         -----
-        This class uses glob-style matching, so a pattern of '**/*.pdf' will
-        recursively search for .pdf files starting from path.
+        This class uses glob-style matching, so a pattern of '**/*.foo' will
+        recursively search for .foo files starting from path.
         """
         self.__check_path_exists(path)
         self.__input_glob = list(Path(path).glob(pattern))
@@ -121,8 +118,7 @@ class Files:
 
 class IUVSFiles(Files):
     """ An IUVSFiles object stores the absolute paths to files and downselects
-    these files to ensure they are IUVS files."""
-
+    these files to ensure they are IUVS files. """
     def __init__(self, path, pattern):
         """
         Parameters
@@ -142,8 +138,8 @@ class IUVSFiles(Files):
 
         Notes
         -----
-        This class uses glob-style matching, so a pattern of '**/*.pdf' will
-        recursively search for .pdf files starting from path.
+        This class uses glob-style matching, so a pattern of '**/*.foo' will
+        recursively search for .foo files starting from path.
         """
         super().__init__(path, pattern)
         self.__remove_non_iuvs_files()
@@ -159,8 +155,7 @@ class IUVSFiles(Files):
 
 class IUVSDataFiles(IUVSFiles):
     """ An IUVSDataFiles object stores the absolute paths to files and
-    downselects these files to ensure they are IUVS data files."""
-
+    downselects these files to ensure they are IUVS data files. """
     def __init__(self, path, pattern):
         """
         Parameters
@@ -180,8 +175,8 @@ class IUVSDataFiles(IUVSFiles):
 
         Notes
         -----
-        This class uses glob-style matching, so a pattern of '**/*.pdf' will
-        recursively search for .pdf files starting from path.
+        This class uses glob-style matching, so a pattern of '**/*.foo' will
+        recursively search for .foo files starting from path.
         """
         super().__init__(path, pattern)
         self.__remove_non_iuvs_data_files()
@@ -197,8 +192,7 @@ class IUVSDataFiles(IUVSFiles):
 
 class L1bFiles(IUVSDataFiles):
     """ An L1bFiles object stores the absolute paths to files and downselects
-    these files to ensure they are IUVS level 1b data files."""
-
+    these files to ensure they are IUVS level 1b data files. """
     def __init__(self, path, pattern):
         """
         Parameters
@@ -218,8 +212,8 @@ class L1bFiles(IUVSDataFiles):
 
         Notes
         -----
-        This class uses glob-style matching, so a pattern of '**/*.pdf' will
-        recursively search for .pdf files starting from path.
+        This class uses glob-style matching, so a pattern of '**/*.foo' will
+        recursively search for .foo files starting from path.
         """
         super().__init__(path, pattern)
         self.__remove_non_l1b_data_files()
@@ -277,7 +271,7 @@ class L1bFiles(IUVSDataFiles):
         Returns
         -------
         relay_files: bool
-            True if all files are relay files; False otherwise
+            True if all files are relay files; False otherwise.
         """
         relay_files = self.check_relays()
         return all(relay_files)
@@ -289,7 +283,7 @@ class L1bFiles(IUVSDataFiles):
         Returns
         -------
         relay_files: bool
-            True if any files are relay files; False otherwise
+            True if any files are relay files; False otherwise.
         """
         relay_files = self.check_relays()
         return any(relay_files)
@@ -306,7 +300,6 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
     """ A SingleOrbitSequenceChannelL1bFiles object stores the absolute paths
     to files and performs checks that the files are IUVS files from a single
     orbit, sequence, and channel. """
-
     def __init__(self, path, pattern):
         """
         Parameters
@@ -326,8 +319,8 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
 
         Notes
         -----
-        This class uses glob-style matching, so a pattern of '**/*.pdf' will
-        recursively search for .pdf files starting from path.
+        This class uses glob-style matching, so a pattern of '**/*.foo' will
+        recursively search for .foo files starting from path.
         """
         super().__init__(path, pattern)
         self.__check_files_are_single_orbit_sequence_channel()
@@ -370,6 +363,8 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
             raise ValueError(f'The input files are not from from a single '
                              f'{name}.')
 
+    # TODO: This gives a non-breaking issue that Iterable does not have getters
+    #  so I cannot use '[]' notation. Unsure how to fix.
     @property
     def orbit(self):
         """ Get the orbit number of these files.
@@ -379,10 +374,10 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
         orbit: int
             The orbit number.
         """
-        # TODO: this works but Pycharm says it shouldn't. Unsure if it's a
-        #     : Pycharm problem or not.
         return int(self.__get_orbit_from_filename(self.filenames[0]))
 
+    # TODO: This gives a non-breaking issue that Iterable does not have getters
+    #  so I cannot use '[]' notation. Unsure how to fix.
     @property
     def sequence(self):
         """ Get the observing sequence of these files.
@@ -392,10 +387,10 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
         sequence: str
             The observing sequence.
         """
-        # TODO: this works but Pycharm says it shouldn't. Unsure if it's a
-        #     : Pycharm problem or not.
         return self.__get_sequence_from_filename(self.filenames[0])
 
+    # TODO: This gives a non-breaking issue that Iterable does not have getters
+    #  so I cannot use '[]' notation. Unsure how to fix.
     @property
     def channel(self):
         """ Get the observing channel of these files.
@@ -405,6 +400,4 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
         channel: str
             The observing channel.
         """
-        # TODO: this works but Pycharm says it shouldn't. Unsure if it's a
-        #     : Pycharm problem or not.
         return self.__get_channel_from_filename(self.filenames[0])
