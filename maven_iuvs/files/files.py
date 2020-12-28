@@ -49,7 +49,7 @@ class Files:
         try:
             if not os.path.exists(path):
                 raise OSError(f'The path "{path}" does not exist on this '
-                              f'computer.')
+                              'computer.')
         except TypeError:
             raise TypeError('The input value of "path" must be a string.')
 
