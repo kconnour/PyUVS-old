@@ -57,7 +57,7 @@ class Files:
             raise TypeError('The input value of "path" must be a string.')
 
     def __get_absolute_paths_of_input_pattern(self):
-        return sorted([f for f in self.__input_glob if f.is_file()])
+        return sorted([str(f) for f in self.__input_glob if f.is_file()])
 
     def __get_filenames_of_input_pattern(self):
         return sorted([f.name for f in self.__input_glob if f.is_file()])
@@ -81,7 +81,7 @@ class Files:
             matching_paths = []
             for counter, file in enumerate(self.filenames):
                 if fnm.fnmatch(file, pattern):
-                    matching_paths.append(self.absolute_paths[counter])
+                    matching_paths.append(str(self.absolute_paths[counter]))
             self.__warn_if_no_files_found(matching_paths)
             return sorted(matching_paths)
         except TypeError:
