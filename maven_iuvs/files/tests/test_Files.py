@@ -1,7 +1,8 @@
 # Built-in imports
+import inspect
+import os
 from unittest import TestCase
 import warnings
-import os
 
 # Local imports
 from maven_iuvs.files.files import Files
@@ -12,24 +13,18 @@ class TestFiles(TestCase):
     def setUp(self):
         self._path = os.path.join(os.path.dirname(os.path.abspath(
             os.path.realpath(__file__))), 'test_filenames')
-        self.files = Files(os.path.join(get_module_path(), self._path), '*')
+        self.files = Files(self._path, '*')
 
 
-class TestFilesInit(TestFiles):
-    def test_files_has_absolute_paths_attribute(self):
-        self.assertTrue(hasattr(self.files, 'absolute_paths'))
+class TestInit(TestFiles):
+    def test_files_has_absolute_paths_property(self):
+        self.assertTrue(not inspect.ismethod(Files.absolute_paths))
 
-    def test_files_has_filenames_attribute(self):
-        self.assertTrue(hasattr(self.files, 'filenames'))
+    def test_files_has_filenames_property(self):
+        self.assertTrue(not inspect.ismethod(Files.filenames))
 
-    def test_files_has_exactly_two_attributes(self):
-        self.assertTrue(len(self.files.__dict__.keys()), 2)
-
-    def test_absolute_paths_is_list(self):
-        self.assertTrue(isinstance(self.files.absolute_paths, list))
-
-    def test_filenames_is_list(self):
-        self.assertTrue(isinstance(self.files.filenames, list))
+    def test_files_has_exactly_3_attributes(self):
+        self.assertEqual(3, len(self.files.__dict__.keys()))
 
     def test_nonexistent_path_raises_os_error(self):
         with self.assertRaises(OSError):
@@ -47,13 +42,49 @@ class TestFilesInit(TestFiles):
         with self.assertRaises(ValueError):
             Files(get_module_path(), '*.foo')
 
-    def test_files_found_13_files(self):
-        self.assertEqual(13, len(self.files.filenames))
+    def test_init_found_14_files(self):
+        self.assertEqual(14, len(self.files.filenames))
 
     def test_all_filenames_are_in_absolute_paths(self):
         filename_in_abs_paths = [f for f in self.files.filenames if f in
                                  self.files.absolute_paths]
         self.assertTrue(all(filename_in_abs_paths))
+
+
+class TestAbsolutePaths(TestFiles):
+    def test_absolute_paths_is_list(self):
+        self.assertTrue(isinstance(self.files.absolute_paths, list))
+
+    def test_absolute_paths_can_be_set(self):
+        with warnings.catch_warnings(record=True):
+            warnings.simplefilter("always")
+            self.files.absolute_paths = ['foo']
+            self.assertEqual(['foo'], self.files.absolute_paths)
+
+    def test_setting_absolute_paths_raises_warning(self):
+        with warnings.catch_warnings(record=True) as warning:
+            warnings.simplefilter("always")
+            self.files.absolute_paths = ['foo']
+            self.assertEqual(1, len(warning))
+            self.assertEqual(warning[-1].category, UserWarning)
+
+
+class TestFilenames(TestFiles):
+    def test_filenames_is_list(self):
+        self.assertTrue(isinstance(self.files.filenames, list))
+
+    def test_filenames_can_be_set(self):
+        with warnings.catch_warnings(record=True):
+            warnings.simplefilter("always")
+            self.files.filenames = ['foo']
+            self.assertEqual(['foo'], self.files.filenames)
+
+    def test_setting_filenames_raises_warning(self):
+        with warnings.catch_warnings(record=True) as warning:
+            warnings.simplefilter("always")
+            self.files.filenames = ['foo']
+            self.assertEqual(1, len(warning))
+            self.assertEqual(warning[-1].category, UserWarning)
 
 
 class TestDownselectAbsoluteFiles(TestFiles):
@@ -68,7 +99,7 @@ class TestDownselectAbsoluteFiles(TestFiles):
             self.assertEqual(1, len(warning))
             self.assertEqual(warning[-1].category, UserWarning)
 
-    def test_nonexistent_files_output_empty_list(self):
+    def test_nonexistent_files_outputs_empty_list(self):
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             output = self.files.downselect_absolute_paths('*.foo')
