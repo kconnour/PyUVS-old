@@ -1,4 +1,5 @@
 # Built-in imports
+import inspect
 from unittest import TestCase
 from datetime import date, timedelta
 import warnings
@@ -15,10 +16,9 @@ class TestScienceWeek(TestCase):
         self.science_week = ScienceWeek()
 
 
-# TODO: I'm unsure how to write general class checks if there's no constructor.
 class TestInit(TestScienceWeek):
     def test_science_week_has_science_start_date_property(self):
-        self.assertTrue(hasattr(self.science_week, 'science_start_date'))
+        self.assertTrue(not inspect.ismethod(ScienceWeek.science_start_date))
 
     def test_science_week_has_no_attributes(self):
         self.assertEqual(0, len(self.science_week.__dict__.keys()))
@@ -29,7 +29,7 @@ class TestScienceStartDate(TestScienceWeek):
         self.assertEqual(date(2014, 11, 11),
                          self.science_week.science_start_date)
 
-    def test_science_start_date_is_read_only(self):
+    def test_science_start_date_is_immutable(self):
         with self.assertRaises(AttributeError):
             self.science_week.science_start_date = date(2014, 11, 11)
 
