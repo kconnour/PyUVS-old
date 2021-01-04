@@ -1,19 +1,140 @@
+# Built-in imports
+import os
+
+# 3rd-party imports
+import numpy as np
+
 # Local imports
 from maven_iuvs.files.files import SingleOrbitSequenceChannelL1bFiles, L1bFiles
 
 
-# TODO: My functions here seem awfully clunky. It may be nice to define
-#  addition or summation as a method to combine multiple L1bFiles. But that too
-#  seems clunky since glob cannot handle an orbit range.
-# TODO: I iterate over an input list of orbits, but it would be nice to iterate
-#  over an input list of sequences and channels too so they're more general.
-# TODO: My helper functions may go elsewhere since they're not necessarily
-#  specific to the 3 major functions here.
-# TODO: The 3 major function names aren't very good...
+# TODO: move these to another file
+# TODO: add try statements to these methods
+class IUVSGlobs:
+    """ A GlobPattern object creates glob search patterns tailored to IUVS
+    data. """
+    def make_glob_pattern(self, orbit, sequence, channel):
+        """ Make a glob pattern for an orbit, sequence, and channel.
+
+        Parameters
+        ----------
+        orbit: str or int
+            The orbit to get data from. Can be '*' to get all orbits.
+        sequence: str or int
+            The sequence to get data from. Can be '*' to get all sequences.
+        channel: str or int
+            The channel to get data from. Can be '*' to get all channels.
+
+        Returns
+        -------
+        pattern: str
+            The glob pattern that matches the input parameters.
+        """
+        pattern = f'*{sequence}-*{self.__orbit_to_string(orbit)}-{channel}*'
+        return self.__remove_recursive_glob_pattern(pattern)
+
+    @staticmethod
+    def __orbit_to_string(orbit):
+        return str(orbit).zfill(5)
+
+    @staticmethod
+    def __remove_recursive_glob_pattern(pattern):
+        return pattern.replace('**', '*')
+
+    def make_recursive_glob_pattern(self, orbit, sequence, channel):
+        """ Make a recursive glob pattern for an orbit, sequence, and channel.
+
+        Parameters
+        ----------
+        orbit: str or int
+            The orbit to get data from. Can be '*' to get all orbits.
+        sequence: str or int
+            The sequence to get data from. Can be '*' to get all sequences.
+        channel: str or int
+            The channel to get data from. Can be '*' to get all channels.
+
+        Returns
+        -------
+        pattern: str
+            The recursive glob pattern that matches the input parameters.
+        """
+        pattern = self.make_glob_pattern(orbit, sequence, channel)
+        return self.__prepend_recursive_glob_pattern(pattern)
+
+    @staticmethod
+    def __prepend_recursive_glob_pattern(pattern):
+        return f'**/{pattern}'
+
+    def make_patterns_from_orbits(self, orbits, sequence, channel):
+        """ Make glob patterns for each orbit in a list of orbits.
+
+        Parameters
+        ----------
+        orbits: list
+            List of ints or strings of orbits to make patterns for.
+        sequence: str or int
+            The sequence to get data from. Can be '*' to get all sequences.
+        channel: str or int
+            The channel to get data from. Can be '*' to get all channels.
+
+        Returns
+        -------
+        patterns: list
+            List of patterns of len(orbits) that match the inputs.
+        """
+        converted_orbits = [self.__orbit_to_string(orbit) for orbit in orbits]
+        return [self.make_glob_pattern(orbit, sequence, channel) for orbit in
+                converted_orbits]
+
+    def make_recursive_patterns_from_orbits(self, orbits, sequence, channel):
+        """ Make recursive glob patterns for each orbit in a list of orbits.
+
+        Parameters
+        ----------
+        orbits: list
+            List of ints or strings of orbits to make patterns for.
+        sequence: str or int
+            The sequence to get data from. Can be '*' to get all sequences.
+        channel: str or int
+            The channel to get data from. Can be '*' to get all channels.
+
+        Returns
+        -------
+        patterns: list
+            List of recursive patterns of len(orbits) that match the inputs.
+        """
+        return [self.__prepend_recursive_glob_pattern(f) for f in
+                self.make_patterns_from_orbits(orbits, sequence, channel)]
+
+    def make_orbit_path(self, path, orbit):
+        """ Make the path to orbits, assuming orbits are organized in blocks.
+
+        Parameters
+        ----------
+        path: str
+            The path where to begin looking for data.
+        orbit: int
+            The orbit.
+
+        Returns
+        -------
+        paths: list
+            The path (including orbit block) corresponding to orbit.
+        """
+        return os.path.join(path, self.__make_orbit_block_folder(orbit))
+
+    def make_orbit_paths(self, path, orbits):
+        return [self.make_orbit_path(path, f) for f in orbits]
+
+    @staticmethod
+    def __round_to_nearest_hundred(orbit):
+        return int(np.floor(int(orbit)/100) * 100)
+
+    def __make_orbit_block_folder(self, orbit):
+        return f'orbit{self.__round_to_nearest_hundred(orbit)}'
 
 
-def single_orbit_segment(path, orbit, sequence='apoapse', channel='muv',
-                         recursive=False):
+def segment(path, orbit, sequence='apoapse', channel='muv'):
     """ Make a SingleOrbitSequenceChannelL1bFiles for files matching an input
     orbit, sequence, and channel.
 
@@ -27,8 +148,6 @@ def single_orbit_segment(path, orbit, sequence='apoapse', channel='muv',
         The observing sequence to get files from.
     channel: str
         The observing mode to get files from.
-    recursive: bool
-        Denote whether to look recursively in path. Default is False.
 
     Returns
     -------
@@ -36,14 +155,11 @@ def single_orbit_segment(path, orbit, sequence='apoapse', channel='muv',
         A SingleOrbitSequenceChannelL1bFiles containing files from the
         requested orbit, sequence, and channel.
     """
-    pattern = make_recursive_glob_pattern(orbit, channel, sequence, recursive)
+    pattern = IUVSGlobs().make_recursive_glob_pattern(orbit, sequence, channel)
     return SingleOrbitSequenceChannelL1bFiles(path, pattern)
 
 
-# TODO: allow multiple paths so user could specify files in multiple dirs
-#     : like, if they want 3495--3510.
-def orbital_segment(path, orbits, sequence='apoapse', channel='muv',
-                    recursive=False):
+def multi_segments(path, orbits, sequence='apoapse', channel='muv'):
     """ Make an L1bFiles for an input list of orbits.
 
     Parameters
@@ -56,22 +172,21 @@ def orbital_segment(path, orbits, sequence='apoapse', channel='muv',
         The observing sequence. Can be '*'. Default is 'apoapse'.
     channel: str
         The observing channel. Can be '*'. Default is 'muv'.
-    recursive: bool
-        Denote whether to look recursively in path. Default is False.
 
     Returns
     -------
     files: list
         An L1bFiles of all files at the input orbits.
     """
-    orbits = orbits_to_strings(orbits)
-    patterns = make_patterns_from_orbits(orbits, sequence, channel, recursive)
+    paths = IUVSGlobs().make_orbit_paths(path, orbits)
+    patterns = IUVSGlobs().make_recursive_patterns_from_orbits(orbits,
+                                                               sequence,
+                                                               channel)
 
-    # TODO: abstract this
     single_orbit_files = []
-    for pattern in patterns:
+    for i in range(len(paths)):
         try:
-            file = L1bFiles(path, pattern)
+            file = L1bFiles(paths[i], patterns[i])
             single_orbit_files.append(file)
         except ValueError:
             continue
@@ -79,8 +194,8 @@ def orbital_segment(path, orbits, sequence='apoapse', channel='muv',
     return combine_multiple_l1b_files(single_orbit_files)
 
 
-def orbit_range_segment(path, orbit_start, orbit_end, sequence='apoapse',
-                        channel='muv', recursive=False):
+def segment_range(path, orbit_start, orbit_end, sequence='apoapse',
+                  channel='muv'):
     """ Make an L1bFiles for all orbits between two endpoints.
 
     Parameters
@@ -95,53 +210,17 @@ def orbit_range_segment(path, orbit_start, orbit_end, sequence='apoapse',
         The observing sequence. Can be '*'. Default is 'apoapse'.
     channel: str
         The observing channel. Can be '*'. Default is 'muv'.
-    recursive: bool
-        Denote whether to look recursively in path. Default is False.
 
     Returns
     -------
     files: L1bFiles
         An L1bFiles of all files within the input orbital range.
     """
-    orbits = list(range(orbit_start, orbit_end + 1))
-    return orbital_segment(path, orbits, sequence=sequence, channel=channel,
-                           recursive=recursive)
+    orbits = list(range(orbit_start, orbit_end))
+    return multi_segments(path, orbits, sequence=sequence, channel=channel)
 
 
-# TODO: Add try statements so the user doesn't get cryptic errors.
-def make_recursive_glob_pattern(orbit, sequence, channel, recursive):
-    pattern = make_single_segment_glob_pattern(orbit, sequence, channel)
-    if recursive:
-        pattern = prepend_recursive_glob_pattern(pattern)
-    return pattern
-
-
-def make_single_segment_glob_pattern(orbit, sequence, channel):
-    pattern = f'*{sequence}-*{orbit}-{channel}*'
-    return remove_recursive_glob_pattern(pattern)
-
-
-def remove_recursive_glob_pattern(pattern):
-    return pattern.replace('**', '*')
-
-
-def prepend_recursive_glob_pattern(pattern):
-    return f'**/{pattern}'
-
-
-def orbit_to_string(orbit):
-    return str(orbit).zfill(5)
-
-
-def orbits_to_strings(orbits):
-    return [orbit_to_string(orbit) for orbit in orbits]
-
-
-def make_patterns_from_orbits(orbits, sequence, channel, recursive):
-    return [make_recursive_glob_pattern(orbit, sequence, channel, recursive)
-            for orbit in orbits]
-
-
+# TODO: This should be a method in Files
 def combine_multiple_l1b_files(l1b_files):
     for counter, files in enumerate(l1b_files):
         if counter == 0:
