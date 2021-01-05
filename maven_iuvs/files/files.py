@@ -356,14 +356,17 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
                     self.filenames]
         self.__check_list_contains_1_unique_element(channels, 'channel')
 
+    # TODO: this fails on "..._relay-echelle-orbit..." (ex. orbit 12201)
     @staticmethod
     def __get_sequence_from_filename(filename):
         return filename.split('_')[3].split('-')[0]
 
+    # TODO: this fails on "..._relay-echelle-orbit..." (ex. orbit 12201)
     @staticmethod
     def __get_orbit_from_filename(filename):
         return filename.split('_')[3].split('orbit')[1][:5]
 
+    # TODO: this fails on "..._relay-echelle-orbit..." (ex. orbit 12201)
     @staticmethod
     def __get_channel_from_filename(filename):
         return filename.split('_')[3].split('-')[2]

@@ -130,6 +130,7 @@ class IUVSGlobs:
     def __round_to_nearest_hundred(orbit):
         return int(np.floor(int(orbit)/100) * 100)
 
+    # TODO: this is handy, but not everyone (data from PDS) uses this pattern.
     def __make_orbit_block_folder(self, orbit):
         return f'orbit{self.__round_to_nearest_hundred(orbit)}'
 
