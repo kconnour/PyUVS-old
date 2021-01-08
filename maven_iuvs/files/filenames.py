@@ -11,8 +11,34 @@ class IUVSDataFilename:
             The IUVS data filename.
         """
         self.__filename = filename
+        self.__check_input_is_iuvs_filename()
 
-    # TODO: check input is an IUVS filename. I shouldn't be able to make a class of a non-IUVS filename
+    def __check_input_is_iuvs_filename(self):
+        self.__check_spacecraft_is_mvn()
+        self.__check_instrument_is_iuv()
+        self.__check_filename_has_fits_extension()
+        self.__check_filename_contains_6_underscores()
+        self.__check_filename_contains_orbit()
+
+    def __check_spacecraft_is_mvn(self):
+        if not self.spacecraft == 'mvn':
+            raise ValueError('The input file is not an IUVS data file.')
+
+    def __check_instrument_is_iuv(self):
+        if not self.instrument == 'iuv':
+            raise ValueError('The input file is not an IUVS data file.')
+
+    def __check_filename_has_fits_extension(self):
+        if 'fits' not in self.extension:
+            raise ValueError('The input file is not an IUVS data file.')
+
+    def __check_filename_contains_6_underscores(self):
+        if self.filename.count('_') != 6:
+            raise ValueError('The input file is not an IUVS data file.')
+
+    def __check_filename_contains_orbit(self):
+        if 'orbit' not in self.filename:
+            raise ValueError('The input file is not an IUVS data file.')
 
     @property
     def filename(self):
@@ -252,8 +278,3 @@ class IUVSDataFilename:
 
     def __split_observation(self):
         return self.observation.split('-')
-
-
-test = 'mvn_iuv_l1b_relay-echelle-orbit12201-ech_20200823T121455_v13_r01.fits.gz'
-t1 = 'mvn_iuv_l1b_periapse-orbit03453-muv_20160708T031729_v13_r01.fits.gz'
-f = IUVSDataFilename(test)
