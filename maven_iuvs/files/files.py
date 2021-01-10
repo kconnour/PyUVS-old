@@ -4,12 +4,83 @@ import os
 from pathlib import Path
 import warnings
 
-# 3rd-party imports
-from astropy.io import fits
-import numpy as np
+# Local imports
+from maven_iuvs.files.filenames import IUVSDataFilename
 
 
-class Files:
+class IUVSDataFiles:
+    def __init__(self, path, pattern):
+        self.__check_path_exists(path)
+        self.__input_glob = list(Path(path).glob(pattern))
+        self.__input_abs_paths = self.__get_absolute_paths_of_input_glob()
+        self.__input_filenames = self.__get_filenames_of_input_glob()
+        self.__abs_paths = self.__make_absolute_paths()
+        self.__filenames = self.__make_filenames()
+        self.__raise_value_error_if_no_files_found()
+
+    @staticmethod
+    def __check_path_exists(path):
+        try:
+            if not os.path.exists(path):
+                raise OSError(f'The path "{path}" does not exist on this '
+                              'computer.')
+        except TypeError:
+            raise TypeError('The input value of path must be a string.')
+
+    def __get_absolute_paths_of_input_glob(self):
+        return sorted([str(f) for f in self.__input_glob if f.is_file()])
+
+    def __get_filenames_of_input_glob(self):
+        return sorted([f.name for f in self.__input_glob if f.is_file()])
+
+    def __make_absolute_paths(self):
+        return [self.__input_abs_paths[counter] for counter, f in
+                enumerate(self.__input_filenames) if
+                self.__make_filename(f) is not None]
+
+    def __make_filenames(self):
+        return [self.__make_filename(f) for f in self.__input_filenames if
+                self.__make_filename(f) is not None]
+
+    @staticmethod
+    def __make_filename(filename):
+        try:
+            return IUVSDataFilename(filename)
+        except ValueError:
+            return None
+
+    def __raise_value_error_if_no_files_found(self):
+        if not self.filenames:
+            raise ValueError('No files found matching the input pattern.')
+
+    @property
+    def abs_paths(self):
+        return self.__abs_paths
+
+    @property
+    def filenames(self):
+        return self.__filenames
+
+    # TODO: index file functionality
+    # TODO: downselect abs paths method based on pattern
+    # TODO: downselect filenames method based on pattern
+    # TODO: warn if no files found
+    # TODO: downselect abs paths method based on bool list
+    # TODO: downselect filenames method based on bool list
+    # TODO: keep only the most recent files (like if r01 and r02 are present)
+    # TODO: docstrings
+    # TODO: filenames should work on .xml files but I need a .fits checker
+    #  somewhere
+
+
+path = '/media/kyle/Samsung_T5/IUVS_data/orbit07600'
+pat = '*apoapse*7618*muv*'
+a = IUVSDataFiles(path, pat)
+
+
+
+
+'''class Files:
     """ A Files object stores the absolute paths to files, along with some file
     handling routines. """
     def __init__(self, path, pattern):
@@ -420,4 +491,4 @@ class SingleOrbitSequenceChannelL1bFiles(L1bFiles):
 #  attributes, but the user cannot modify them (f.filenames ['asdf'] is
 #  impossible, as is f.filenames.append(['asdf'). I don't know how to make a
 #  setter protected. Also, since setters are for replacing values, I'm not sure
-#  if they can ever protect against appending, etc.
+#  if they can ever protect against appending, etc.'''

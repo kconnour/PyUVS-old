@@ -1,5 +1,3 @@
-
-
 class IUVSDataFilename:
     """ And IUVSDataFilename object contains methods to extract info from a
     filename of an IUVS data product. """
@@ -12,6 +10,9 @@ class IUVSDataFilename:
         """
         self.__filename = filename
         self.__check_input_is_iuvs_filename()
+
+    def __str__(self):
+        return self.__filename
 
     def __check_input_is_iuvs_filename(self):
         self.__check_spacecraft_is_mvn()
