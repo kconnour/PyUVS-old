@@ -49,6 +49,7 @@ class IUVSDataFiles:
         except ValueError:
             return None
 
+    # TODO: make this suck less
     def __get_latest_filenames(self, filenames):
         input_filenames = [f.filename for f in filenames]
         modified_fnames = sorted([f.replace('s0', 'a0') for f in
@@ -62,6 +63,7 @@ class IUVSDataFiles:
                             for f in latest_modified_filenames]
         return latest_filenames
 
+    # TODO: make this suck less
     @staticmethod
     def __get_old_filename_indices(filenames):
         old_filename_indices = []
@@ -74,12 +76,7 @@ class IUVSDataFiles:
 
     @staticmethod
     def __get_latest_abs_paths(filenames, abs_paths):
-        good = []
-        for i in filenames:
-            for j in abs_paths:
-                if i.filename in j:
-                    good.append(j)
-        return sorted(good)
+        return [f for f in abs_paths for g in filenames if g.filename in f]
 
     def __raise_value_error_if_no_files_found(self):
         if not self.__abs_paths:

@@ -25,6 +25,8 @@ if __name__ == '__main__':
     pat = '*apoapse*3453*muv*'
     g = GlobFiles(p, pat)
     v = IUVSDataFiles(g.abs_paths)
+    for i in v.abs_paths:
+        print(i)
     bar = np.zeros(len(v.filenames))
     bar[-2:] = True
     bar[:2] = True
