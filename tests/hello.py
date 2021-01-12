@@ -1,47 +1,36 @@
-import glob
-import os
-import fnmatch as fnm
-
-'''path = '/home/kyle'
-pattern = '*.npy'
-
-#files = [os.path.join(path, fn) for fn in next(os.walk(path))[2]]
+# Local imports
+from maven_iuvs.files.files import IUVSDataFiles
+from maven_iuvs.files.glob_files import GlobFiles, PatternGlob, DataPath
+import numpy as np
 
 
-#for f in files:
-#    print(f)
+p = DataPath()
+#print(p.block_path('/home/kyle', 8999))
+#print(p.orbit_block_paths('/home/kyle', [3459, 4090, 6784]))
 
-files = [fn for fn in next(os.walk(path))[2]]
-matching_files = []
-for name in files:
-    if fnm.fnmatch(name, pattern):
-        matching_files.append(os.path.join(path, name))
+pg = PatternGlob()
+#print(pg.recursive_pattern(3453, 'apoapse', 'muv'))
+#print(pg.recursive_orbit_patterns([3453, 9000], 'apoapse', 'muv'))
 
-for f in matching_files:
-    print(f)
+g = GlobFiles(p.block_path('/media/kyle/Samsung_T5/IUVS_data', 3453), pg.pattern(3453, 'apoapse', 'muv'))
+#for i in g.abs_paths:
+#    print(i)
 
-#print(glob.glob(path))
-'''
+f = IUVSDataFiles(g.abs_paths)
+#for k in f.filenames:
+#    print(k.timestamp, k.segment, k.channel, k.extension)
 
-from maven_iuvs.files.files import Files, SingleOrbitL1bFiles, L1bFiles, IUVSFiles
-pattern = '*apoapse*3453*muv*.fits.gz'
-path = '/media/kyle/Samsung_T5/IUVS_data/orbit03400'
-f = SingleOrbitL1bFiles(3453, path)
-for i in f.file_paths:
-    print(i)
-
-print('~'*20)
-
-for k in f.get_abs_path_of_filenames_containing_pattern('*T045*'):
-    print(k)
-
-#h = f.get_filenames_containing_pattern('*T04*52*')
-#print(h)
-#f = SingleOrbitL1bFiles(3453, path, recursive=False)
-#f = L1bFiles(pattern, path)
-
-#from maven_iuvs.aux.aux_files import aux_path
-
-#print(aux_path())
-#print(os.path.abspath(os.path.join(aux_path(), '..')))
-
+if __name__ == '__main__':
+    p = '/media/kyle/Samsung_T5/IUVS_data/orbit03400'
+    pat = '*apoapse*3453*muv*'
+    g = GlobFiles(p, pat)
+    v = IUVSDataFiles(g.abs_paths)
+    bar = np.zeros(len(v.filenames))
+    bar[-2:] = True
+    bar[:2] = True
+    foo = v.downselect_filenames(bar)
+    for i in v.filenames:
+        print(i.filename)
+    print('~'*20)
+    for i in foo:
+        print(i.filename, i.second)
