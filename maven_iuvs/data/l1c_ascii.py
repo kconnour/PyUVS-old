@@ -43,13 +43,14 @@ class L1CAscii:
         for counter, line in enumerate(self.__open_file()):
             if counter < 5:
                 continue
-            if (counter - 5) % 20 == 0:
+            if (counter - 5) % (self.n_wavelengths + 1) == 0:
                 integration_ind, position_ind = \
                     self.__get_indices_from_info_line(line)
             else:
                 reflectance = self.__get_reflectance_from_line(line)
-                self.reflectance[integration_ind, position_ind,
-                                 (counter - 5) % 20 - 1] = reflectance
+                self.reflectance[
+                    integration_ind, position_ind, (counter - 5) % (
+                                self.n_wavelengths + 1) - 1] = reflectance
 
     def __get_indices_from_info_line(self, line):
         splits = self.__extract_numbers_from_line(line)
