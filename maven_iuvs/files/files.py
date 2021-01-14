@@ -21,6 +21,7 @@ class IUVSDataFiles:
         """
         self.__abs_paths, self.__filenames = \
             self.__make_absolute_paths_and_filenames(files)
+        self.__raise_value_error_if_no_files_found()
 
     def __make_absolute_paths_and_filenames(self, files):
         input_abs_paths = self.__get_unique_absolute_paths(files)
@@ -33,7 +34,7 @@ class IUVSDataFiles:
 
     @staticmethod
     def __get_unique_absolute_paths(files):
-        return list(set(files))
+        return sorted(list(set(files)))
 
     @staticmethod
     def __get_filenames_from_paths(paths):
@@ -80,7 +81,7 @@ class IUVSDataFiles:
 
     def __raise_value_error_if_no_files_found(self):
         if not self.__abs_paths:
-            raise ValueError('No files found matching the input pattern.')
+            raise ValueError('You did not input any IUVS files.')
 
     @property
     def abs_paths(self):
