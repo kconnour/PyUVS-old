@@ -150,7 +150,7 @@ class PatternGlob(OrbitBlock):
                 self.orbit_patterns(orbits, segment, channel)]
 
     @staticmethod
-    def generic_glob_pattern(patterns):
+    def generic_pattern(patterns):
         """ Create a generic glob search pattern from a list of patterns.
 
         Parameters

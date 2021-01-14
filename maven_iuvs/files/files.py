@@ -207,14 +207,14 @@ class L1bDataFiles(IUVSDataFiles):
             raise ValueError('Not all input files are l1b files.')
 
 
-class SingleFlargL1bDataFiles(L1bDataFiles):
+class SingleSoschobL1bDataFiles(L1bDataFiles):
     def __init__(self, files):
         super().__init__(files)
-        self.__raise_value_error_if_not_single_flarg()
+        self.__raise_value_error_if_not_single_soschob()
 
-    def __raise_value_error_if_not_single_flarg(self):
-        self.__check_single_segment()
+    def __raise_value_error_if_not_single_soschob(self):
         self.__check_single_orbit()
+        self.__check_single_segment()
         self.__check_single_channel()
 
     def __check_single_segment(self):

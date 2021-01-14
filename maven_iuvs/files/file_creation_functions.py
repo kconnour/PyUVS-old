@@ -1,11 +1,12 @@
 # Local imports
 from maven_iuvs.files.glob_files import DataPath, PatternGlob, GlobFiles
-from maven_iuvs.files.files import L1bDataFiles, SingleFlargL1bDataFiles
+from maven_iuvs.files.files import L1bDataFiles, SingleSoschobL1bDataFiles
 
 
-def flarg(path, orbit, segment='apoapse', channel='muv'):
-    """ Make a SingleFlargL1bDataFiles for files matching an input orbit,
-    segment, and channel, assuming orbits are organized in blocks of 100.
+def soschob(path, orbit, segment='apoapse', channel='muv'):
+    """ Make a SingleSoschobL1bDataFiles for files matching an input orbit,
+    segment pattern, and channel pattern, assuming orbits are organized in
+    blocks of 100.
 
     Parameters
     ----------
@@ -20,19 +21,19 @@ def flarg(path, orbit, segment='apoapse', channel='muv'):
 
     Returns
     -------
-    files: SingleFlargL1bDataFiles:
-        A SingleFlargL1bDataFiles containing files from the
-        requested orbit, sequence, and channel.
+    files: SingleSoschobL1bDataFiles:
+        A SingleSoschobL1bDataFiles containing files from the
+        requested orbit, segment, and channel.
     """
     p = DataPath().block_path(path, orbit)
     pat = PatternGlob().pattern(orbit, segment, channel)
     abs_paths = GlobFiles(p, pat).abs_paths
-    return SingleFlargL1bDataFiles(abs_paths)
+    return SingleSoschobL1bDataFiles(abs_paths)
 
 
 def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
-    """ Make an L1bDataFiles for an input list of orbits, single segment, and
-    single channel, assuming orbits are organized in blocks of 100.
+    """ Make an L1bDataFiles for an input list of orbits, segment pattern, and
+    channel pattern, assuming orbits are organized in blocks of 100.
 
     Parameters
     ----------
@@ -41,14 +42,14 @@ def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
     orbits: list
         List of ints of orbits to get files from.
     segment: str
-        The segment sequence. Can be '*'. Default is 'apoapse'.
+        The observing segment to get files from. Default is 'apoapse'.
     channel: str
-        The observing channel. Can be '*'. Default is 'muv'.
+        The observing channel to get files from. Default is 'muv'.
 
     Returns
     -------
     files: list
-        An L1bFiles of all files at the input orbits.
+        An L1bFiles of all files from the input orbits.
     """
     p = DataPath().orbit_block_paths(path, orbits)
     pat = PatternGlob().orbit_patterns(orbits, segment, channel)
@@ -59,8 +60,8 @@ def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
 
 def orbit_range_files(path, orbit_start, orbit_end, segment='apoapse',
                       channel='muv'):
-    """ Make an L1bDataFiles for all orbits between two endpoints, single
-    segment, and single channel, assuming orbits are organized in blocks of
+    """ Make an L1bDataFiles for all orbits in a range of orbits with a segment
+    pattern and channel pattern, assuming orbits are organized in blocks of
     100.
 
     Parameters
@@ -72,9 +73,9 @@ def orbit_range_files(path, orbit_start, orbit_end, segment='apoapse',
     orbit_end: int
         The ending orbit to get files from.
     segment: str
-        The observing sequence. Can be '*'. Default is 'apoapse'.
+        The observing segment to get files from. Default is 'apoapse'.
     channel: str
-        The observing channel. Can be '*'. Default is 'muv'.
+        The observing channel to get files from. Default is 'muv'.
 
     Returns
     -------
