@@ -129,15 +129,15 @@ class PatternGlob(OrbitBlock):
         orbs = [self._orbit_to_string(orbit) for orbit in orbits]
         return [self.pattern(orbit, segment, channel) for orbit in orbs]
 
-    def recursive_orbit_patterns(self, orbits, sequence, channel):
+    def recursive_orbit_patterns(self, orbits, segment, channel):
         """ Make recursive glob patterns for each orbit in a list of orbits.
 
         Parameters
         ----------
         orbits: list
             List of ints or strings of orbits to make patterns for.
-        sequence: str or int
-            The sequence to get data from. Can be '*' to get all sequences.
+        segment: str or int
+            The segment to get data from. Can be '*' to get all segments.
         channel: str or int
             The channel to get data from. Can be '*' to get all channels.
 
@@ -147,7 +147,26 @@ class PatternGlob(OrbitBlock):
             List of recursive patterns of len(orbits) that match the inputs.
         """
         return [self.__prepend_recursive_glob_pattern(f) for f in
-                self.orbit_patterns(orbits, sequence, channel)]
+                self.orbit_patterns(orbits, segment, channel)]
+
+    @staticmethod
+    def generic_glob_pattern(patterns):
+        """ Create a generic glob search pattern from a list of patterns.
+
+        Parameters
+        ----------
+        patterns: list
+            Strings of patterns to search for.
+
+        Returns
+        -------
+        glob_pattern: str
+            The glob search pattern that accounts for the input patterns.
+        """
+        min_pattern = min([len(f) for f in patterns])
+        split_patterns = [''.join([f[i] for f in patterns]) for i in
+                          range(min_pattern)]
+        return ''.join([f'[{f}]' for f in split_patterns])
 
     @staticmethod
     def __remove_recursive_glob_pattern(pattern):
