@@ -193,3 +193,46 @@ class IUVSDataFiles:
     def __warn_if_no_files_found(files):
         if not files:
             warnings.warn('No files found matching the input pattern.')
+
+
+class L1bDataFiles(IUVSDataFiles):
+    def __init__(self, files):
+        super().__init__(files)
+        self.__raise_value_error_if_not_all_l1b_files()
+
+    def __raise_value_error_if_not_all_l1b_files(self):
+        levels = [f.level for f in self.filenames]
+        if not all(f == 'l1b' for f in levels):
+            raise ValueError('Not all input files are l1b files.')
+
+
+class SingleFlargL1bDataFiles(L1bDataFiles):
+    def __init__(self, files):
+        super().__init__(files)
+        self.__raise_value_error_if_not_single_flarg()
+
+    def __raise_value_error_if_not_single_flarg(self):
+        self.__check_single_segment()
+        self.__check_single_orbit()
+        self.__check_single_channel()
+
+    def __check_single_segment(self):
+        segments = [f.segment for f in self.filenames]
+        self.__raise_value_error_if_not_single_property(segments, 'segment')
+
+    def __check_single_orbit(self):
+        orbits = [f.orbit for f in self.filenames]
+        self.__raise_value_error_if_not_single_property(orbits, 'orbit')
+
+    def __check_single_channel(self):
+        channels = [f.channel for f in self.filenames]
+        self.__raise_value_error_if_not_single_property(channels, 'channel')
+
+    def __raise_value_error_if_not_single_property(self, prop, prop_name):
+        single_property = self.__check_list_contains_one_unique_value(prop)
+        if not single_property:
+            raise ValueError(f'The input does not contain one {prop_name}')
+
+    @staticmethod
+    def __check_list_contains_one_unique_value(inp):
+        return True if len(list(set(inp))) == 1 else False
