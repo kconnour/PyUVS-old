@@ -5,14 +5,11 @@ from pathlib import Path
 # 3rd-party imports
 import numpy as np
 
-
-class OrbitBlock:
-    @staticmethod
-    def _orbit_to_string(orbit):
-        return str(orbit).zfill(5)
+# Local imports
+from maven_iuvs.misc import orbit_to_string
 
 
-class DataPath(OrbitBlock):
+class DataPath:
     """ A DataPath object creates absolute paths to where data reside, given a
      set of assumptions. """
     def block_path(self, path, orbit):
@@ -22,14 +19,16 @@ class DataPath(OrbitBlock):
         Parameters
         ----------
         path: str
-            The stem of the path where data are organized into blocks.
+            Absolute path of the IUVS data root location (where data are
+            organized into blocks.)
         orbit: int
             The orbit number.
 
         Returns
         -------
         path: str
-            The path with orbit block corresponding to the input orbit.
+            The path with orbit block appended corresponding to the input
+            orbit.
         """
         return os.path.join(path, self.__make_orbit_block_folder_name(orbit))
 
@@ -40,106 +39,112 @@ class DataPath(OrbitBlock):
         Parameters
         ----------
         path: str
-            The stem of the path where data are organized into blocks.
+            Absolute path of the IUVS data root location (where data are
+            organized into blocks.)
         orbits: list
-            List of ints of orbits.
+            Ints of orbit numbers.
 
         Returns
         -------
         paths: list
-            The path with orbit block corresponding to the input orbits.
+            The path with orbit block appended corresponding to the input
+            orbits.
         """
         return [self.block_path(path, f) for f in orbits]
 
     def __make_orbit_block_folder_name(self, orbit):
         rounded_orbit = self.__round_to_nearest_hundred(orbit)
-        return f'orbit{self._orbit_to_string(rounded_orbit)}'
+        return f'orbit{orbit_to_string(rounded_orbit)}'
 
     @staticmethod
     def __round_to_nearest_hundred(orbit):
         return int(np.floor(orbit / 100) * 100)
 
 
-class PatternGlob(OrbitBlock):
-    """ A PatternGlob object creates glob search patterns tailored to IUVS
+class DataPattern:
+    """ A DataPattern object creates glob search patterns tailored to IUVS
     data. """
     def pattern(self, orbit, segment, channel, extension='fits'):
-        """ Make a glob pattern for an orbit, segment, and channel.
+        """ Make a glob pattern for an input orbit, segment, and channel.
 
         Parameters
         ----------
-        orbit: str or int
-            The orbit to get data from. Can be '*' to get all orbits.
-        segment: str or int
-            The segment to get data from. Can be '*' to get all segments.
+        orbit: str
+            The orbit pattern to get data from.
+        segment: str
+            The segment pattern to get data from.
         channel: str or int
-            The channel to get data from. Can be '*' to get all channels.
+            The channel pattern to get data from.
         extension: str
-            The file extension to use. Default is 'fits'
+            The file extension pattern to get data from. Default is 'fits'.
 
         Returns
         -------
         pattern: str
-            The glob pattern that matches the input parameters.
+            The glob pattern that matches the input patterns.
         """
-        if orbit == '*':
-            pattern = f'*{segment}-*-{channel}*.{extension}*'
-        else:
-            pattern = f'*{segment}-*{self._orbit_to_string(orbit)}-' \
-                      f'{channel}*.{extension}*'
+        pattern = f'*{segment}-{orbit}-{channel}*.{extension}*'
         return self.__remove_recursive_glob_pattern(pattern)
 
-    def recursive_pattern(self, orbit, segment, channel):
+    def recursive_pattern(self, orbit, segment, channel, extension='fits'):
         """ Make a recursive glob pattern for an orbit, segment, and channel.
 
         Parameters
         ----------
-        orbit: str or int
-            The orbit to get data from. Can be '*' to get all orbits.
-        segment: str or int
-            The segment to get data from. Can be '*' to get all segments.
+        orbit: str
+            The orbit pattern to get data from.
+        segment: str
+            The segment pattern to get data from.
         channel: str or int
-            The channel to get data from. Can be '*' to get all channels.
+            The channel pattern to get data from.
+        extension: str
+            The file extension pattern to get data from. Default is 'fits'.
 
         Returns
         -------
         pattern: str
-            The recursive glob pattern that matches the input parameters.
+            The recursive glob pattern that matches the input patterns.
         """
-        pattern = self.pattern(orbit, segment, channel)
+        pattern = self.pattern(orbit, segment, channel, extension=extension)
         return self.__prepend_recursive_glob_pattern(pattern)
 
-    def orbit_patterns(self, orbits, segment, channel):
+    def orbit_patterns(self, orbits, segment, channel, extension='fits'):
         """ Make glob patterns for each orbit in a list of orbits.
 
         Parameters
         ----------
         orbits: list
             List of ints or strings of orbits to make patterns for.
-        segment: str or int
-            The segment to get data from. Can be '*' to get all segments.
+        segment: str
+            The segment pattern to get data from.
         channel: str or int
-            The channel to get data from. Can be '*' to get all channels.
+            The channel pattern to get data from.
+        extension: str
+            The file extension pattern to get data from. Default is 'fits'.
 
         Returns
         -------
         patterns: list
-            List of patterns of len(orbits) that match the inputs.
+            Patterns of len(orbits) that match the inputs.
         """
-        orbs = [self._orbit_to_string(orbit) for orbit in orbits]
-        return [self.pattern(orbit, segment, channel) for orbit in orbs]
+        orbit_patterns = [orbit_to_string(f) for f in orbits]
+        return [self.pattern(f, segment, channel, extension=extension)
+                for f in orbit_patterns]
 
-    def recursive_orbit_patterns(self, orbits, segment, channel):
+    def recursive_orbit_patterns(self, orbits, segment, channel,
+                                 extension='fits'):
         """ Make recursive glob patterns for each orbit in a list of orbits.
 
         Parameters
         ----------
         orbits: list
             List of ints or strings of orbits to make patterns for.
-        segment: str or int
-            The segment to get data from. Can be '*' to get all segments.
+        segment: str
+            The segment pattern to get data from.
         channel: str or int
-            The channel to get data from. Can be '*' to get all channels.
+            The channel pattern to get data from.
+        extension: str
+            The file extension pattern to get data from. Default is 'fits'.
 
         Returns
         -------
@@ -147,11 +152,14 @@ class PatternGlob(OrbitBlock):
             List of recursive patterns of len(orbits) that match the inputs.
         """
         return [self.__prepend_recursive_glob_pattern(f) for f in
-                self.orbit_patterns(orbits, segment, channel)]
+                self.orbit_patterns(orbits, segment, channel,
+                                    extension=extension)]
 
     @staticmethod
     def generic_pattern(patterns):
-        """ Create a generic glob search pattern from a list of patterns.
+        """ Create a generic glob search pattern from a list of patterns. This
+        replicates the functionality of the brace expansion glob has in some
+        shells.
 
         Parameters
         ----------
@@ -162,6 +170,12 @@ class PatternGlob(OrbitBlock):
         -------
         glob_pattern: str
             The glob search pattern that accounts for the input patterns.
+
+        Examples
+        --------
+        >>> segments = ['apoapse', 'inlimb']
+        >>> DataPattern().generic_pattern(segments)
+        [ai][pn][ol][ai][pm][sb]
         """
         min_pattern = min([len(f) for f in patterns])
         split_patterns = [''.join([f[i] for f in patterns]) for i in
@@ -177,8 +191,18 @@ class PatternGlob(OrbitBlock):
         return f'**/{pattern}'
 
 
-class GlobFiles:
+class FileGlob:
+    """ A FileGlob performs globbing of files and stores their absolute paths
+    and their filenames. """
     def __init__(self, path, pattern):
+        """
+        Parameters
+        ----------
+        path: str
+            The absolute path where to begin looking for files.
+        pattern: str
+            The pattern to search for. Can include '**' for recursive globbing.
+        """
         self.__check_path_exists(path)
         self.__input_glob = list(Path(path).glob(pattern))
         self.__abs_paths = self.__get_absolute_paths_of_input_glob()
@@ -201,8 +225,25 @@ class GlobFiles:
 
     @property
     def abs_paths(self):
+        """ Get the absolute paths of the globbed files.
+
+        Returns
+        -------
+        absolute_paths: list
+            Absolute paths of all globbed files.
+        """
         return self.__abs_paths
 
     @property
     def filenames(self):
+        """ Get the filenames of the globbed files.
+
+        Returns
+        -------
+        filenames: list
+            Filenames of all globbed files.
+        """
         return self.__filenames
+
+    # TODO: It seems a number of methods in IUVSDataFiles could also go here.
+    #  Think of some clever way to combine them

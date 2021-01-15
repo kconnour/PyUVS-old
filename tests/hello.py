@@ -1,26 +1,13 @@
 # Local imports
-from maven_iuvs.files.files import IUVSDataFiles, L1bDataFiles, SingleFlargL1bDataFiles
-from maven_iuvs.files.glob_files import GlobFiles, PatternGlob, DataPath
+from maven_iuvs.files.files import IUVSDataFiles, L1bDataFiles
+from maven_iuvs.files.finder import GlobFiles, PatternGlob, DataPath
 import numpy as np
-from maven_iuvs.files.file_creation_functions import flarg, multi_orbit_files, orbit_range_files
+from maven_iuvs.files.file_creation_functions import multi_orbit_files, orbit_range_files
 import glob
+from astropy.io import fits
+import time
+from maven_iuvs.data.l1b_properties import L1bDataProperties
 
-
-p = DataPath()
-#print(p.block_path('/home/kyle', 8999))
-#print(p.orbit_block_paths('/home/kyle', [3459, 4090, 6784]))
-
-pg = PatternGlob()
-#print(pg.recursive_pattern(3453, 'apoapse', 'muv'))
-#print(pg.recursive_orbit_patterns([3453, 9000], 'apoapse', 'muv'))
-
-g = GlobFiles(p.block_path('/media/kyle/Samsung_T5/IUVS_data', 3453), pg.pattern(3453, 'apoapse', 'muv'))
-#for i in g.abs_paths:
-#    print(i)
-
-f = IUVSDataFiles(g.abs_paths)
-#for k in f.filenames:
-#    print(k.timestamp, k.segment, k.channel, k.extension)
 
 if __name__ == '__main__':
     """p = '/media/kyle/Samsung_T5/IUVS_data/orbit03400'
@@ -49,7 +36,7 @@ if __name__ == '__main__':
     #for i in a:
     #    print(i)
 
-    p = DataPath().block_path('/media/kyle/Samsung_T5/IUVS_data', 9980)
+    '''p = DataPath().block_path('/media/kyle/Samsung_T5/IUVS_data', 9980)
     seg = ['apoapse', 'outdisk', 'outlimb']
     cha = ['muv', 'ech']
     segment = PatternGlob().generic_glob_pattern(seg)
@@ -58,5 +45,21 @@ if __name__ == '__main__':
     abs_paths = GlobFiles(p, pat).abs_paths
 
     for i in abs_paths:
-        print(i)
+        print(i)'''
 
+    p = '/media/kyle/Samsung_T5/IUVS_data/orbit10000'
+    pat = '*apoapse*10061*muv*'
+    g = GlobFiles(p, pat)
+    v = L1bDataFiles(g.abs_paths)
+    t0 = time.time()
+    r = L1bDataProperties(v.abs_paths)
+    print(len(r.check_relays()))
+    #print(r.all_relays())
+    t1 = time.time()
+    '''for i in v.abs_paths:
+        hdu = fits.open(i)
+        angles = hdu['integration'].data['mirror_deg']
+        min_ang = np.amin(angles)
+        max_ang = np.amax(angles)'''
+    t2 = time.time()
+    print(t1-t0)

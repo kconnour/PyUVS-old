@@ -1,5 +1,5 @@
 # Local imports
-from maven_iuvs.files.glob_files import DataPath, PatternGlob, GlobFiles
+from maven_iuvs.files.finder import DataPath, DataPattern, FileGlob
 from maven_iuvs.files.files import L1bDataFiles, SingleSoschobL1bDataFiles
 
 
@@ -26,8 +26,8 @@ def soschob(path, orbit, segment='apoapse', channel='muv'):
         requested orbit, segment, and channel.
     """
     p = DataPath().block_path(path, orbit)
-    pat = PatternGlob().pattern(orbit, segment, channel)
-    abs_paths = GlobFiles(p, pat).abs_paths
+    pat = DataPattern().pattern(orbit, segment, channel)
+    abs_paths = FileGlob(p, pat).abs_paths
     return SingleSoschobL1bDataFiles(abs_paths)
 
 
@@ -52,8 +52,8 @@ def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
         An L1bFiles of all files from the input orbits.
     """
     p = DataPath().orbit_block_paths(path, orbits)
-    pat = PatternGlob().orbit_patterns(orbits, segment, channel)
-    path_list = [GlobFiles(p[f], pat[f]).abs_paths for f in range(len(p))]
+    pat = DataPattern().orbit_patterns(orbits, segment, channel)
+    path_list = [FileGlob(p[f], pat[f]).abs_paths for f in range(len(p))]
     abs_paths = [k for f in path_list for k in f]
     return L1bDataFiles(abs_paths)
 

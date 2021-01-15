@@ -7,8 +7,6 @@ import warnings
 from maven_iuvs.files.filenames import IUVSDataFilename
 
 
-# TODO: make methods even cleaner
-
 class IUVSDataFiles:
     """ An IUVSDataFiles is a container for holding IUVS data files, and
     provides methods for getting subsets of that data. """
@@ -41,7 +39,8 @@ class IUVSDataFiles:
         return [os.path.basename(f) for f in paths]
 
     def __make_filenames(self, filenames):
-        return [self.__make_filename(f) for f in filenames]
+        return [k for f in filenames if
+                (k := self.__make_filename(f)) is not None]
 
     @staticmethod
     def __make_filename(filename):
@@ -197,10 +196,13 @@ class IUVSDataFiles:
 
 
 class L1bDataFiles(IUVSDataFiles):
+    # TODO: docstring
     def __init__(self, files):
+        # TODO: docstring
         super().__init__(files)
         self.__raise_value_error_if_not_all_l1b_files()
 
+    # TODO: docstring
     def __raise_value_error_if_not_all_l1b_files(self):
         levels = [f.level for f in self.filenames]
         if not all(f == 'l1b' for f in levels):
@@ -208,7 +210,9 @@ class L1bDataFiles(IUVSDataFiles):
 
 
 class SingleSoschobL1bDataFiles(L1bDataFiles):
+    # TODO: docstring
     def __init__(self, files):
+        # TODO: docstring
         super().__init__(files)
         self.__raise_value_error_if_not_single_soschob()
 
