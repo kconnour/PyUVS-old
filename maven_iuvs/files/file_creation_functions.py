@@ -1,6 +1,6 @@
 # Local imports
-from maven_iuvs.files.finder import DataPath, DataPattern, FileGlob
-from maven_iuvs.files.files import L1bDataFiles, SingleSoschobL1bDataFiles
+from maven_iuvs.files.finder import DataPath, DataPattern, glob_files
+from maven_iuvs.files.files import IUVSDataFilenameCollection
 
 
 def soschob(path, orbit, segment='apoapse', channel='muv'):
@@ -26,9 +26,9 @@ def soschob(path, orbit, segment='apoapse', channel='muv'):
         requested orbit, segment, and channel.
     """
     p = DataPath().block_path(path, orbit)
-    pat = DataPattern().pattern(orbit, segment, channel)
-    abs_paths = FileGlob(p, pat).abs_paths
-    return SingleSoschobL1bDataFiles(abs_paths)
+    pat = DataPattern().single_orbit_pattern(orbit, segment, channel)
+    abs_paths = glob_files(p, pat)
+    return IUVSDataFilenameCollection(abs_paths)
 
 
 def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
@@ -53,9 +53,9 @@ def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
     """
     p = DataPath().orbit_block_paths(path, orbits)
     pat = DataPattern().orbit_patterns(orbits, segment, channel)
-    path_list = [FileGlob(p[f], pat[f]).abs_paths for f in range(len(p))]
+    path_list = [glob_files(p[f], pat[f]) for f in range(len(p))]
     abs_paths = [k for f in path_list for k in f]
-    return L1bDataFiles(abs_paths)
+    return IUVSDataFilenameCollection(abs_paths)
 
 
 def orbit_range_files(path, orbit_start, orbit_end, segment='apoapse',
@@ -84,3 +84,21 @@ def orbit_range_files(path, orbit_start, orbit_end, segment='apoapse',
     """
     orbits = list(range(orbit_start, orbit_end))
     return multi_orbit_files(path, orbits, segment=segment, channel=channel)
+
+
+if __name__ == '__main__':
+    # Soschob example
+    #p = '/media/kyle/Samsung_T5/IUVS_data'
+    #s = soschob(p, 3453)
+    #for i in s.abs_paths:
+    #    print(i)
+
+    # Multiorbit example
+    #m = multi_orbit_files('/media/kyle/Samsung_T5/IUVS_data', [3453, 7618, 8889])
+    #for i in m.abs_paths:
+    #    print(i)
+
+    # Range example
+    m = orbit_range_files('/media/kyle/Samsung_T5/IUVS_data', 3495, 3505)
+    for i in m.abs_paths:
+        print(i)

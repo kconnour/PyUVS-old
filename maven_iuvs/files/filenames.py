@@ -19,31 +19,28 @@ class IUVSDataFilename:
         return self.__filename
 
     def __check_input_is_iuvs_data_filename(self):
-        self.__check_spacecraft_is_mvn()
-        self.__check_instrument_is_iuv()
-        self.__check_filename_has_fits_extension()
-        self.__check_filename_contains_6_underscores()
-        self.__check_filename_contains_orbit()
+        checks = [self.__check_spacecraft_is_mvn(),
+                  self.__check_instrument_is_iuv(),
+                  self.__check_filename_has_fits_extension(),
+                  self.__check_filename_contains_6_underscores(),
+                  self.__check_filename_contains_orbit()]
+        if not all(checks):
+            raise ValueError('The input file is not an IUVS data file.')
 
     def __check_spacecraft_is_mvn(self):
-        if not self.spacecraft == 'mvn':
-            raise ValueError('The input file is not an IUVS data file.')
+        return True if self.spacecraft == 'mvn' else False
 
     def __check_instrument_is_iuv(self):
-        if not self.instrument == 'iuv':
-            raise ValueError('The input file is not an IUVS data file.')
+        return True if self.instrument == 'iuv' else False
 
     def __check_filename_has_fits_extension(self):
-        if 'fits' not in self.extension:
-            raise ValueError('The input file is not an IUVS data file.')
+        return True if 'fits' in self.extension else False
 
     def __check_filename_contains_6_underscores(self):
-        if self.filename.count('_') != 6:
-            raise ValueError('The input file is not an IUVS data file.')
+        return True if self.filename.count('_') == 6 else False
 
     def __check_filename_contains_orbit(self):
-        if 'orbit' not in self.filename:
-            raise ValueError('The input file is not an IUVS data file.')
+        return True if 'orbit' in self.filename else False
 
     @property
     def filename(self):
@@ -90,13 +87,13 @@ class IUVSDataFilename:
         return self.__split_filename()[2]
 
     @property
-    def observation(self):
-        """ Get the observation ID from the filename.
+    def description(self):
+        """ Get the description from the filename.
 
         Returns
         -------
-        observation: str
-            The observation ID.
+        description: str
+            The observation description.
         """
         return self.__split_filename()[3]
 
@@ -109,10 +106,10 @@ class IUVSDataFilename:
         segment: str
             The observation segment.
         """
-        if len(splits := self.__split_observation()) == 3:
+        if len(splits := self.__split_description()) == 3:
             return splits[0]
         else:
-            return splits[0] + '-' + splits[1]
+            return f'{splits[0]}-{splits[1]}'
 
     @property
     def orbit(self):
@@ -123,7 +120,7 @@ class IUVSDataFilename:
         orbit: int
             The orbit number.
         """
-        return int(self.__split_observation()[-2].removeprefix('orbit'))
+        return int(self.__split_description()[-2].removeprefix('orbit'))
 
     @property
     def channel(self):
@@ -134,7 +131,7 @@ class IUVSDataFilename:
         channel: str
             The observation channel.
         """
-        return self.__split_observation()[-1]
+        return self.__split_description()[-1]
 
     @property
     def timestamp(self):
@@ -281,5 +278,5 @@ class IUVSDataFilename:
     def __split_timestamp(self):
         return self.timestamp.split('T')
 
-    def __split_observation(self):
-        return self.observation.split('-')
+    def __split_description(self):
+        return self.description.split('-')

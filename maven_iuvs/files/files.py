@@ -7,15 +7,15 @@ import warnings
 from maven_iuvs.files.filenames import IUVSDataFilename
 
 
-class IUVSDataFiles:
-    """ An IUVSDataFiles is a container for holding IUVS data files, and
-    provides methods for getting subsets of that data. """
-    def __init__(self, files):
+class IUVSDataFilenameCollection:
+    """ An IUVSDataFilenameCollection is a container for holding IUVS data
+    files and provides methods for getting subsets of that data. """
+    def __init__(self, files: list):
         """
         Parameters
         ----------
         files: list
-            List of strings of absolute paths to the data files.
+            List of strings of absolute paths to IUVS data files.
         """
         self.__abs_paths, self.__filenames = \
             self.__make_absolute_paths_and_filenames(files)
@@ -80,10 +80,10 @@ class IUVSDataFiles:
 
     def __raise_value_error_if_no_files_found(self):
         if not self.__abs_paths:
-            raise ValueError('You did not input any IUVS files.')
+            raise ValueError('None of the input strings are IUVS files.')
 
     @property
-    def abs_paths(self):
+    def abs_paths(self) -> list:
         """ Get the absolute paths of the input IUVS data files.
 
         Returns
@@ -94,7 +94,7 @@ class IUVSDataFiles:
         return self.__abs_paths
 
     @property
-    def filenames(self):
+    def filenames(self) -> list:
         """ Get the filenames of the input IUVS data files.
 
         Returns
@@ -104,7 +104,7 @@ class IUVSDataFiles:
         """
         return self.__filenames
 
-    def get_matching_abs_paths(self, pattern):
+    def get_matching_abs_paths(self, pattern: str) -> list:
         """ Get the absolute paths of filenames matching an input pattern.
 
         Parameters
@@ -127,7 +127,7 @@ class IUVSDataFiles:
         except TypeError:
             raise TypeError('pattern must be a string.')
 
-    def get_matching_filenames(self, pattern):
+    def get_matching_filenames(self, pattern: str) -> list:
         """ Get the filenames matching an input pattern.
 
         Parameters
@@ -148,39 +148,39 @@ class IUVSDataFiles:
         except TypeError:
             raise TypeError('pattern must be a string.')
 
-    # TODO: I'm getting a warning about match not being an iterable
-    def downselect_abs_paths(self, match):
-        """ Downselect the absolute paths of filenames matching a boolean list.
+    def downscale_abs_paths(self, match: list) -> list:
+        """ Downscale the absolute paths of filenames matching a boolean list.
 
         Parameters
         ----------
         match: list
-            List of booleans to filter files. Must be same length as abs_files.
+            Boolean list to filter files from. Must be same length as
+            abs_files.
 
         Returns
         -------
         abs_paths: list
             List of IUVSDataFilenames where match==True.
         """
-        return self.__downselect_based_on_boolean(self.abs_paths, match)
+        return self.__downscale_based_on_boolean(self.abs_paths, match)
 
-    # TODO: I'm getting a warning about match not being an iterable
-    def downselect_filenames(self, match):
-        """ Downselect the filenames matching a boolean list.
+    def downscale_filenames(self, match: list) -> list:
+        """ Downscale the filenames matching a boolean list.
 
         Parameters
         ----------
         match: list
-            List of booleans to filter files. Must be same length as filenames.
+            Boolean list to filter files from. Must be same length as
+            filenames.
 
         Returns
         -------
         filenames: list
             List of strings where match==True.
         """
-        return self.__downselect_based_on_boolean(self.filenames, match)
+        return self.__downscale_based_on_boolean(self.filenames, match)
 
-    def __downselect_based_on_boolean(self, files, match):
+    def __downscale_based_on_boolean(self, files: list, match: list) -> list:
         if len(match) != len(self.abs_paths):
             raise ValueError('The length of bools must match the number of '
                              'files.')
@@ -190,12 +190,12 @@ class IUVSDataFiles:
         return matching_paths
 
     @staticmethod
-    def __warn_if_no_files_found(files):
+    def __warn_if_no_files_found(files: list):
         if not files:
             warnings.warn('No files found matching the input pattern.')
 
 
-class L1bDataFiles(IUVSDataFiles):
+'''class L1bDataFiles(IUVSDataFiles):
     # TODO: docstring
     def __init__(self, files):
         # TODO: docstring
@@ -240,4 +240,4 @@ class SingleSoschobL1bDataFiles(L1bDataFiles):
 
     @staticmethod
     def __check_list_contains_one_unique_value(inp):
-        return True if len(list(set(inp))) == 1 else False
+        return True if len(list(set(inp))) == 1 else False'''
