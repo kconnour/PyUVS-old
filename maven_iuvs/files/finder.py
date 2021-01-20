@@ -1,5 +1,4 @@
 # Built-in imports
-import numbers
 import os
 from pathlib import Path
 from typing import Generator
@@ -22,7 +21,6 @@ class DataPath:
         path: str
             Absolute path of the IUVS data root location.
         """
-        self.__raise_type_error_if_input_is_not_str(path)
         self.__path = path
 
     def block(self, orbit: int) -> str:
@@ -46,7 +44,6 @@ class DataPath:
         >>> path.block(7777)
         '/foo/bar/orbit07700'
         """
-        self.__raise_type_error_if_input_is_not_int(orbit)
         return os.path.join(self.__path, self.__block_folder_name(orbit))
 
     def block_paths(self, orbits: list[int]) -> list[str]:
@@ -74,16 +71,6 @@ class DataPath:
             return [self.block(f) for f in orbits]
         except ValueError:
             raise ValueError('Each value in the input should be an int.')
-
-    @staticmethod
-    def __raise_type_error_if_input_is_not_str(inp: str) -> None:
-        if not isinstance(inp, str):
-            raise TypeError('The input must be an str.')
-
-    @staticmethod
-    def __raise_type_error_if_input_is_not_int(inp: int) -> None:
-        if not isinstance(inp, numbers.Integral):
-            raise TypeError('The input must be an int.')
 
     def __block_folder_name(self, orbit: int) -> str:
         orbit_block = self.__orbit_block(orbit)
@@ -297,14 +284,14 @@ def soschob(path: str, orbit: int, segment: str = 'apoapse',
     orbit: int
         The orbit to get files from.
     segment: str
-        The observing segment to get files from.
+        The observing segment to get files from. Default is 'apoapse'.
     channel: str
-        The observing mode to get files from.
+        The observing mode to get files from. Default is 'muv'.
 
     Returns
     -------
     files: IUVSDataFilenameCollection:
-        Matching files from the input orbit, segment, and channel
+        Matching files from the input orbit, segment, and channel.
     """
     p = DataPath(path).block(orbit)
     pat = DataPattern().orbit_pattern(orbit, segment, channel)
@@ -312,16 +299,18 @@ def soschob(path: str, orbit: int, segment: str = 'apoapse',
     return IUVSDataFilenameCollection(abs_paths)
 
 
-def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
-    """ Make an L1bDataFiles for an input list of orbits, segment pattern, and
-    channel pattern, assuming orbits are organized in blocks of 100.
+def multi_orbit_files(path: str, orbits: list[int], segment: str = 'apoapse',
+                      channel: str = 'muv') -> IUVSDataFilenameCollection:
+    """ Make an IUVSDataFilenameCollection for an input list of orbits,
+    segment pattern, and channel pattern, assuming orbits are organized in
+    blocks of 100.
 
     Parameters
     ----------
     path: str
         The location where to start looking for files.
-    orbits: list
-        List of ints of orbits to get files from.
+    orbits: list[int]
+        Orbits to get files from.
     segment: str
         The observing segment to get files from. Default is 'apoapse'.
     channel: str
@@ -329,18 +318,68 @@ def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
 
     Returns
     -------
-    files: list
-        An L1bFiles of all files from the input orbits.
+    files: IUVSDataFilenameCollection
+        Matching files from the input orbits, segment, and channel.
     """
-    p = DataPath().orbit_block_paths(path, orbits)
-    pat = DataPattern().orbit_patterns(orbits, segment, channel)
+    p = DataPath(path).block_paths(orbits)
+    pat = DataPattern().multi_orbit_patterns(orbits, segment, channel)
     path_list = [glob_files(p[f], pat[f]) for f in range(len(p))]
     abs_paths = [k for f in path_list for k in f]
     return IUVSDataFilenameCollection(abs_paths)
 
 
+def orbit_range_files(path: str, orbit_start: int, orbit_end: int,
+                      segment: str = 'apoapse', channel: str = 'muv') \
+        -> IUVSDataFilenameCollection:
+    """ Make an IUVSDataFilenameCollection for all orbits in a range of orbits
+    with a segment pattern and channel pattern, assuming orbits are organized
+    in blocks of 100.
+
+    Parameters
+    ----------
+    path: str
+        The location where to start looking for files.
+    orbit_start: int
+        The starting orbit to get files from.
+    orbit_end: int
+        The ending orbit to get files from.
+    segment: str
+        The observing segment to get files from. Default is 'apoapse'.
+    channel: str
+        The observing channel to get files from. Default is 'muv'.
+
+    Returns
+    -------
+    files: IUVSDataFilenameCollection
+        Matching files from the input orbit range, segment, and channel.
+    """
+    orbits = list(range(orbit_start, orbit_end))
+    return multi_orbit_files(path, orbits, segment=segment, channel=channel)
+
+
 if __name__ == '__main__':
+    # Example 1
     a = soschob('/media/kyle/Samsung_T5/IUVS_data', 3453, 'apoapse', 'muv')
     for i in a.filenames:
         print(i.filename, i.timestamp)
+    print(a.all_apoapse())
+    print(a.all_muv())
 
+    # Example 2
+    #o = [3453, 7818, 8889]
+    #a = multi_orbit_files('/media/kyle/Samsung_T5/IUVS_data', o)
+    #for i in a.abs_paths:
+    #    print(i)
+
+    # Example 3
+    #a = orbit_range_files('/media/kyle/Samsung_T5/IUVS_data', 3450, 3460)
+    #for i in a.abs_paths:
+    #    print(i)
+
+    # Example 4 - who would do this?
+    #p = DataPath('/media/kyle/Samsung_T5/IUVS_data').block(9984)
+    #seg = DataPattern().generic_pattern(['apoapse', 'inlimb'])
+    #chan = DataPattern.generic_pattern(['fuv', 'ech'])
+    #a = glob_files(p, DataPattern().orbit_pattern(9984, seg, chan))
+    #for i in a:
+    #    print(i)

@@ -179,6 +179,76 @@ class IUVSDataFilenameCollection:
         self.__warn_if_no_files_found(matching_paths)
         return matching_paths
 
+    def all_l1b(self) -> bool:
+        """ Determine if all the input files are level 1b files.
+
+        Returns
+        -------
+        l1b: bool
+            True if all files are level 1b; False otherwise.
+        """
+        return all((f.level == 'l1b' for f in self.filenames))
+
+    def all_l1c(self) -> bool:
+        """ Determine if all the input files are level 1c files.
+
+        Returns
+        -------
+        l1c: bool
+            True if all files are level 1c; False otherwise.
+        """
+        return all((f.level == 'l1c' for f in self.filenames))
+
+    def all_apoapse(self) -> bool:
+        """ Determine if all the input files are apoapse files.
+
+        Returns
+        -------
+        apoapse: bool
+            True if all files are from the apoapse segment; False otherwise.
+        """
+        return all((f.segment == 'apoapse' for f in self.filenames))
+
+    def all_periapse(self) -> bool:
+        """ Determine if all the input files are periapse files.
+
+        Returns
+        -------
+        periapse: bool
+            True if all files are from the periapse segment; False otherwise.
+        """
+        return all((f.segment == 'periapse' for f in self.filenames))
+
+    def all_ech(self) -> bool:
+        """ Determine if all the input files are echelle files.
+
+        Returns
+        -------
+        ech: bool
+            True if all files are from the ech channel; False otherwise.
+        """
+        return all((f.channel == 'ech' for f in self.filenames))
+
+    def all_fuv(self) -> bool:
+        """ Determine if all the input files are far-ultraviolet files.
+
+        Returns
+        -------
+        fuv: bool
+            True if all files are from the fuv channel; False otherwise.
+        """
+        return all((f.channel == 'fuv' for f in self.filenames))
+
+    def all_muv(self) -> bool:
+        """ Determine if all the input files are mid-ultraviolet files.
+
+        Returns
+        -------
+        muv: bool
+            True if all files are from the muv segment; False otherwise.
+        """
+        return all((f.channel == 'muv' for f in self.filenames))
+
     @staticmethod
     def __warn_if_no_files_found(files: list) -> None:
         if not files:
