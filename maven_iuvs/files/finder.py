@@ -2,12 +2,14 @@
 import numbers
 import os
 from pathlib import Path
+from typing import Generator
 
 # 3rd-party imports
 import numpy as np
 
 # Local imports
 from maven_iuvs.misc import orbit_code
+from maven_iuvs.files.files import IUVSDataFilenameCollection
 
 
 class DataPath:
@@ -165,8 +167,7 @@ class DataPattern:
         >>> dp.orbit_pattern(9984, segment_pattern, channel_pattern)
         'mvn_iuv_*_*[ai][pn][ol][ai][pm][sb]*-orbit09984-*[fe][uc][vh]*_*T*_*_*.fits*'
         """
-        orb_code = orbit_code(orbit)
-        return self.data_pattern(orbit=orb_code, segment=segment,
+        return self.data_pattern(orbit=orbit_code(orbit), segment=segment,
                                  channel=channel)
 
     def multi_orbit_patterns(self, orbits: list[int], segment: str,
@@ -272,14 +273,74 @@ def glob_files(path: str, pattern: str) -> list[str]:
         except TypeError:
             raise TypeError('The input value of path must be a string.')
 
-    def perform_glob():
+    def perform_glob() -> Generator:
         return Path(path).glob(pattern)
 
-    # TODO: I dunno how to tell the code that inp_glob is a generator without
-    #  hackish solutions
-    def get_absolute_paths_of_glob(inp_glob) -> list[str]:
+    def get_absolute_paths_of_glob(inp_glob: Generator) -> list[str]:
         return sorted([str(f) for f in inp_glob if f.is_file()])
 
     check_path_exists()
     g = perform_glob()
     return get_absolute_paths_of_glob(g)
+
+
+def soschob(path: str, orbit: int, segment: str = 'apoapse',
+            channel: str = 'muv') -> IUVSDataFilenameCollection:
+    """ Make an IUVSDataFilenameCollection for files matching an input orbit,
+    segment pattern, and channel pattern, assuming orbits are organized in
+    blocks of 100.
+
+    Parameters
+    ----------
+    path: str
+        The location the IUVS data.
+    orbit: int
+        The orbit to get files from.
+    segment: str
+        The observing segment to get files from.
+    channel: str
+        The observing mode to get files from.
+
+    Returns
+    -------
+    files: IUVSDataFilenameCollection:
+        Matching files from the input orbit, segment, and channel
+    """
+    p = DataPath(path).block(orbit)
+    pat = DataPattern().orbit_pattern(orbit, segment, channel)
+    abs_paths = glob_files(p, pat)
+    return IUVSDataFilenameCollection(abs_paths)
+
+
+def multi_orbit_files(path, orbits, segment='apoapse', channel='muv'):
+    """ Make an L1bDataFiles for an input list of orbits, segment pattern, and
+    channel pattern, assuming orbits are organized in blocks of 100.
+
+    Parameters
+    ----------
+    path: str
+        The location where to start looking for files.
+    orbits: list
+        List of ints of orbits to get files from.
+    segment: str
+        The observing segment to get files from. Default is 'apoapse'.
+    channel: str
+        The observing channel to get files from. Default is 'muv'.
+
+    Returns
+    -------
+    files: list
+        An L1bFiles of all files from the input orbits.
+    """
+    p = DataPath().orbit_block_paths(path, orbits)
+    pat = DataPattern().orbit_patterns(orbits, segment, channel)
+    path_list = [glob_files(p[f], pat[f]) for f in range(len(p))]
+    abs_paths = [k for f in path_list for k in f]
+    return IUVSDataFilenameCollection(abs_paths)
+
+
+if __name__ == '__main__':
+    a = soschob('/media/kyle/Samsung_T5/IUVS_data', 3453, 'apoapse', 'muv')
+    for i in a.filenames:
+        print(i.filename, i.timestamp)
+
