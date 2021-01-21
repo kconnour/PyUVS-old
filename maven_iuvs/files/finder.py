@@ -355,31 +355,3 @@ def orbit_range_files(path: str, orbit_start: int, orbit_end: int,
     """
     orbits = list(range(orbit_start, orbit_end))
     return multi_orbit_files(path, orbits, segment=segment, channel=channel)
-
-
-if __name__ == '__main__':
-    # Example 1
-    a = soschob('/media/kyle/Samsung_T5/IUVS_data', 3453, 'apoapse', 'muv')
-    for i in a.filenames:
-        print(i.filename, i.timestamp)
-    print(a.all_apoapse())
-    print(a.all_muv())
-
-    # Example 2
-    #o = [3453, 7818, 8889]
-    #a = multi_orbit_files('/media/kyle/Samsung_T5/IUVS_data', o)
-    #for i in a.abs_paths:
-    #    print(i)
-
-    # Example 3
-    #a = orbit_range_files('/media/kyle/Samsung_T5/IUVS_data', 3450, 3460)
-    #for i in a.abs_paths:
-    #    print(i)
-
-    # Example 4 - who would do this?
-    #p = DataPath('/media/kyle/Samsung_T5/IUVS_data').block(9984)
-    #seg = DataPattern().generic_pattern(['apoapse', 'inlimb'])
-    #chan = DataPattern.generic_pattern(['fuv', 'ech'])
-    #a = glob_files(p, DataPattern().orbit_pattern(9984, seg, chan))
-    #for i in a:
-    #    print(i)

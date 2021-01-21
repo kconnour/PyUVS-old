@@ -46,7 +46,7 @@ class IUVSDataFilenameCollection:
                 (k := self.__make_filename(f)) is not None)
 
     @staticmethod
-    # When python 3.10 releases, change -> IUVSDataFilename | None
+    # TODO: When python 3.10 releases, change -> IUVSDataFilename | None
     def __make_filename(filename: str) -> Union[IUVSDataFilename, None]:
         try:
             return IUVSDataFilename(filename)
@@ -95,6 +95,17 @@ class IUVSDataFilenameCollection:
             Filenames of the inputs.
         """
         return self.__filenames
+
+    @property
+    def n_files(self) -> int:
+        """ Get the number of input IUVS data files
+
+        Returns
+        -------
+        n_files: int
+            The number of files.
+        """
+        return len(self.__abs_paths)
 
     def get_matching_abs_paths(self, pattern: str) -> list[str]:
         """ Get the absolute paths of filenames matching an input pattern.

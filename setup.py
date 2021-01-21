@@ -14,9 +14,8 @@ def setup_package():
         install_requires=[
             'astropy>=4.2',
             'numpy>=1.19.4',
-            'pdoc3>=0.9.1',
+            'pdoc3>=0.9.2',
         ],
-
     )
 
 
