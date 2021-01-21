@@ -6,7 +6,7 @@ from typing import Generator, Union
 import warnings
 
 # Local imports
-from maven_iuvs.files.filenames import IUVSDataFilename
+from pyuvs.files.filenames import IUVSDataFilename
 
 
 class IUVSDataFilenameCollection:

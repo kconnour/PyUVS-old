@@ -5,7 +5,7 @@ from unittest import TestCase
 import numpy as np
 
 # Local imports
-from maven_iuvs.files.finder import DataPattern
+from pyuvs.files.finder import DataPattern
 
 
 class TestDataPatternClass(TestCase):

@@ -7,7 +7,7 @@ from unittest import TestCase
 import numpy as np
 
 # Local imports
-from maven_iuvs.files.finder import DataPath
+from pyuvs.files.finder import DataPath
 
 
 class TestDataPath(TestCase):

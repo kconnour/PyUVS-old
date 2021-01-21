@@ -7,8 +7,8 @@ from typing import Any, Generator, Iterable
 import numpy as np
 
 # Local imports
-from maven_iuvs.misc.orbit_code import orbit_code
-from maven_iuvs.files.files import IUVSDataFilenameCollection
+from pyuvs.misc.orbit_code import orbit_code
+from pyuvs.files.files import IUVSDataFilenameCollection
 
 
 class DataPath:

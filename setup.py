@@ -3,7 +3,7 @@ import setuptools
 
 def setup_package():
     setuptools.setup(
-        name='maven_iuvs',
+        name='pyuvs',
         version='0.0.1',
         description='Make MAVEN/IUVS data more easily accessible',
         url='https://github.com/kconnour/maven-iuvs',

@@ -5,7 +5,7 @@ from unittest import TestCase
 import numpy as np
 
 # Local imports
-from maven_iuvs.misc.orbit_code import orbit_code
+from pyuvs.misc.orbit_code import orbit_code
 
 
 class TestOrbitCode(TestCase):

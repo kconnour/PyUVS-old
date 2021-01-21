@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 
 # Local imports
-from maven_iuvs.science_week.science_week import ScienceWeek
+from pyuvs.science_week.science_week import ScienceWeek
 
 
 class TestScienceWeek(TestCase):
@@ -59,7 +59,7 @@ class TestWeekFromDate(TestScienceWeek):
 class TestGetCurrentScienceWeek(TestScienceWeek):
     pass
     '''def test_science_week_of_today(self):
-        with mock.patch('maven_iuvs.science_week.science_week.datetime.date') as mock_date:
+        with mock.patch('pyuvs.science_week.science_week.datetime.date') as mock_date:
             mock_date.today.return_value = date(2020, 1, 1)
             #self.assertEqual(mock_date.today(), date(2020, 1, 1))   # this works
             self.assertEqual(268, self.science_week.get_current_science_week())  # This doesn't about mock_date'''
