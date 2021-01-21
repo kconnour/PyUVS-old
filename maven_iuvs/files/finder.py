@@ -1,7 +1,7 @@
 # Built-in imports
 import os
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator, Iterable
 
 # 3rd-party imports
 import numpy as np
@@ -21,7 +21,13 @@ class DataPath:
         path: str
             Absolute path of the IUVS data root location.
         """
+        self.__raise_type_error_if_input_is_not_string(path)
         self.__path = path
+
+    @staticmethod
+    def __raise_type_error_if_input_is_not_string(path: Any) -> None:
+        if not isinstance(path, str):
+            raise TypeError('The input to DataPath must be a str.')
 
     def block(self, orbit: int) -> str:
         """ Make the path to an orbit, assuming orbits are organized in blocks
@@ -44,15 +50,18 @@ class DataPath:
         >>> path.block(7777)
         '/foo/bar/orbit07700'
         """
-        return os.path.join(self.__path, self.__block_folder_name(orbit))
+        try:
+            return os.path.join(self.__path, self.__block_folder_name(orbit))
+        except TypeError:
+            raise TypeError('Input should be a int.')
 
-    def block_paths(self, orbits: list[int]) -> list[str]:
+    def block_paths(self, orbits: Iterable[int]) -> list[str]:
         """ Make paths to a series of orbits, assuming orbits are organized in
         blocks of 100 orbits.
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits: Iterable[int]
             The orbit numbers.
 
         Returns
@@ -69,8 +78,9 @@ class DataPath:
         """
         try:
             return [self.block(f) for f in orbits]
-        except ValueError:
-            raise ValueError('Each value in the input should be an int.')
+        except TypeError:
+            raise TypeError('Each value in the input iterable should be an '
+                            'int.')
 
     def __block_folder_name(self, orbit: int) -> str:
         orbit_block = self.__orbit_block(orbit)

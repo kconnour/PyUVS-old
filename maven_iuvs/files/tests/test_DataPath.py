@@ -35,29 +35,28 @@ class TestInit(TestDataPath):
 
 class TestBlock(TestDataPath):
     def test_block_matches_expected_output(self):
-        self.assertEqual(os.path.join(self.root, 'orbit07700'),
-                         self.path.block(7700))
-        self.assertEqual(os.path.join(self.root, 'orbit07700'),
-                         self.path.block(7799))
+        expected_path = os.path.join(self.root, 'orbit07700')
+        self.assertEqual(expected_path, self.path.block(7700))
+        self.assertEqual(expected_path, self.path.block(7799))
 
-    def test_input_float_raises_value_error(self):
-        with self.assertRaises(TypeError):
-            self.path.block(7700.0)
+    def test_float_input_works(self):
+        expected_path = os.path.join(self.root, 'orbit07700')
+        self.assertEqual(expected_path, self.path.block(7700.0))
 
-    def test_input_str_raises_value_error(self):
+    def test_input_str_raises_type_error(self):
         with self.assertRaises(TypeError):
             self.path.block('orbit07700')
 
 
 class TestBlockPaths(TestDataPath):
-    def test_blockpaths_matches_expected_output(self):
+    def test_block_paths_matches_expected_output_for_list(self):
         expected_output = [f'{self.root}/orbit07700',
                            f'{self.root}/orbit07700',
                            f'{self.root}/orbit07800']
         test_orbits = [7700, 7799, 7800]
         self.assertEqual(expected_output, self.path.block_paths(test_orbits))
 
-    def test_blockpaths_works_with_iterable(self):
+    def test_block_paths_matches_expected_output_for_ndarray(self):
         expected_output = [f'{self.root}/orbit07700',
                            f'{self.root}/orbit07700',
                            f'{self.root}/orbit07800']
@@ -65,7 +64,24 @@ class TestBlockPaths(TestDataPath):
         test_iterable = np.array(test_orbits)
         self.assertEqual(expected_output, self.path.block_paths(test_iterable))
 
-    def test_blockpaths_failes_with_floats(self):
+    def test_block_paths_matches_expected_output_for_generator(self):
+        expected_output = [f'{self.root}/orbit07700',
+                           f'{self.root}/orbit07700',
+                           f'{self.root}/orbit07800']
+        test_orbits = (7700, 7799, 7800)
+        test_iterable = np.array(test_orbits)
+        self.assertEqual(expected_output, self.path.block_paths(test_iterable))
+
+    def test_list_of_str_raises_type_error(self):
         with self.assertRaises(TypeError):
-            test_orbits = [7700.0, 7799.0, 7800.0]
-            self.path.block_paths(test_orbits)
+            bad_input = ['7700', '7710']
+            self.path.block_paths(bad_input)
+
+    def test_int_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self.path.block_paths(10)
+
+    def test_2d_ndarray_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            bad_input = np.zeros((10, 5))
+            self.path.block_paths(bad_input)
