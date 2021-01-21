@@ -1,5 +1,4 @@
 # Built-in imports
-import inspect
 import os
 from unittest import TestCase
 
