@@ -1,6 +1,5 @@
 # Built-in imports
 from unittest import TestCase, mock
-import os
 
 # Local imports
 from pyuvs.misc.get_project_path import get_project_path

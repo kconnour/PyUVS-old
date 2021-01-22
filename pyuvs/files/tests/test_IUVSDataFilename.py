@@ -1,9 +1,6 @@
 # Built-in imports
 from unittest import TestCase
 
-# 3rd-party imports
-import numpy as np
-
 # Local imports
 from pyuvs.files.filenames import IUVSDataFilename
 

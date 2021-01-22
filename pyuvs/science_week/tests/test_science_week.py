@@ -1,6 +1,5 @@
 # Built-in imports
-import inspect
-from unittest import TestCase
+from unittest import TestCase, mock
 from datetime import date, timedelta
 import warnings
 
@@ -14,14 +13,6 @@ from pyuvs.science_week.science_week import ScienceWeek
 class TestScienceWeek(TestCase):
     def setUp(self):
         self.science_week = ScienceWeek()
-
-
-class TestInit(TestScienceWeek):
-    def test_science_week_has_science_start_date_property(self):
-        self.assertTrue(not inspect.ismethod(ScienceWeek.science_start_date))
-
-    def test_science_week_has_no_attributes(self):
-        self.assertEqual(0, len(self.science_week.__dict__.keys()))
 
 
 class TestScienceStartDate(TestScienceWeek):
@@ -43,7 +34,7 @@ class TestWeekFromDate(TestScienceWeek):
         test_date = date(2020, 12, 14)
         self.assertEqual(317, self.science_week.week_from_date(test_date))
 
-    def test_integer_input_raises_type_error(self):
+    def test_int_input_raises_type_error(self):
         with self.assertRaises(TypeError):
             self.science_week.week_from_date(100)
 
@@ -55,14 +46,12 @@ class TestWeekFromDate(TestScienceWeek):
             self.assertEqual(warning[-1].category, UserWarning)
 
 
-# TODO: Figure out a test for this
 class TestGetCurrentScienceWeek(TestScienceWeek):
-    pass
-    '''def test_science_week_of_today(self):
-        with mock.patch('pyuvs.science_week.science_week.datetime.date') as mock_date:
+    def test_science_week_of_today(self):
+        with mock.patch('pyuvs.science_week.date') as mock_date:
             mock_date.today.return_value = date(2020, 1, 1)
-            #self.assertEqual(mock_date.today(), date(2020, 1, 1))   # this works
-            self.assertEqual(268, self.science_week.get_current_science_week())  # This doesn't about mock_date'''
+            mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
+            self.assertEqual(268, self.science_week.current_science_week())
 
 
 class TestWeekStartDate(TestScienceWeek):
@@ -81,18 +70,11 @@ class TestWeekStartDate(TestScienceWeek):
                              self.science_week.week_start_date(
                                  np.nextafter(318, 317)))
 
-    def test_integer_float_week_raises_no_warnings(self):
-        with warnings.catch_warnings(record=True) as warning:
-            warnings.simplefilter("always")
-            self.science_week.week_start_date(1.0)
-            self.assertEqual(0, len(warning))
-
-    def test_non_integer_float_raises_warning(self):
+    def test_float_week_raises_no_warnings(self):
         with warnings.catch_warnings(record=True) as warning:
             warnings.simplefilter("always")
             self.science_week.week_start_date(1.5)
-            self.assertEqual(1, len(warning))
-            self.assertEqual(warning[-1].category, UserWarning)
+            self.assertEqual(0, len(warning))
 
     def test_ndarray_input_raises_value_error(self):
         test_weeks = np.linspace(1, 50, num=50, dtype=int)
@@ -131,18 +113,11 @@ class TestWeekEndDate(TestScienceWeek):
                              self.science_week.week_end_date(
                                  np.nextafter(318, 317)))
 
-    def test_integer_float_week_raises_no_warnings(self):
-        with warnings.catch_warnings(record=True) as warning:
-            warnings.simplefilter("always")
-            self.science_week.week_end_date(1.0)
-            self.assertEqual(0, len(warning))
-
-    def test_non_integer_float_raises_warning(self):
+    def test_float_week_raises_no_warnings(self):
         with warnings.catch_warnings(record=True) as warning:
             warnings.simplefilter("always")
             self.science_week.week_end_date(1.5)
-            self.assertEqual(1, len(warning))
-            self.assertEqual(warning[-1].category, UserWarning)
+            self.assertEqual(0, len(warning))
 
     def test_ndarray_input_raises_value_error(self):
         test_weeks = np.linspace(1, 50, num=50, dtype=int)
