@@ -3,7 +3,7 @@ import unittest
 import os
 
 # Local imports
-from maven_iuvs.files.files import Files
+from pyuvs.files.files import Files
 from aux.aux_files import aux_path
 
 

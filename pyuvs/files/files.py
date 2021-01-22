@@ -6,7 +6,7 @@ from typing import Generator, Union
 import warnings
 
 # Local imports
-from maven_iuvs.files.filenames import IUVSDataFilename
+from pyuvs.files.filenames import IUVSDataFilename
 
 
 class IUVSDataFilenameCollection:
@@ -25,13 +25,16 @@ class IUVSDataFilenameCollection:
 
     def __make_absolute_paths_and_filenames(self, files: list[str]) -> \
             tuple[list[str], list[IUVSDataFilename]]:
-        input_abs_paths = self.__get_unique_absolute_paths(files)
-        input_filenames = self.__get_filenames_from_paths(input_abs_paths)
-        iuvs_data_filenames = self.__make_filenames(input_filenames)
-        latest_filenames = self.__get_latest_filenames(iuvs_data_filenames)
-        latest_abs_paths = self.__get_latest_abs_paths(latest_filenames,
-                                                       input_abs_paths)
-        return latest_abs_paths, latest_filenames
+        try:
+            input_abs_paths = self.__get_unique_absolute_paths(files)
+            input_filenames = self.__get_filenames_from_paths(input_abs_paths)
+            iuvs_data_filenames = self.__make_filenames(input_filenames)
+            latest_filenames = self.__get_latest_filenames(iuvs_data_filenames)
+            latest_abs_paths = self.__get_latest_abs_paths(latest_filenames,
+                                                           input_abs_paths)
+            return latest_abs_paths, latest_filenames
+        except TypeError:
+            raise TypeError('Cannot initialize class with non-IUVS data files.')
 
     @staticmethod
     def __get_unique_absolute_paths(files: list[str]) -> list[str]:

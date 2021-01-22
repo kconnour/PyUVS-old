@@ -1,14 +1,14 @@
 # Built-in imports
 import os
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator, Iterable
 
 # 3rd-party imports
 import numpy as np
 
 # Local imports
-from maven_iuvs.misc import orbit_code
-from maven_iuvs.files.files import IUVSDataFilenameCollection
+from pyuvs.misc.orbit_code import orbit_code
+from pyuvs.files.files import IUVSDataFilenameCollection
 
 
 class DataPath:
@@ -21,7 +21,13 @@ class DataPath:
         path: str
             Absolute path of the IUVS data root location.
         """
+        self.__raise_type_error_if_input_is_not_string(path)
         self.__path = path
+
+    @staticmethod
+    def __raise_type_error_if_input_is_not_string(path: Any) -> None:
+        if not isinstance(path, str):
+            raise TypeError('The input to DataPath must be a str.')
 
     def block(self, orbit: int) -> str:
         """ Make the path to an orbit, assuming orbits are organized in blocks
@@ -44,15 +50,18 @@ class DataPath:
         >>> path.block(7777)
         '/foo/bar/orbit07700'
         """
-        return os.path.join(self.__path, self.__block_folder_name(orbit))
+        try:
+            return os.path.join(self.__path, self.__block_folder_name(orbit))
+        except TypeError:
+            raise TypeError('Input should be a int.')
 
-    def block_paths(self, orbits: list[int]) -> list[str]:
+    def block_paths(self, orbits: Iterable[int]) -> list[str]:
         """ Make paths to a series of orbits, assuming orbits are organized in
         blocks of 100 orbits.
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits: Iterable[int]
             The orbit numbers.
 
         Returns
@@ -69,8 +78,8 @@ class DataPath:
         """
         try:
             return [self.block(f) for f in orbits]
-        except ValueError:
-            raise ValueError('Each value in the input should be an int.')
+        except TypeError:
+            raise TypeError('Each value in orbits should be an int.')
 
     def __block_folder_name(self, orbit: int) -> str:
         orbit_block = self.__orbit_block(orbit)
@@ -154,16 +163,21 @@ class DataPattern:
         >>> dp.orbit_pattern(9984, segment_pattern, channel_pattern)
         'mvn_iuv_*_*[ai][pn][ol][ai][pm][sb]*-orbit09984-*[fe][uc][vh]*_*T*_*_*.fits*'
         """
-        return self.data_pattern(orbit=orbit_code(orbit), segment=segment,
-                                 channel=channel)
+        try:
+            return self.data_pattern(orbit=orbit_code(orbit), segment=segment,
+                                     channel=channel)
+        except TypeError:
+            raise TypeError('orbit should be an int.')
+        except ValueError:
+            raise ValueError('orbit should be an int.')
 
-    def multi_orbit_patterns(self, orbits: list[int], segment: str,
+    def multi_orbit_patterns(self, orbits: Iterable[int], segment: str,
                              channel: str) -> list[str]:
         """ Make glob patterns for each orbit in a list of orbits.
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits: Iterable[int]
             Orbits to make patterns for.
         segment: str
             The segment pattern to get data from.
@@ -180,9 +194,16 @@ class DataPattern:
         >>> DataPattern().multi_orbit_patterns([3453, 3455], 'apoapse', 'muv')
         ['mvn_iuv_*_apoapse-orbit03453-muv_*T*_*_*.fits*', 'mvn_iuv_*_apoapse-orbit03455-muv_*T*_*_*.fits*']
         """
-        return [self.orbit_pattern(f, segment, channel) for f in orbits]
+        try:
+            return [self.orbit_pattern(f, segment, channel) for f in orbits]
+        except TypeError:
+            raise TypeError('The input value of orbit should be an iterable.')
+        except ValueError:
+            raise ValueError('Each value in orbits should be an int.')
 
     @staticmethod
+    # TODO: Technically, patterns can be any Iterable except a generator but I
+    #  don't know how to fix my code so that it can take any iterable.
     def generic_pattern(patterns: list[str]) -> str:
         """ Create a generic glob search pattern from a list of patterns. This
         replicates the functionality of the brace expansion glob has in some
@@ -204,11 +225,14 @@ class DataPattern:
         >>> DataPattern().generic_pattern(segments)
         '*[ai][pn][ol][ai][pm][sb]*'
         """
-        shortest_pattern_length = min([len(f) for f in patterns])
-        split_patterns = (''.join([f[i] for f in patterns]) for i in
-                          range(shortest_pattern_length))
-        pattern = ''.join([f'[{f}]' for f in split_patterns])
-        return '*' + pattern + '*'
+        try:
+            shortest_pattern_length = min([len(f) for f in patterns])
+            split_patterns = (''.join([f[i] for f in patterns]) for i in
+                              range(shortest_pattern_length))
+            pattern = ''.join([f'[{f}]' for f in split_patterns])
+            return '*' + pattern + '*'
+        except TypeError:
+            raise TypeError('patterns must be an iterable.')
 
     @staticmethod
     def prepend_recursive_pattern(pattern: str) -> str:
