@@ -1,0 +1,8 @@
+Before 0.1.0:
+
+- l1c files don't include muv or fuv data in the filename
+- IUVSDataFilenameCollections should be a data structure. Add FileProperties as another class with methods that can act on IDFC
+- Remove the folders so it's just from pyuvs.files import IUVSDataFilename
+- Empty the __init__.py files and see if that gets rid of the tests in the doc
+- Add unit tests to some of the functions
+- Move /tests to within the pyuvs package + remove a bunch of crap in tests

@@ -1,0 +1,9 @@
+--- Figure out how to get tests that automatically run
+--- Can I get github to automatically generate doc when a commit is pushed?
+
+Repos
+--- pyuvs-data may deal with data
+--- pyuvs-spice for spice stuff
+--- pyuvs-database for apoapse/periapse database + science week?
+--- pyuvs-projection for projections
+--- pyuvs-dashboard for the weekly data dashboard
