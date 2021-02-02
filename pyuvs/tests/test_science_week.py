@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 
 # Local imports
-from pyuvs.science_week.science_week import ScienceWeek
+from pyuvs.science_week import ScienceWeek
 
 
 class TestScienceWeek(TestCase):

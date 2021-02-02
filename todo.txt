@@ -1,8 +1,24 @@
-Before 0.1.0:
+To-do:
+- filenames.IUVSDataFilenames
+--- pylint wants me to get rid of my TODO
+--- pylint says I have too many instance variables (20/7)
+- tests
+--- I dunno how to run pylint on them but they seem good
 
-- l1c files don't include muv or fuv data in the filename
+- misc.py
+--- Add .py file docstring for why it exists
+
+- misc.get_project_path
+--- Why do I need this?
+
+- misc.orbit_code
+--- Refresh + tests
+
+- science_week.ScienceWeek
+--- Clean up docstrings slightly
+--- Significantly clean up unit tests (remove TestScienceWeek for instance)
+
+Before 0.1.0:
 - IUVSDataFilenameCollections should be a data structure. Add FileProperties as another class with methods that can act on IDFC
 - Remove the folders so it's just from pyuvs.files import IUVSDataFilename
-- Empty the __init__.py files and see if that gets rid of the tests in the doc
-- Add unit tests to some of the functions
-- Move /tests to within the pyuvs package + remove a bunch of crap in tests
+- pylint entire code

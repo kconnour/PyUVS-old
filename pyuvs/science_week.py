@@ -1,13 +1,21 @@
-# Built-in imports
+"""science_week.py contains ScienceWeek, which can perform conversions between
+Earth times and MAVEN times.
+"""
 from datetime import date, timedelta
 import warnings
-
-# 3rd-party imports
 import numpy as np
 
 
+# TODO: clean up docstrings slightly
 class ScienceWeek:
-    """ A ScienceWeek object can convert dates into MAVEN science weeks. """
+    """ScienceWeek can convert between dates and MAVEN science weeks.
+
+    ScienceWeek contains a variety of methods that can either convert a week
+    number into a datetime.date object representing the corresponding Earth
+    date, or convert a datetime.date object into MAVEN science weeks.
+
+    """
+
     @property
     def science_start_date(self) -> date:
         """ Get the date MAVEN/IUVS began performing science.

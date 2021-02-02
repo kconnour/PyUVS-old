@@ -1,11 +1,14 @@
-# Built-in imports
-from unittest import TestCase
-
-# 3rd-party imports
+from unittest import TestCase, mock
 import numpy as np
+from pyuvs.misc import get_project_path, orbit_code
 
-# Local imports
-from pyuvs.misc.orbit_code import orbit_code
+
+class TestGetProjectPath(TestCase):
+    def test_(self):
+        with mock.patch('os.path.realpath') as f:
+            project_path = '/foo/bar/pyuvs'
+            f.return_value = f'{project_path}/pyuvs/misc/get_module_path.py'
+            self.assertEqual(project_path, get_project_path())
 
 
 class TestOrbitCode(TestCase):
