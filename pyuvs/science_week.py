@@ -6,7 +6,6 @@ import warnings
 import numpy as np
 
 
-# TODO: clean up docstrings slightly
 class ScienceWeek:
     """ScienceWeek can convert between dates and MAVEN science weeks.
 
@@ -15,99 +14,121 @@ class ScienceWeek:
     date, or convert a datetime.date object into MAVEN science weeks.
 
     """
-
-    @property
-    def science_start_date(self) -> date:
-        """ Get the date MAVEN/IUVS began performing science.
-
-        Returns
-        -------
-        date: datetime.date
-            The date MAVEN/IUVS began performing science.
-        """
-        return date(2014, 11, 11)
+    def __init__(self):
+        self.__science_start_date = date(2014, 11, 11)
 
     def week_from_date(self, some_date: date) -> int:
-        """ Get the science week number at an input date.
+        """Compute the MAVEN science week number at an input date.
 
         Parameters
         ----------
         some_date: datetime.date
-            The date at which to get the science week.
+            The date to get the science week from.
 
         Returns
         -------
-        science_week: int
+        int
             The science week at the input date.
+
+        Raises
+        ------
+        TypeError
+            Raised if the input is not an instance of datetime.date.
 
         Examples
         --------
+        >>> from datetime import date
         >>> ScienceWeek().week_from_date(date(2020, 1, 1))
         268
+
         """
         try:
             self.__warn_if_date_is_before_mission_start(some_date)
-            return (some_date - self.science_start_date).days // 7
+            return (some_date - self.__science_start_date).days // 7
         except TypeError:
-            raise TypeError('some_date should be of type datetime.date.')
+            message = 'some_date should be an instance of datetime.date.'
+            raise TypeError(message) from None
 
     def current_science_week(self) -> int:
-        """ Get today's science week number.
+        """Compute today's MAVEN science week number.
 
         Returns
         -------
-        science_week: int
+        int
             The current science week number.
+
         """
         return self.week_from_date(date.today())
 
-    def week_start_date(self, week: int) -> date:
-        """ Get the date when the requested science week began or will begin.
+    def week_start_date(self, week: int or float) -> date:
+        """Compute the date when the requested science week began or will begin.
 
         Parameters
         ----------
-        week: int
-            The science week.
+        week: int or float
+            The science week number.
 
         Returns
         -------
-        science_week_start: datetime.date
-            The date when the science week started.
+        datetime.date
+            The date when the science week began or will begin.
+
+        Raises
+        ------
+        TypeError
+            Raised if the input type is incompatible with timedelta.
+        ValueError
+            Raised if the input has an error.
 
         Examples
         --------
+        >>> ScienceWeek().week_start_date(0)
+        datetime.date(2014, 11, 11)
         >>> ScienceWeek().week_start_date(300)
         datetime.date(2020, 8, 11)
+
         """
         try:
             self.__warn_if_week_is_negative(week)
             rounded_week = int(np.floor(week))
-            return self.science_start_date + timedelta(days=rounded_week * 7)
+            return self.__science_start_date + timedelta(days=rounded_week * 7)
         except TypeError:
-            raise TypeError(f'"week" should be an int, not a {type(week)}.')
+            raise TypeError(f'week should be an int, not a {type(week)}.') \
+                from None
+        except ValueError:
+            raise ValueError('There is an issue with the value of week.') \
+                from None
 
-    def week_end_date(self, week: int) -> date:
-        """ Get the date when the requested science week ended or will end.
+    def week_end_date(self, week: int or float) -> date:
+        """Compute the date when the requested science week ended or will end.
 
         Parameters
         ----------
-        week: int
-            The science week.
+        week: int or float
+            The science week number.
 
         Returns
         -------
-        science_week_end: datetime.date
-            The date when the science week ended.
+        datetime.date
+            The date when the science week ended or will end.
+
+        Raises
+        ------
+        TypeError
+            Raised if the input type is incompatible with timedelta.
+        ValueError
+            Raised if the input has an error.
 
         Examples
         --------
         >>> ScienceWeek().week_end_date(300)
         datetime.date(2020, 8, 17)
+
         """
         return self.week_start_date(week) + timedelta(days=6)
 
-    def week_date_range(self, week: int) -> tuple[date, date]:
-        """ Get the date range corresponding to the input science week.
+    def week_date_range(self, week: int or float) -> tuple[date, date]:
+        """Compute the date range corresponding to the input science week.
 
         Parameters
         ----------
@@ -116,18 +137,26 @@ class ScienceWeek:
 
         Returns
         -------
-        date_range: tuple
+        tuple
             The start and end dates of the science week.
+
+        Raises
+        ------
+        TypeError
+            Raised if the input type is incompatible with timedelta.
+        ValueError
+            Raised if the input has an error.
 
         Examples
         --------
         >>> ScienceWeek().week_date_range(300)
         (datetime.date(2020, 8, 11), datetime.date(2020, 8, 17))
+
         """
         return self.week_start_date(week), self.week_end_date(week)
 
     def __warn_if_date_is_before_mission_start(self, some_date: date) -> None:
-        if (some_date - self.science_start_date).days < 0:
+        if (some_date - self.__science_start_date).days < 0:
             warnings.warn('The input date is before the science start date.')
 
     @staticmethod

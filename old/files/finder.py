@@ -8,7 +8,7 @@ import numpy as np
 
 # Local imports
 from pyuvs.misc.orbit_code import orbit_code
-from pyuvs.files.files import IUVSDataFilenameCollection
+from old.files import IUVSDataFilenameCollection
 
 
 class DataPath:

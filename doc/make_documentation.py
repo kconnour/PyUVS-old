@@ -1,11 +1,6 @@
-# Built-in imports
 import os
-
-# 3rd-party imports
 import pdoc
-
-# Local imports
-from pyuvs.misc.get_project_path import get_project_path
+from pyuvs.misc import get_project_path
 
 
 # TODO: this fails if I run it from command line

@@ -4,7 +4,7 @@ from pathlib import PosixPath
 from unittest import TestCase, mock
 
 # Local imports
-from pyuvs.files.finder import glob_files
+from old.files import glob_files
 
 
 class TestGlobFiles(TestCase):

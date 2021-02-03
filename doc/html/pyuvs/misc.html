@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>pyuvs API documentation</title>
-<meta name="description" content="" />
+<title>pyuvs.misc API documentation</title>
+<meta name="description" content="misc.py holds miscellaneous utilities. These are all subject to change." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,36 +20,124 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Package <code>pyuvs</code></h1>
+<h1 class="title">Module <code>pyuvs.misc</code></h1>
 </header>
 <section id="section-intro">
+<p>misc.py holds miscellaneous utilities. These are all subject to change.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;misc.py holds miscellaneous utilities. These are all subject to change.
+&#34;&#34;&#34;
+import os
+
+
+def get_project_path() -&gt; str:
+    &#34;&#34;&#34; et the absolute path of the project.
+
+    Returns
+    -------
+    str
+        Absolute path of the project.
+
+    &#34;&#34;&#34;
+    return os.path.abspath(os.path.join(os.path.dirname(
+        os.path.realpath(__file__)), &#39;..&#39;))
+
+
+def orbit_code(orbit: int) -&gt; str:
+    &#34;&#34;&#34;Make the &#34;code&#34; for an input orbit.
+
+    Parameters
+    ----------
+    orbit: int
+        The orbit number.
+
+    Returns
+    -------
+    str
+        The orbit code.
+
+    &#34;&#34;&#34;
+    if not isinstance(orbit, int):
+        raise TypeError(&#39;orbit must be an int.&#39;)
+    return str(orbit).zfill(5)</code></pre>
+</details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="pyuvs.filenames" href="filenames.html">pyuvs.filenames</a></code></dt>
+<dt id="pyuvs.misc.get_project_path"><code class="name flex">
+<span>def <span class="ident">get_project_path</span></span>(<span>) ‑> str</span>
+</code></dt>
 <dd>
-<div class="desc"><p>filenames.py contains the IUVSDataFilename data structure, which pulls info
-from IUVS data filenames.</p></div>
+<div class="desc"><p>et the absolute path of the project.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>Absolute path of the project.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_project_path() -&gt; str:
+    &#34;&#34;&#34; et the absolute path of the project.
+
+    Returns
+    -------
+    str
+        Absolute path of the project.
+
+    &#34;&#34;&#34;
+    return os.path.abspath(os.path.join(os.path.dirname(
+        os.path.realpath(__file__)), &#39;..&#39;))</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="pyuvs.misc" href="misc.html">pyuvs.misc</a></code></dt>
+<dt id="pyuvs.misc.orbit_code"><code class="name flex">
+<span>def <span class="ident">orbit_code</span></span>(<span>orbit: int) ‑> str</span>
+</code></dt>
 <dd>
-<div class="desc"><p>misc.py holds miscellaneous utilities. These are all subject to change.</p></div>
-</dd>
-<dt><code class="name"><a title="pyuvs.science_week" href="science_week.html">pyuvs.science_week</a></code></dt>
-<dd>
-<div class="desc"><p>science_week.py contains ScienceWeek, which can perform conversions between
-Earth times and MAVEN times.</p></div>
-</dd>
-<dt><code class="name"><a title="pyuvs.tests" href="tests/index.html">pyuvs.tests</a></code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>Make the "code" for an input orbit.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>orbit</code></strong> :&ensp;<code>int</code></dt>
+<dd>The orbit number.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The orbit code.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def orbit_code(orbit: int) -&gt; str:
+    &#34;&#34;&#34;Make the &#34;code&#34; for an input orbit.
+
+    Parameters
+    ----------
+    orbit: int
+        The orbit number.
+
+    Returns
+    -------
+    str
+        The orbit code.
+
+    &#34;&#34;&#34;
+    if not isinstance(orbit, int):
+        raise TypeError(&#39;orbit must be an int.&#39;)
+    return str(orbit).zfill(5)</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -60,12 +148,15 @@ Earth times and MAVEN times.</p></div>
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pyuvs.filenames" href="filenames.html">pyuvs.filenames</a></code></li>
-<li><code><a title="pyuvs.misc" href="misc.html">pyuvs.misc</a></code></li>
-<li><code><a title="pyuvs.science_week" href="science_week.html">pyuvs.science_week</a></code></li>
-<li><code><a title="pyuvs.tests" href="tests/index.html">pyuvs.tests</a></code></li>
+<li><code><a title="pyuvs" href="index.html">pyuvs</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pyuvs.misc.get_project_path" href="#pyuvs.misc.get_project_path">get_project_path</a></code></li>
+<li><code><a title="pyuvs.misc.orbit_code" href="#pyuvs.misc.orbit_code">orbit_code</a></code></li>
 </ul>
 </li>
 </ul>

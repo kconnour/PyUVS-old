@@ -1,24 +1,19 @@
 To-do:
 - filenames.IUVSDataFilenames
---- pylint wants me to get rid of my TODO
+--- pylint wants me to get rid of my TODOs
 --- pylint says I have too many instance variables (20/7)
-- tests
---- I dunno how to run pylint on them but they seem good
-
-- misc.py
---- Add .py file docstring for why it exists
 
 - misc.get_project_path
---- Why do I need this?
+--- This is only needed to make documentation. Try to get rid of this soon.
 
 - misc.orbit_code
---- Refresh + tests
+--- I hate the name of this function. Try to think of something better
 
 - science_week.ScienceWeek
---- Clean up docstrings slightly
---- Significantly clean up unit tests (remove TestScienceWeek for instance)
+--- I'm trying the eafp but lbyl just seems better...
 
 Before 0.1.0:
-- IUVSDataFilenameCollections should be a data structure. Add FileProperties as another class with methods that can act on IDFC
+- IUVSDataFilenameCollections should be a data structure. Add FileProperties
+  as another class with methods that can act on IDFC
 - Remove the folders so it's just from pyuvs.files import IUVSDataFilename
-- pylint entire code
+- pylint tests

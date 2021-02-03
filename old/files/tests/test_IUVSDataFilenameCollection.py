@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 # Local imports
-from pyuvs.files.files import IUVSDataFilenameCollection
+from old.files import IUVSDataFilenameCollection
 
 
 class TestIUVSDataFilenameCollection(TestCase):

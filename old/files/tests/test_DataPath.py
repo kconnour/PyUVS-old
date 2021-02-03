@@ -6,7 +6,7 @@ from unittest import TestCase
 import numpy as np
 
 # Local imports
-from pyuvs.files.finder import DataPath
+from old.files import DataPath
 
 
 class TestDataPath(TestCase):

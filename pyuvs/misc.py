@@ -1,20 +1,23 @@
+"""misc.py holds miscellaneous utilities. These are all subject to change.
+"""
 import os
 
 
 def get_project_path() -> str:
-    """ Get the absolute path of the project.
+    """ et the absolute path of the project.
 
     Returns
     -------
-    path: str
+    str
         Absolute path of the project.
+
     """
     return os.path.abspath(os.path.join(os.path.dirname(
-        os.path.realpath(__file__)), '../..'))
+        os.path.realpath(__file__)), '..'))
 
 
 def orbit_code(orbit: int) -> str:
-    """ Get the "code" for an input orbit.
+    """Make the "code" for an input orbit.
 
     Parameters
     ----------
@@ -23,12 +26,10 @@ def orbit_code(orbit: int) -> str:
 
     Returns
     -------
-    code: str
+    str
         The orbit code.
+
     """
-    try:
-        return str(int(orbit)).zfill(5)
-    except TypeError:
-        raise TypeError('The input should be an int')
-    except ValueError:
-        raise ValueError('The input should be an int.')
+    if not isinstance(orbit, int):
+        raise TypeError('orbit must be an int.')
+    return str(orbit).zfill(5)
