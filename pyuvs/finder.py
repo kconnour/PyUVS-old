@@ -4,7 +4,6 @@ their computer.
 import os
 from typing import Any
 import numpy as np
-from pylint import epylint as lint
 from pyuvs.misc import orbit_code
 
 

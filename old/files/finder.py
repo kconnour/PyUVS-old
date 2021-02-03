@@ -3,91 +3,9 @@ import os
 from pathlib import Path
 from typing import Any, Generator, Iterable
 
-# 3rd-party imports
-import numpy as np
-
 # Local imports
 from pyuvs.misc.orbit_code import orbit_code
 from old.files import IUVSDataFilenameCollection
-
-
-class DataPath:
-    """ A DataPath object creates absolute paths to where data products reside,
-    given a set of assumptions. """
-    def __init__(self, path: str) -> None:
-        """
-        Parameters
-        ----------
-        path: str
-            Absolute path of the IUVS data root location.
-        """
-        self.__raise_type_error_if_input_is_not_string(path)
-        self.__path = path
-
-    @staticmethod
-    def __raise_type_error_if_input_is_not_string(path: Any) -> None:
-        if not isinstance(path, str):
-            raise TypeError('The input to DataPath must be a str.')
-
-    def block(self, orbit: int) -> str:
-        """ Make the path to an orbit, assuming orbits are organized in blocks
-        of 100 orbits.
-
-        Parameters
-        ----------
-        orbit: int
-            The orbit number.
-
-        Returns
-        -------
-        path: str
-            The path with orbit block appended corresponding to the input
-            orbit.
-
-        Examples
-        --------
-        >>> path = DataPath('/foo/bar/')
-        >>> path.block(7777)
-        '/foo/bar/orbit07700'
-        """
-        try:
-            return os.path.join(self.__path, self.__block_folder_name(orbit))
-        except TypeError:
-            raise TypeError('Input should be a int.')
-
-    def block_paths(self, orbits: Iterable[int]) -> list[str]:
-        """ Make paths to a series of orbits, assuming orbits are organized in
-        blocks of 100 orbits.
-
-        Parameters
-        ----------
-        orbits: Iterable[int]
-            The orbit numbers.
-
-        Returns
-        -------
-        paths: list[str]
-            The path with orbit block appended corresponding to the input
-            orbits.
-
-        Examples
-        --------
-        >>> path = DataPath('/foo/bar/')
-        >>> path.block_paths([3495, 3500, 3505])
-        ['/foo/bar/orbit03400', '/foo/bar/orbit03500', '/foo/bar/orbit03500']
-        """
-        try:
-            return [self.block(f) for f in orbits]
-        except TypeError:
-            raise TypeError('Each value in orbits should be an int.')
-
-    def __block_folder_name(self, orbit: int) -> str:
-        orbit_block = self.__orbit_block(orbit)
-        return f'orbit{orbit_code(orbit_block)}'
-
-    @staticmethod
-    def __orbit_block(orbit: int) -> int:
-        return int(np.floor(orbit / 100) * 100)
 
 
 class DataPattern:
