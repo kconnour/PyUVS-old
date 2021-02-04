@@ -1,8 +1,9 @@
 """The files module contains tools for getting IUVS data files from one's
 computer.
 """
+import copy
 import os
-from typing import Any
+from typing import Any, Generator
 from warnings import warn
 import numpy as np
 from pyuvs.misc import orbit_code
@@ -419,6 +420,119 @@ class DataFilename:
 
         """
         return self.__extension
+
+
+class DataFilenameCollection:
+    """A DataFilenameCollection is a data structure for holding IUVS data files.
+
+    A DataFilenameCollection checks that the input files are IUVS data and only
+    keeps the most recent data files. It also keeps a parallel list of
+    DataFilename objects corresponding to the input filenames.
+
+    """
+
+    def __init__(self, files: list[str]) -> None:
+        """
+        Parameters
+        ----------
+        files: list[str]
+            Absolute paths of IUVS data files.
+
+        Raises
+        ------
+        TypeError
+            Raised if files is not a list
+        ValueError
+            Raised if any of the values in files are not strings.
+
+        """
+        self.__raise_error_if_input_is_not_list_of_str(files)
+
+        self.__abs_paths, self.__filenames = \
+            self.__make_absolute_paths_and_filenames(files)
+        self.__raise_value_error_if_no_files_found()
+
+    @staticmethod
+    def __raise_error_if_input_is_not_list_of_str(files) -> None:
+        if not isinstance(files, list):
+            raise TypeError('files must be a list.')
+        if not all([isinstance(f, str) for f in files]):
+            raise ValueError('all elements in files must be strs.')
+
+    def __make_absolute_paths_and_filenames(self, files: list[str]) -> \
+            tuple[list[str], list[DataFilename]]:
+        input_abs_paths = self.__get_unique_absolute_paths(files)
+        input_filenames = self.__get_filenames_from_paths(input_abs_paths)
+        iuvs_data_filenames = self.__make_filenames(input_filenames)
+        latest_filenames = self.__get_latest_filenames(iuvs_data_filenames)
+        latest_abs_paths = self.__get_latest_abs_paths(latest_filenames,
+                                                       input_abs_paths)
+        return latest_abs_paths, latest_filenames
+
+    @staticmethod
+    def __get_unique_absolute_paths(files: list[str]) -> list[str]:
+        return sorted(list(set(files)))
+
+    @staticmethod
+    def __get_filenames_from_paths(paths: list[str]) -> Generator:
+        return (os.path.basename(f) for f in paths)
+
+    def __make_filenames(self, filenames: Generator) -> Generator:
+        return (k for f in filenames if
+                (k := self.__make_filename(f)) is not None)
+
+    @staticmethod
+    # TODO: When python 3.10 releases, change -> DataFilename | None
+    def __make_filename(filename: str) -> DataFilename:
+        try:
+            return DataFilename(filename)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def __get_latest_filenames(filenames: Generator) -> list[DataFilename]:
+        fnames = {f.filename.replace('s0', 'a0'): f for f in filenames}
+        prev_key, prev_time = '', ''
+        for k, v in copy.deepcopy(fnames).items():
+            if v.timestamp != prev_time:
+                prev_time = v.timestamp
+            else:
+                del fnames[prev_key]
+            prev_key = k
+        return [*fnames.values()]
+
+    @staticmethod
+    def __get_latest_abs_paths(filenames: list[DataFilename],
+                               abs_paths: list[str]) -> list[str]:
+        return [f for f in abs_paths for g in filenames if g.filename in f]
+
+    def __raise_value_error_if_no_files_found(self) -> None:
+        if not self.__abs_paths:
+            raise ValueError('None of the input strings are IUVS files.')
+
+    @property
+    def abs_paths(self) -> list[str]:
+        """Get the absolute paths of the input IUVS data files.
+
+        Returns
+        -------
+        list[str]
+            Absolute paths of the data files.
+
+        """
+        return self.__abs_paths
+
+    @property
+    def filenames(self) -> list[DataFilename]:
+        """Get the filenames of the input IUVS data files.
+
+        Returns
+        -------
+        list[IUVSDataFilename]
+            Filenames of the inputs.
+
+        """
+        return self.__filenames
 
 
 class DataPath:

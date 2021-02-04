@@ -46,17 +46,3 @@ class TestAbsPaths(TestIUVSDataFilenameCollection):
             i = IUVSDataFilenameCollection(self.clean_files)
             i.abs_paths = 0
 
-
-# TODO: test filenames
-# TODO: test nfiles
-# TODO: test get matching abs paths
-# TODO: test get matching filenames
-# TODO: test downscale abs paths
-# TODO: test downscale filenames
-# TODO: test all l1b
-# TODO: test all l1c
-# TODO: test all apoapse
-# TODO: test all peripase
-# TODO: test all muv
-# TODO: test all fuv
-# TODO: test all ech
