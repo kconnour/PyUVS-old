@@ -2,7 +2,7 @@ import os
 from unittest import TestCase
 import warnings
 from pyuvs.files import DataFilename, DataFilenameCollection, DataPath, \
-    DataPattern
+    DataPattern, FileClassifier
 
 
 class TestDataFilename(TestCase):
@@ -552,3 +552,56 @@ class TestFilenames(TestDataFilenameCollection):
         i = DataFilenameCollection(self.clean_files)
         with self.assertRaises(AttributeError):
             i.filenames = 0
+
+
+class TestFileClassifier(TestCase):
+    def setUp(self) -> None:
+        f0 = 'mvn_iuv_l1b_apoapse-orbit10080-muv_20191009T153108_v13_r01.fits.gz'
+        f1 = 'mvn_iuv_l1b_apoapse-orbit10080-muv_20191009T165130_v13_r01.fits.gz'
+        self.clean_files = [f'/foo/{f}' for f in [f0, f1]]
+        self.dfc = DataFilenameCollection(self.clean_files)
+
+
+class TestFileClassifierInit(TestFileClassifier):
+    def test_int_input_raises_type_error(self) -> None:
+        with self.assertRaises(TypeError):
+            FileClassifier(1)
+
+    def test_list_input_raises_type_error(self) -> None:
+        with self.assertRaises(TypeError):
+            FileClassifier(self.clean_files)
+
+
+class TestAllL1b(TestFileClassifier):
+    def test_known_input_raises_true(self) -> None:
+        self.assertTrue(FileClassifier(self.dfc).all_l1b())
+
+
+class TestAllL1c(TestFileClassifier):
+    def test_known_input_raises_false(self) -> None:
+        self.assertFalse(FileClassifier(self.dfc).all_l1c())
+
+
+class TestAllApoapse(TestFileClassifier):
+    def test_known_input_raises_true(self) -> None:
+        self.assertTrue(FileClassifier(self.dfc).all_apoapse())
+
+
+class TestAllPeriapse(TestFileClassifier):
+    def test_known_input_raises_false(self) -> None:
+        self.assertFalse(FileClassifier(self.dfc).all_periapse())
+
+
+class TestAllEch(TestFileClassifier):
+    def test_known_input_raises_false(self) -> None:
+        self.assertFalse(FileClassifier(self.dfc).all_ech())
+
+
+class TestAllFuv(TestFileClassifier):
+    def test_known_input_raises_false(self) -> None:
+        self.assertFalse(FileClassifier(self.dfc).all_fuv())
+
+
+class TestAllMuv(TestFileClassifier):
+    def test_known_input_raises_true(self) -> None:
+        self.assertTrue(FileClassifier(self.dfc).all_muv())

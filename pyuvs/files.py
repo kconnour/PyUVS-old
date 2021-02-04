@@ -856,3 +856,99 @@ class DataPattern:
     @staticmethod
     def __remove_recursive_glob_pattern(pattern: str) -> str:
         return pattern.replace('**', '*')
+
+
+class FileClassifier:
+    """FileClassifier determines if IUVS data filenames meet a condition.
+
+    A FileClassifier object contains methods to determine if a
+    DataFilenameCollection fits a given condition.
+
+    """
+
+    def __init__(self, collection: DataFilenameCollection) -> None:
+        self.__dfc = collection
+        self.__raise_type_error_if_input_is_not_data_filename_collection()
+
+    def __raise_type_error_if_input_is_not_data_filename_collection(self) \
+            -> None:
+        if not isinstance(self.__dfc, DataFilenameCollection):
+            raise TypeError('collection must be a DataFilenameCollection.')
+
+    def all_l1b(self) -> bool:
+        """Determine if all files in the collection are level 1b data files.
+
+        Returns
+        -------
+        bool
+            True if all files are level 1b; False otherwise.
+
+        """
+        return all((f.level == 'l1b' for f in self.__dfc.filenames))
+
+    def all_l1c(self) -> bool:
+        """Determine if all files in the collection are level 1c data files.
+
+        Returns
+        -------
+        bool
+            True if all files are level 1c; False otherwise.
+        """
+        return all((f.level == 'l1c' for f in self.__dfc.filenames))
+
+    def all_apoapse(self) -> bool:
+        """Determine if all files in the collection are apoapse data files.
+
+        Returns
+        -------
+        bool
+            True if all files are from the apoapse segment; False otherwise.
+
+        """
+        return all((f.segment == 'apoapse' for f in self.__dfc.filenames))
+
+    def all_periapse(self) -> bool:
+        """Determine if all files in the collection are periapse data files.
+
+        Returns
+        -------
+        bool
+            True if all files are from the periapse segment; False otherwise.
+
+        """
+        return all((f.segment == 'periapse' for f in self.__dfc.filenames))
+
+    def all_ech(self) -> bool:
+        """Determine if all files in the collection are echelle data files..
+
+        Returns
+        -------
+        bool
+            True if all files are from the ech channel; False otherwise.
+
+        """
+        return all((f.channel == 'ech' for f in self.__dfc.filenames))
+
+    def all_fuv(self) -> bool:
+        """Determine if all files in the collection are far-ultraviolet data
+        files.
+
+        Returns
+        -------
+        bool
+            True if all files are from the fuv channel; False otherwise.
+
+        """
+        return all((f.channel == 'fuv' for f in self.__dfc.filenames))
+
+    def all_muv(self) -> bool:
+        """Determine if all files in the collection are mid-ultraviolet data
+        files.
+
+        Returns
+        -------
+        bool
+            True if all files are from the muv segment; False otherwise.
+
+        """
+        return all((f.channel == 'muv' for f in self.__dfc.filenames))
