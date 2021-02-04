@@ -1,6 +1,8 @@
 import os
 from unittest import TestCase
-from pyuvs.files import DataFilename, DataPath
+import warnings
+import numpy as np
+from pyuvs.files import DataFilename, DataPath, DataPattern
 
 
 class TestDataFilename(TestCase):
@@ -335,8 +337,11 @@ class TestDataPathInit(TestDataPath):
             DataPath(['/'])
 
     def test_nonexistent_path_raises_is_a_directory_error(self) -> None:
-        with self.assertRaises(IsADirectoryError):
+        with warnings.catch_warnings(record=True) as warning:
+            warnings.simplefilter("always")
             DataPath('/AZBK5nLKDE')
+            self.assertEqual(1, len(warning))
+            self.assertEqual(warning[-1].category, UserWarning)
 
 
 class TestBlock(TestDataPath):
@@ -381,3 +386,112 @@ class TestBlockPaths(TestDataPath):
         test_orbits = ['7700', '7710']
         with self.assertRaises(ValueError):
             self.path.block_paths(test_orbits)
+
+
+class TestDataPattern(TestCase):
+    def setUp(self):
+        self.pattern = DataPattern()
+
+
+# TODO: I hate this name, which only arises cause the class + method have the
+#  same name.
+class TestDataPatternMethod(TestDataPattern):
+    def test_data_pattern_without_input_gives_expected_result(self):
+        expected_pattern = 'mvn_iuv_*_*-orbit*-*_*T*_*_*.fits*'
+        self.assertEqual(expected_pattern, self.pattern.data_pattern())
+
+    def test_pattern_adds_level_to_proper_position(self):
+        answer = f'mvn_iuv_l1b_*-orbit*-*_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(level='l1b'))
+
+    def test_pattern_adds_segment_to_proper_position(self):
+        answer = f'mvn_iuv_*_periapse-orbit*-*_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(segment='periapse'))
+
+    def test_pattern_adds_orbit_to_proper_position(self):
+        answer = f'mvn_iuv_*_*-orbit*9000-*_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(orbit='*9000'))
+
+    def test_pattern_adds_channel_to_proper_position(self):
+        answer = f'mvn_iuv_*_*-orbit*-fuv_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(channel='fuv'))
+
+    def test_pattern_adds_timestamp_to_proper_position(self):
+        answer = f'mvn_iuv_*_*-orbit*-*_20200101T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(timestamp='20200101'))
+
+    def test_pattern_adds_version_to_proper_position(self):
+        answer = f'mvn_iuv_*_*-orbit*-*_*T*_v13_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(version='v13'))
+
+    def test_pattern_adds_extension_to_proper_position(self):
+        answer = f'mvn_iuv_*_*-orbit*-*_*T*_*_*.xml*'
+        self.assertEqual(answer, self.pattern.data_pattern(extension='xml'))
+
+    def test_orbit_input_can_be_int(self):
+        answer = f'mvn_iuv_*_*-orbit10000-*_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(orbit=10000))
+
+    def test_channel_can_be_empty_str(self):
+        answer = 'mvn_iuv_*_*-orbit*_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.data_pattern(channel=''))
+
+
+class TestOrbitPattern(TestDataPattern):
+    def test_output_is_expected(self):
+        answer = 'mvn_iuv_*_inlimb-orbit09000-muv_*T*_*_*.fits*'
+        self.assertEqual(answer, self.pattern.orbit_pattern(9000, 'inlimb', 'muv'))
+
+    def test_list_orbit_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self.pattern.orbit_pattern([9000], 'inlimb', 'muv')
+
+    def test_str_orbit_raises_value_error(self):
+        with self.assertRaises(TypeError):
+            self.pattern.orbit_pattern('foo', 'inlimb', 'muv')
+
+
+class TestMultiOrbitPatterns(TestDataPattern):
+    def test_list_of_ints_matches_expected_output(self):
+        expected_output = ['mvn_iuv_*_apoapse-orbit03453-muv_*T*_*_*.fits*',
+                           'mvn_iuv_*_apoapse-orbit03455-muv_*T*_*_*.fits*']
+        self.assertEqual(expected_output, self.pattern.multi_orbit_patterns(
+            [3453, 3455], 'apoapse', 'muv'))
+
+    def test_int_orbit_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self.pattern.multi_orbit_patterns(1, 'apoapse', 'muv')
+
+    def test_orbit_list_of_str_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self.pattern.multi_orbit_patterns(['foo', 'bar'], 'apoapse', 'muv')
+
+
+class TestGenericPattern(TestDataPattern):
+    def test_same_sized_patterns_matches_expected_output(self):
+        patterns = ['muv', 'ech']
+        expected_output = '*[me][uc][vh]*'
+        self.assertEqual(expected_output,
+                         self.pattern.generic_pattern(patterns))
+
+    def test_different_sized_patterns_matches_expected_output(self):
+        patterns = ['apoapse', 'inlimb']
+        expected_output = '*[ai][pn][ol][ai][pm][sb]*'
+        self.assertEqual(expected_output,
+                         self.pattern.generic_pattern(patterns))
+
+    def test_int_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self.pattern.generic_pattern(10)
+
+    def test_list_of_ints_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            self.pattern.generic_pattern([10, 11])
+
+
+class TestPrependRecursivePattern(TestDataPattern):
+    def test_prepend_recursive_pattern_matches_expected_output(self):
+        dummy_str = 'foo/bar'
+        expected_output = '**/foo/bar'
+        self.assertEqual(expected_output,
+                         self.pattern.prepend_recursive_pattern(dummy_str))

@@ -3,6 +3,7 @@ computer.
 """
 import os
 from typing import Any
+from warnings import warn
 import numpy as np
 from pyuvs.misc import orbit_code
 
@@ -437,27 +438,30 @@ class DataPath:
 
         Raises
         ------
-        IsADirectoryError
-            Raised if path does not point to a valid directory.
         TypeError
             Raised if path is not a str.
+
+        Warnings
+        --------
+        UserWarning
+            Raised if path does not point to a valid directory.
 
         """
         self.__path = path
 
         self.__raise_error_if_input_is_bad()
+        self.__warn_if_path_does_not_exist()
 
     def __raise_error_if_input_is_bad(self) -> None:
         self.__raise_type_error_if_input_is_not_string()
-        self.__raise_is_a_directory_error_if_path_does_not_exist()
 
     def __raise_type_error_if_input_is_not_string(self) -> None:
         if not isinstance(self.__path, str):
             raise TypeError('path must be a str.')
 
-    def __raise_is_a_directory_error_if_path_does_not_exist(self) -> None:
+    def __warn_if_path_does_not_exist(self) -> None:
         if not os.path.exists(self.__path):
-            raise IsADirectoryError('path must point to a valid directory.')
+            warn('path must point to a valid directory.')
 
     def block(self, orbit: int) -> str:
         """Make the path to an orbit, assuming orbits are organized in blocks
@@ -543,3 +547,198 @@ class DataPath:
             -> None:
         if not isinstance(quantity, list):
             raise TypeError(f'{name} must be a list.')
+
+
+class DataPattern:
+    """A DataPattern object creates glob search patterns for IUVS data.
+
+    DataPattern contains methods to create strings of glob search patterns,
+    tailored to IUVS data.
+
+    """
+
+    def data_pattern(self, level: str = '*', segment: str = '*',
+                     orbit: str = '*', channel: str = '*',
+                     timestamp: str = '*', version: str = '*',
+                     extension: str = 'fits') -> str:
+        """Make a glob pattern of an IUVS data filename.
+
+        Parameters
+        ----------
+        level: str, optional
+            The level pattern to get data from. Default is '*'.
+        segment: str, optional
+            The segment pattern to get data from. Default is '*'.
+        orbit: str, optional
+            The orbit pattern to get data from. Default is '*'.
+        channel: str, optional
+            The channel pattern to get data from. Default is '*'.
+        timestamp: str, optional
+            The timestamp pattern to get data from. Default is '*'.
+        version: str, optional
+            The version pattern to get data from. Default is '*'.
+        extension: str, optional
+            The extension pattern to get data from. Default is 'fits'.
+
+        Returns
+        -------
+        str
+            The pattern with the input sub-patterns.
+
+        Examples
+        --------
+        >>> dp = DataPattern()
+        >>> dp.data_pattern()
+        'mvn_iuv_*_*-orbit*-*_*T*_*_*.fits*'
+
+        >>> dp.data_pattern(segment='apoapse', channel='ech')
+        'mvn_iuv_*_apoapse-orbit*-ech_*T*_*_*.fits*'
+        """
+
+        # TODO: this is a hackish solution to accommodate l1c files, which have
+        #  no channel info in the filename evidently.
+        if channel:
+            pattern = f'mvn_iuv_{level}_{segment}-orbit{orbit}-{channel}_' \
+                      f'{timestamp}T*_{version}_*.{extension}*'
+        else:
+            pattern = f'mvn_iuv_{level}_{segment}-orbit{orbit}{channel}_' \
+                      f'{timestamp}T*_{version}_*.{extension}*'
+        return self.__remove_recursive_glob_pattern(pattern)
+
+    def orbit_pattern(self, orbit: int, segment: str, channel: str) -> str:
+        """Make a glob pattern for an input orbit number, as well as segment
+        and channel patterns.
+
+        Parameters
+        ----------
+        orbit: int
+            The orbit number to get data from.
+        segment: str
+            The segment pattern to get data from.
+        channel: str
+            The channel pattern to get data from.
+
+        Returns
+        -------
+        pattern: str
+            The glob pattern that matches the input patterns.
+
+        Raises
+        ------
+        TypeError
+            Raised if orbit is not an int.
+
+        Examples
+        --------
+        >>> dp = DataPattern()
+        >>> dp.orbit_pattern(9000, 'inlimb', 'muv')
+        'mvn_iuv_*_inlimb-orbit09000-muv_*T*_*_*.fits*'
+
+        >>> segment_pattern = dp.generic_pattern(['apoapse', 'inlimb'])
+        >>> dp.orbit_pattern(9984, segment_pattern, 'fuv')
+        'mvn_iuv_*_*[ai][pn][ol][ai][pm][sb]*-orbit09984-fuv_*T*_*_*.fits*'
+        """
+
+        try:
+            return self.data_pattern(orbit=orbit_code(orbit), segment=segment,
+                                     channel=channel)
+        except TypeError as te:
+            raise TypeError('orbit must be an int.') from te
+
+    def multi_orbit_patterns(self, orbits: list[int], segment: str,
+                             channel: str) -> list[str]:
+        """Make glob patterns for each orbit in a list of orbits.
+
+        Parameters
+        ----------
+        orbits: list[int]
+            Orbits to make patterns for.
+        segment: str
+            The segment pattern to get data from.
+        channel: str
+            The channel pattern to get data from.
+
+        Returns
+        -------
+        list[str]
+            Patterns for each input orbit.
+
+        Raises
+        ------
+        TypeError
+            Raised if the input is not a list of ints.
+
+        Examples
+        --------
+        >>> DataPattern().multi_orbit_patterns([3453, 3455], 'apoapse', 'muv')
+        ['mvn_iuv_*_apoapse-orbit03453-muv_*T*_*_*.fits*', 'mvn_iuv_*_apoapse-orbit03455-muv_*T*_*_*.fits*']
+        """
+
+        try:
+            return [self.orbit_pattern(f, segment, channel) for f in orbits]
+        except TypeError:
+            raise TypeError('The input value of orbit should be a list of ints.')
+
+    @staticmethod
+    def generic_pattern(patterns: list[str]) -> str:
+        """Create a generic glob search pattern from a list of patterns. This
+        replicates the functionality of the brace expansion glob has in some
+        shells.
+
+        Parameters
+        ----------
+        patterns: list[str]
+            Patterns to search for.
+
+        Returns
+        -------
+        str
+            The glob search pattern that accounts for the input patterns.
+
+        Raises
+        ------
+        TypeError
+            Raised if the patterns are not an iterable.
+
+        Examples
+        --------
+        >>> segments = ['apoapse', 'inlimb']
+        >>> DataPattern().generic_pattern(segments)
+        '*[ai][pn][ol][ai][pm][sb]*'
+
+        """
+        try:
+            shortest_pattern_length = min([len(f) for f in patterns])
+            split_patterns = (''.join([f[i] for f in patterns]) for i in
+                              range(shortest_pattern_length))
+            pattern = ''.join([f'[{f}]' for f in split_patterns])
+            return '*' + pattern + '*'
+        except TypeError:
+            raise TypeError('patterns must be an iterable.')
+
+    @staticmethod
+    def prepend_recursive_pattern(pattern: str) -> str:
+        """Prepend '**/' to the input pattern.
+
+        Parameters
+        ----------
+        pattern: str
+            Generic glob pattern.
+
+        Returns
+        -------
+        str
+            Input pattern with '**/' prepended.
+
+        Examples
+        --------
+        >>> dp = DataPattern()
+        >>> dp.prepend_recursive_pattern(dp.data_pattern())
+        '**/mvn_iuv_*_*-orbit*-*_*T*_*_*.fits*'
+
+        """
+        return f'**/{pattern}'
+
+    @staticmethod
+    def __remove_recursive_glob_pattern(pattern: str) -> str:
+        return pattern.replace('**', '*')
