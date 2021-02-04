@@ -2,7 +2,7 @@ import os
 from unittest import TestCase
 import warnings
 from pyuvs.files import DataFilename, DataFilenameCollection, DataPath, \
-    DataPattern, FileClassifier
+    DataPattern, FileClassifier, FileFinder
 
 
 class TestDataFilename(TestCase):
@@ -605,3 +605,30 @@ class TestAllFuv(TestFileClassifier):
 class TestAllMuv(TestFileClassifier):
     def test_known_input_raises_true(self) -> None:
         self.assertTrue(FileClassifier(self.dfc).all_muv())
+
+
+class TestFileFinder(TestCase):
+    def setUp(self) -> None:
+        pass
+
+
+class TestFileFinderInit(TestFileFinder):
+    def test_int_input_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            FileFinder(1)
+
+    def test_nonexistent_path_raises_os_error(self):
+        with self.assertRaises(OSError):
+            FileFinder('/foo/bar')
+
+
+class TestSoschob(TestFileFinder):
+    pass
+
+
+class TestMultiOrbitFiles(TestFileFinder):
+    pass
+
+
+class TestOrbitRangeFiles(TestFileFinder):
+    pass

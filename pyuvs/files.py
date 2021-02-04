@@ -3,6 +3,7 @@ computer.
 """
 import copy
 import os
+from pathlib import Path
 from typing import Any, Generator
 from warnings import warn
 import numpy as np
@@ -952,3 +953,136 @@ class FileClassifier:
 
         """
         return all((f.channel == 'muv' for f in self.__dfc.filenames))
+
+
+class FileFinder:
+    """FileFinder helps users find IUVS data files on their computer.
+
+    FileFinder holds methods that help the user find files on their computer
+    given a set of assumptions.
+
+    """
+
+    def __init__(self, path: str) -> None:
+        """
+        Parameters
+        ----------
+        path: str
+            The absolute path where to begin looking for IUVS data files.
+
+        Raises
+        ------
+        OSError
+            Raised if path does not exist.
+        TypeError
+            Raised if path is not a str.
+
+        """
+        self.__path = path
+
+        self.__raise_error_if_input_path_is_bad()
+
+    def __raise_error_if_input_path_is_bad(self) -> None:
+        self.__raise_type_error_if_path_is_not_str()
+        self.__raise_os_error_if_path_does_not_exist()
+
+    def __raise_type_error_if_path_is_not_str(self) -> None:
+        if not isinstance(self.__path, str):
+            raise TypeError('path must be a str.')
+
+    def __raise_os_error_if_path_does_not_exist(self) -> None:
+        if not os.path.exists(self.__path):
+            raise OSError(f'The path "{self.__path}" does not exist on this '
+                          'computer.')
+
+    def soschob(self, orbit: int, segment: str = 'apoapse',
+                channel: str = 'muv') -> DataFilenameCollection:
+        """Make a DataFilenameCollection for files matching an input orbit,
+        segment pattern, and channel pattern, assuming orbits are organized in
+        blocks of 100.
+
+        Parameters
+        ----------
+        orbit: int
+            The orbit to get files from.
+        segment: str
+            The observing segment to get files from. Default is 'apoapse'.
+        channel: str
+            The observing mode to get files from. Default is 'muv'.
+
+        Returns
+        -------
+        DataFilenameCollection:
+            Matching files from the input orbit, segment, and channel.
+
+        """
+        p = DataPath(self.__path).block(orbit)
+        pat = DataPattern().orbit_pattern(orbit, segment, channel)
+        abs_paths = self.__glob_files(p, pat)
+        return DataFilenameCollection(abs_paths)
+
+    def multi_orbit_files(self, orbits: list[int], segment: str = 'apoapse',
+                          channel: str = 'muv') -> DataFilenameCollection:
+        """Make a DataFilenameCollection for an input list of orbits,
+        segment pattern, and channel pattern, assuming orbits are organized in
+        blocks of 100.
+
+        Parameters
+        ----------
+        orbits: list[int]
+            Orbits to get files from.
+        segment: str
+            The observing segment to get files from. Default is 'apoapse'.
+        channel: str
+            The observing channel to get files from. Default is 'muv'.
+
+        Returns
+        -------
+        DataFilenameCollection
+            Matching files from the input orbits, segment, and channel.
+
+        """
+        p = DataPath(self.__path).block_paths(orbits)
+        pat = DataPattern().multi_orbit_patterns(orbits, segment, channel)
+        path_list = [self.__glob_files(p[f], pat[f]) for f in range(len(p))]
+        abs_paths = [k for f in path_list for k in f]
+        return DataFilenameCollection(abs_paths)
+
+    def orbit_range_files(self, orbit_start: int, orbit_end: int,
+                          segment: str = 'apoapse', channel: str = 'muv') \
+            -> DataFilenameCollection:
+        """ Make a DataFilenameCollection for all orbits in a range of orbits
+        with a segment pattern and channel pattern, assuming orbits are
+        organized in blocks of 100.
+
+        Parameters
+        ----------
+        orbit_start: int
+            The starting orbit to get files from.
+        orbit_end: int
+            The ending orbit to get files from.
+        segment: str
+            The observing segment to get files from. Default is 'apoapse'.
+        channel: str
+            The observing channel to get files from. Default is 'muv'.
+
+        Returns
+        -------
+        DataFilenameCollection
+            Matching files from the input orbit range, segment, and channel.
+
+        """
+        orbits = list(range(orbit_start, orbit_end))
+        return self.multi_orbit_files(orbits, segment=segment, channel=channel)
+
+    def __glob_files(self, path: str, pattern: str) -> list[str]:
+        g = self.__perform_glob(path, pattern)
+        return self.__get_absolute_paths_of_glob(g)
+
+    @staticmethod
+    def __perform_glob(path: str, pattern: str) -> Generator:
+        return Path(path).glob(pattern)
+
+    @staticmethod
+    def __get_absolute_paths_of_glob(inp_glob: Generator) -> list[str]:
+        return sorted([str(f) for f in inp_glob if f.is_file()])
