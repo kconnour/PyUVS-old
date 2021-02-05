@@ -452,6 +452,7 @@ class DataFilenameCollection:
         self.__abs_paths, self.__filenames = \
             self.__make_absolute_paths_and_filenames(files)
         self.__raise_value_error_if_no_files_found()
+        self.__n_files = self.__compute_n_files()
 
     @staticmethod
     def __raise_error_if_input_is_not_list_of_str(files) -> None:
@@ -511,6 +512,9 @@ class DataFilenameCollection:
         if not self.__abs_paths:
             raise ValueError('None of the input strings are IUVS files.')
 
+    def __compute_n_files(self) -> int:
+        return len(self.__abs_paths)
+
     @property
     def abs_paths(self) -> list[str]:
         """Get the absolute paths of the input IUVS data files.
@@ -534,6 +538,18 @@ class DataFilenameCollection:
 
         """
         return self.__filenames
+
+    @property
+    def n_files(self) -> int:
+        """Get the number of unique files.
+
+        Returns
+        -------
+        int
+            The number of unique files present.
+
+        """
+        return self.__n_files
 
 
 class DataPath:
