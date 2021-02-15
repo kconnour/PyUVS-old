@@ -10,36 +10,38 @@ import numpy as np
 from pyuvs.misc import orbit_code
 
 
-# TODO: Most of the logic here could go into a higher class like IUVSFilename
-#  so that it could work on .xml files or quicklooks
-# TODO: pylint says I have too many instance variables (20 / 7)
+# TODO: Consider renaming this since it works on xml and QLs
+# TODO: After revising this, it is untested
+# TODO: pylint says I have too many instance variables (21 / 7)
 class DataFilename:
     """DataFilename is a data structure containing info from IUVS filenames.
 
-    DataFilename accepts a string of an IUVS data filename and extracts all
-    information related to the observation and processing pipeline from the
-    input.
+    DataFilename accepts a string of an absolute path to an IUVS filename
+    and extracts all information related to the observation and processing
+    pipeline from the input.
 
     """
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, path: str) -> None:
         """
         Parameters
         ----------
-        filename: str
-            The IUVS data filename.
+        path: str
+            The absolute path of an IUVS data product.
 
         Raises
         ------
+        FileNotFoundError
+            Raised if the input path does not lead to a valid file.
         TypeError
-            Raised if the input is not a str.
-        ValueError
-            Raised if the input is not an IUVS data filename.
+            Raised if the input path is not a string.
 
         """
-        self.__filename = filename
+        self.__path = path
+        self.__raise_file_not_found_error_if_file_does_not_exist()
 
-        self.__raise_error_if_input_is_bad()
+        self.__filename = self.__extract_filename_from_path()
+        self.__raise_file_exists_error_if_not_iuvs_file()
 
         self.__spacecraft = self.__extract_spacecraft_from_filename()
         self.__instrument = self.__extract_instrument_from_filename()
@@ -61,37 +63,19 @@ class DataFilename:
         self.__revision = self.__extract_revision_from_filename()
         self.__extension = self.__extract_extension_from_filename()
 
-    def __raise_error_if_input_is_bad(self) -> None:
-        self.__raise_type_error_if_input_is_not_str()
-        self.__raise_value_error_if_input_is_not_iuvs_data_filename()
+    def __raise_file_not_found_error_if_file_does_not_exist(self) -> None:
+        if not os.path.exists(self.__path):
+            raise FileNotFoundError('The input path does not exist.')
 
-    def __raise_type_error_if_input_is_not_str(self) -> None:
-        if not isinstance(self.__filename, str):
-            raise TypeError('filename must be a str.')
+    def __extract_filename_from_path(self) -> str:
+        try:
+            return os.path.basename(self.__path)
+        except TypeError as te:
+            raise TypeError('Cannot get the basename from the path.') from te
 
-    def __raise_value_error_if_input_is_not_iuvs_data_filename(self) -> None:
-        checks = self.__make_filename_checks()
-        if not all(checks):
-            raise ValueError('The input file is not an IUVS data file.')
-
-    def __make_filename_checks(self) -> list[bool]:
-        return [self.__check_file_begins_with_mvn_iuv(),
-                self.__check_filename_has_fits_extension(),
-                self.__check_filename_contains_6_underscores(),
-                self.__check_filename_contains_orbit()]
-
-    def __check_file_begins_with_mvn_iuv(self) -> bool:
-        return self.__filename.startswith('mvn_iuv_')
-
-    def __check_filename_has_fits_extension(self) -> bool:
-        return self.__filename.endswith('fits') or \
-               self.__filename.endswith('fits.gz')
-
-    def __check_filename_contains_6_underscores(self) -> bool:
-        return self.__filename.count('_') == 6
-
-    def __check_filename_contains_orbit(self) -> bool:
-        return 'orbit' in self.__filename
+    def __raise_file_exists_error_if_not_iuvs_file(self) -> None:
+        if not self.__filename.startswith('mvn_iuv_'):
+            raise FileExistsError('The input file is not an IUVS file.')
 
     def __extract_spacecraft_from_filename(self) -> str:
         return self.__split_filename_on_underscore()[0]
@@ -150,11 +134,19 @@ class DataFilename:
     def __extract_second_from_time(self) -> int:
         return int(self.__time[4:])
 
+    # TODO: In 3.10 change this to str | type(None)
     def __extract_version_from_filename(self) -> str:
-        return self.__split_filename_on_underscore()[5]
+        try:
+            return self.__split_filename_on_underscore()[5]
+        except IndexError:
+            return None
 
+    # TODO: In 3.10 change this to str | type(None)
     def __extract_revision_from_filename(self) -> str:
-        return self.__split_filename_on_underscore()[6]
+        try:
+            return self.__split_filename_on_underscore()[6]
+        except IndexError:
+            return None
 
     def __extract_extension_from_filename(self) -> str:
         return self.__split_stem_from_extension()[1]
@@ -180,16 +172,28 @@ class DataFilename:
                 if 'orbit' in f][0]
 
     def __str__(self) -> str:
-        return self.__filename
+        return self.__path
 
     @property
-    def filename(self) -> str:
-        """Get the input filename.
+    def path(self) -> str:
+        """Get the input absolute path.
 
         Returns
         -------
         str
-            The input filename.
+            The input absolute path.
+
+        """
+        return self.__path
+
+    @property
+    def filename(self) -> str:
+        """Get the filename from the absolute path.
+
+        Returns
+        -------
+        str
+            The filename.
 
         """
         return self.__filename
@@ -423,12 +427,12 @@ class DataFilename:
         return self.__extension
 
 
+# TODO: after revising this, it is untested
 class DataFilenameCollection:
-    """A DataFilenameCollection is a data structure for holding IUVS data files.
+    """A DataFilenameCollection is a data structure for holding IUVS files.
 
-    A DataFilenameCollection checks that the input files are IUVS data and only
-    keeps the most recent data files. It also keeps a parallel list of
-    DataFilename objects corresponding to the input filenames.
+    A DataFilenameCollection checks that the input files are IUVS data files and
+    only keeps the most recent data files.
 
     """
 
@@ -442,57 +446,44 @@ class DataFilenameCollection:
         Raises
         ------
         TypeError
-            Raised if files is not a list
+            Raised if the input files are not an iterable.
         ValueError
-            Raised if any of the values in files are not strings.
+            Raised if none of the input files are IUVS data files.
 
         """
-        self.__raise_error_if_input_is_not_list_of_str(files)
-
-        self.__abs_paths, self.__filenames = \
-            self.__make_absolute_paths_and_filenames(files)
-        self.__raise_value_error_if_no_files_found()
+        self.__filenames = self.__make_latest_data_filenames(files)
+        self.__raise_value_error_if_no_input_iuvs_files()
         self.__n_files = self.__compute_n_files()
 
-    @staticmethod
-    def __raise_error_if_input_is_not_list_of_str(files) -> None:
-        if not isinstance(files, list):
-            raise TypeError('files must be a list.')
-        if not all([isinstance(f, str) for f in files]):
-            raise ValueError('all elements in files must be strs.')
+    def __make_latest_data_filenames(self, files: list[str]) \
+            -> list[DataFilename]:
+        try:
+            filenames = self.__make_filenames(sorted(files))
+            data_filenames = self.__remove_non_fits_files(filenames)
+            return self.__get_latest_filenames(data_filenames)
+        except TypeError as te:
+            raise TypeError('files must be a list of strings.') from te
 
-    def __make_absolute_paths_and_filenames(self, files: list[str]) -> \
-            tuple[list[str], list[DataFilename]]:
-        input_abs_paths = self.__get_unique_absolute_paths(files)
-        input_filenames = self.__get_filenames_from_paths(input_abs_paths)
-        iuvs_data_filenames = self.__make_filenames(input_filenames)
-        latest_filenames = self.__get_latest_filenames(iuvs_data_filenames)
-        latest_abs_paths = self.__get_latest_abs_paths(latest_filenames,
-                                                       input_abs_paths)
-        return latest_abs_paths, latest_filenames
-
-    @staticmethod
-    def __get_unique_absolute_paths(files: list[str]) -> list[str]:
-        return sorted(list(set(files)))
-
-    @staticmethod
-    def __get_filenames_from_paths(paths: list[str]) -> Generator:
-        return (os.path.basename(f) for f in paths)
-
-    def __make_filenames(self, filenames: Generator) -> Generator:
-        return (k for f in filenames if
-                (k := self.__make_filename(f)) is not None)
+    def __make_filenames(self, filenames: list[str]) -> list[DataFilename]:
+        return [k for f in filenames if
+                (k := self.__make_filename(f)) is not None]
 
     @staticmethod
     # TODO: When python 3.10 releases, change -> DataFilename | None
     def __make_filename(filename: str) -> DataFilename:
         try:
             return DataFilename(filename)
-        except ValueError:
+        except FileExistsError:
+            return None
+        except FileNotFoundError:
+            return None
+        except TypeError:
             return None
 
+    # TODO: this logic can now be simplified since I don't need to keep the indx
     @staticmethod
-    def __get_latest_filenames(filenames: Generator) -> list[DataFilename]:
+    def __get_latest_filenames(filenames: list[DataFilename]) \
+            -> list[DataFilename]:
         fnames = {f.filename.replace('s0', 'a0'): f for f in filenames}
         prev_key, prev_time = '', ''
         for k, v in copy.deepcopy(fnames).items():
@@ -504,37 +495,26 @@ class DataFilenameCollection:
         return [*fnames.values()]
 
     @staticmethod
-    def __get_latest_abs_paths(filenames: list[DataFilename],
-                               abs_paths: list[str]) -> list[str]:
-        return [f for f in abs_paths for g in filenames if g.filename in f]
+    def __remove_non_fits_files(filenames: list[DataFilename]) \
+            -> list[DataFilename]:
+        return [f for f in filenames if
+                f.extension == 'fits' or f.extension == 'fits.gz']
 
-    def __raise_value_error_if_no_files_found(self) -> None:
-        if not self.__abs_paths:
-            raise ValueError('None of the input strings are IUVS files.')
+    def __raise_value_error_if_no_input_iuvs_files(self) -> None:
+        if not self.__filenames:
+            raise ValueError('There were no input IUVS data files.')
 
     def __compute_n_files(self) -> int:
-        return len(self.__abs_paths)
+        return len(self.__filenames)
 
     @property
-    def abs_paths(self) -> list[str]:
-        """Get the absolute paths of the input IUVS data files.
+    def filenames(self):
+        """Get the collection of DataFilenames made from the input files.
 
         Returns
         -------
-        list[str]
-            Absolute paths of the data files.
-
-        """
-        return self.__abs_paths
-
-    @property
-    def filenames(self) -> list[DataFilename]:
-        """Get the filenames of the input IUVS data files.
-
-        Returns
-        -------
-        list[IUVSDataFilename]
-            Filenames of the inputs.
+        list[DataFilename]
+            DataFilename for each latest data file in the input files.
 
         """
         return self.__filenames
