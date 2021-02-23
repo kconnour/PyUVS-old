@@ -829,7 +829,7 @@ class DataPattern:
 
     @staticmethod
     def prepend_recursive_pattern(pattern: str) -> str:
-        """Prepend '**/' to the input pattern.
+        """Prepend `**/` to the input pattern.
 
         Parameters
         ----------
@@ -839,7 +839,7 @@ class DataPattern:
         Returns
         -------
         str
-            Input pattern with '**/' prepended.
+            Input pattern with `**/` prepended.
 
         Examples
         --------
