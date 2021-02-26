@@ -155,6 +155,16 @@ class L1bObservationContents(IUVSDataContents):
         """
         return self.__get_observation()['wavelength']
 
+    @property
+    def solar_longitude(self):
+        """ Get the Ls used for each integration.
+        Returns
+        -------
+        wavelengths: np.ndarray
+            The wavelengths.
+        """
+        return self.__get_observation()['solar_longitude']
+
     def __get_observation(self):
         return self.hdulist['observation'].data
 
