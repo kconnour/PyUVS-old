@@ -165,6 +165,16 @@ class L1bObservationContents(IUVSDataContents):
         """
         return self.__get_observation()['solar_longitude']
 
+    @property
+    def orbit_number(self):
+        """ Get the orbit number.
+
+        Returns
+        -------
+
+        """
+        return self.__get_observation()['orbit_number']
+
     def __get_observation(self):
         return self.hdulist['observation'].data
 
