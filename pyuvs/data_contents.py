@@ -173,7 +173,7 @@ class L1bObservationContents(IUVSDataContents):
         -------
 
         """
-        return self.__get_observation()['orbit_number']
+        return self.__get_observation()['orbit_number'][0]
 
     def __get_observation(self):
         return self.hdulist['observation'].data
