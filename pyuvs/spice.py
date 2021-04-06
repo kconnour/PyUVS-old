@@ -58,12 +58,15 @@ class Spice:
 
         # TODO: I have absolutely no idea why we need to call the pool method. I
         #  think we should just need to furnish them
-        self.__pool_and_furnish(self.__mvn_kernel_path)
-        self.__pool_and_furnish(self.__generic_kernel_path)
+
+        self.__pool_and_furnish(self.__generic_kernel_path, 'generic')
 
         self.load_spacecraft_attitude()
+        print('loaded spacecraft attitude')
         self.__furnish_spacecraft_location()
+        print('loaded spacecraft location')
         self.__furnish_spacecraft_clock_kernels()
+        print('loaded spacecraft clock')
 
         self.__furnish_mars()
 
@@ -71,10 +74,10 @@ class Spice:
     def __clear_existing_kernels() -> None:
         spice.kclear()
 
-    def __pool_and_furnish(self, kernel_path: str) -> None:
+    def __pool_and_furnish(self, kernel_path: str, tm: str) -> None:
         split_path = self.__split_string_into_length(kernel_path, 78)
         spice.pcpool('PATH_VALUES', split_path)
-        tm_path = os.path.join(kernel_path, 'generic.tm')
+        tm_path = os.path.join(kernel_path, f'{tm}.tm')
         spice.furnsh(tm_path)
 
     @staticmethod
@@ -98,9 +101,11 @@ class Spice:
         self.__load_attitude_type(ck_path, 'app')
         self.__load_attitude_type(ck_path, 'sc')
 
-        f = glob.glob(os.path.join(ck_path, 'mvn_iuv_all_l0, 20*.bc'))
+        f = glob.glob(os.path.join(ck_path, 'mvn_iuv_all_l0_20*.bc'))
         if len(f) > 0:
             self.__furnish_array(self.__find_latest_kernel(f, 4))
+        else:
+            print('No C kernels found.')
 
     # This used to be load_sc_ck_type()
     def __load_attitude_type(self, ck_path, kernel_type) -> None:
@@ -118,7 +123,7 @@ class Spice:
         f = glob.glob(kern_path)
 
         if len(f) > 0:
-            day, lastday = self.__find_latest_kernel(f, 4, after=lastlong, getlast=True)
+            day, lastday = self.__find_latest_kernel(f, 3, after=lastlong, getlast=True)
         else:
             day, lastday = None, None
 
@@ -218,3 +223,9 @@ class Spice:
         mars_kernel = os.path.join(self.__generic_kernel_path, 'spk',
                                    'mar097.bsp')
         spice.furnsh(mars_kernel)
+
+
+if __name__ == '__main__':
+    p = '/media/kyle/Samsung_T5/IUVS_data/spice'
+    s = Spice(p)
+    s.load_spice()
