@@ -24,18 +24,16 @@ class OrbitalGeometry:
         self.__abcorr = 'NONE'
         self.__observer = 'MAVEN'
 
-    def find_maven_apsis(self, start_time: datetime = None,
-                         end_time: datetime = None,
-                         apsis: str = 'apoapse') \
+    def find_maven_apsis_et(self, end_time: datetime = None,
+                            apsis: str = 'apoapse') \
             -> tuple[np.ndarray, np.ndarray]:
         """Calculate the ephemeris times at either orbital apses between a start
-        and end time.
+        and end time. To do this, SPICE checks the Mars-MAVEN distance in steps
+        of 1 minute, and returns the local minima (for periapsis) or local
+        maxima (for apoapsis).
 
         Parameters
         ----------
-        start_time
-            Starting datetime to get apsis ephemeris times for. Default is
-            :code:`None`, which will start at the time of orbital insertion.
         end_time
             Ending datetime to get apsis ephemeris times for. Default is
             :code:`None`, which will get times up until today.
@@ -52,9 +50,10 @@ class OrbitalGeometry:
             range.
 
         """
-        et_start = 464623267 if start_time is not None \
-            else spice.datetime2et(start_time)
-        et_end = spice.datetime2et(datetime.utcnow()) if end_time is not None \
+        # TODO: it'd be nice to be able to specify a start time. This is easy to
+        #  implement here, but I'm not sure how I'd compute orbit numbers.
+        et_start = 464623267
+        et_end = spice.datetime2et(datetime.utcnow()) if end_time is None \
             else spice.datetime2et(end_time)
 
         relate, refval = self.__set_apsis_flags(apsis)
@@ -101,14 +100,13 @@ class OrbitalGeometry:
             refval = 3396 + 6200
         return relate, refval
 
-    @staticmethod
-    def spice_positions(et):
-        """
-        Calculates MAVEN spacecraft position, Mars solar longitude, and subsolar position for a given ephemeris time.
+    def spice_positions(self, et: float):
+        """Calculate MAVEN spacecraft position, Mars solar longitude, and the
+        subsolar position for a given ephemeris time.
 
         Parameters
         ----------
-        et : float
+        et
             Input epoch in ephemeris seconds past J2000.
 
         Returns
@@ -128,14 +126,14 @@ class OrbitalGeometry:
         subsolar_lon : array
             Sub-solar longitudes in degrees.
         mars_sun_km: array
-        """
 
-        # do a bunch of SPICE stuff only Justin understands...
-        target = 'Mars'
-        abcorr = 'LT+S'
-        observer = 'MAVEN'
-        spoint, trgepc, srfvec = spice.subpnt('Intercept: ellipsoid', target, et, 'IAU_MARS', abcorr, observer)
-        junk0, junk0, srvec_sun = spice.subpnt('Intercept: ellipsoid', target, et, 'IAU_MARS', abcorr, 'SUN')
+        """
+        spoint, trgepc, srfvec = \
+            spice.subpnt('Intercept: ellipsoid', self.__target, et, 'IAU_MARS',
+                         self.__abcorr, self.__observer)
+        _, _, srvec_sun = \
+            spice.subpnt('Intercept: ellipsoid', self.__target, et, 'IAU_MARS',
+                         self.__abcorr, 'SUN')
         rpoint, colatpoint, lonpoint = spice.recsph(spoint)
         if lonpoint > np.pi:
             lonpoint -= 2 * np.pi
@@ -145,120 +143,124 @@ class OrbitalGeometry:
         mars_sun_km = np.sqrt(np.sum(srvec_sun**2))
 
         # calculate subsolar position
-        sspoint, strgepc, ssrfvec = spice.subslr('Intercept: ellipsoid', target, et, 'IAU_MARS', abcorr, observer)
+        sspoint, strgepc, ssrfvec = \
+            spice.subslr('Intercept: ellipsoid', self.__target, et, 'IAU_MARS',
+                         self.__abcorr, self.__observer)
         srpoint, scolatpoint, slonpoint = spice.recsph(sspoint)
         if slonpoint > np.pi:
             slonpoint -= 2 * np.pi
         subsolar_lat = 90 - np.degrees(scolatpoint)
         subsolar_lon = np.degrees(slonpoint)
 
-        # calculate solar longitude
-        ls = spice.lspcn(target, et, abcorr)
-        ls = np.degrees(ls)
+        ls = np.degrees(spice.lspcn(self.__target, et, self.__abcorr))
 
-        # return the position information
-        return et, subsc_lat, subsc_lon, sc_alt_km, ls, subsolar_lat, subsolar_lon, mars_sun_km
+        return et, subsc_lat, subsc_lon, sc_alt_km, ls, subsolar_lat, \
+            subsolar_lon, mars_sun_km
 
-    def get_orbit_positions(self):
-        """
-        Calculates orbit segment geometry data.
+    def get_orbit_positions(self, end_time: datetime = None,) -> dict:
+        """Calculate orbit segment geometry.
 
         Parameters
         ----------
-        None.
+        end_time
+            The ending time to get orbital positions for.
 
         Returns
         -------
-        orbit_data : dict
-            Calculations of the spacecraft and Mars position. Includes orbit numbers, ephemeris time,
-            sub-spacecraft latitude, longitude, and altitude (in km), and solar longitude for three orbit segments: start,
-            periapse, apoapse.
-        """
+        orbit_data
+            Calculations of the following keys:
 
+            * orbit_number: The relative orbit number.
+            * et: The ephemeris time [seconds past J2000].
+            * subsc_lat: The sub-spacecraft latitude [degrees].
+            * subsc_lon: The sub-spacecraft longitude [degrees].
+            * subsc_alt: The sub-spacecraft altitude [km].
+            * solar_longiutde: The Ls [degrees].
+            * subsolar_lat: The sub-solar latitude [degrees].
+            * subsolar_lon: The sub-solar longitude [degrees].
+            * mars_sun_dist: The Mars-sun distance [km].
+
+        All of these values are calculated for 3 times: The start of the orbit
+        (which is 21.4 minutes before periapsis), periapsis, and apoapsis. The
+        arrays stored in the keys are indexed in this order.
+
+        """
         # get ephemeris times for orbit apoapse and periapse points
-        orbit_numbers, periapse_et = self.find_maven_apsis(apsis='periapse')
-        orbit_numbers, apoapse_et = self.find_maven_apsis(apsis='apoapse')
+        orbit_numbers, periapse_et = \
+            self.find_maven_apsis_et(end_time=end_time, apsis='periapse')
+        _, apoapse_et = \
+            self.find_maven_apsis_et(end_time=end_time, apsis='apoapse')
         n_orbits = len(orbit_numbers)
 
-        # make arrays to hold information
-        et = np.zeros((n_orbits, 3)) * np.nan
-        subsc_lat = np.zeros((n_orbits, 3)) * np.nan
-        subsc_lon = np.zeros((n_orbits, 3)) * np.nan
-        sc_alt_km = np.zeros((n_orbits, 3)) * np.nan
-        mars_sun_dist = np.zeros((n_orbits, 3)) * np.nan
-        solar_longitude = np.zeros((n_orbits, 3)) * np.nan
-        subsolar_lat = np.zeros((n_orbits, 3)) * np.nan
-        subsolar_lon = np.zeros((n_orbits, 3)) * np.nan
+        et, subsc_lat, subsc_lon, sc_alt, mars_sun_dist, solar_longitude, \
+        subsolar_lat, subsolar_lon = \
+            self.__compute_geometry_arrays(n_orbits, periapse_et, apoapse_et)
 
-        # loop through orbit numbers and calculate positions
+        orbit_data = {
+            'orbit_number': orbit_numbers,
+            'et': et,
+            'subsc_lat': subsc_lat,
+            'subsc_lon': subsc_lon,
+            'subsc_alt': sc_alt,
+            'solar_longitude': solar_longitude,
+            'subsolar_lat': subsolar_lat,
+            'subsolar_lon': subsolar_lon,
+            'mars_sun_km': mars_sun_dist,
+        }
+        return orbit_data
+
+    def __compute_geometry_arrays(self, n_orbits, periapse_et, apoapse_et):
+        et = self.__make_array_of_nans((n_orbits, 3))
+        subsc_lat = self.__make_array_of_nans((n_orbits, 3))
+        subsc_lon = self.__make_array_of_nans((n_orbits, 3))
+        sc_alt = self.__make_array_of_nans((n_orbits, 3))
+        mars_sun_dist = self.__make_array_of_nans((n_orbits, 3))
+        solar_longitude = self.__make_array_of_nans((n_orbits, 3))
+        subsolar_lat = self.__make_array_of_nans((n_orbits, 3))
+        subsolar_lon = self.__make_array_of_nans((n_orbits, 3))
+
+        return self.__fill_arrays_with_calculations(
+            n_orbits, et, subsc_lat, subsc_lon, sc_alt, mars_sun_dist,
+            solar_longitude, subsolar_lat, subsolar_lon, periapse_et,
+            apoapse_et)
+
+    @staticmethod
+    def __make_array_of_nans(shape: tuple) -> np.ndarray:
+        return np.zeros(shape) * np.nan
+
+    def __fill_arrays_with_calculations(
+            self, n_orbits, et, subsc_lat, subsc_lon, sc_alt, mars_sun_dist,
+            solar_longitude, subsolar_lat, subsolar_lon, periapse_et,
+            apoapse_et):
         for i in range(n_orbits):
-
             for j in range(3):
-
                 # first do orbit start positions
                 if j == 0:
-                    tet, tsubsc_lat, tsubsc_lon, tsc_alt_km, tls, tsubsolar_lat, tsubsolar_lon, mars_sun_km= self.spice_positions(
+                    tet, tsubsc_lat, tsubsc_lon, tsc_alt_km, tls, tsubsolar_lat, \
+                    tsubsolar_lon, mars_sun_km = self.spice_positions(
                         periapse_et[i] - 1284)
 
                 # then periapse positions
                 elif j == 1:
-                    tet, tsubsc_lat, tsubsc_lon, tsc_alt_km, tls, tsubsolar_lat, tsubsolar_lon, mars_sun_km = self.spice_positions(
+                    tet, tsubsc_lat, tsubsc_lon, tsc_alt_km, tls, tsubsolar_lat, \
+                    tsubsolar_lon, mars_sun_km = self.spice_positions(
                         periapse_et[i])
 
                 # and finally apoapse positions
                 else:
-                    tet, tsubsc_lat, tsubsc_lon, tsc_alt_km, tls, tsubsolar_lat, tsubsolar_lon, mars_sun_km = self.spice_positions(
+                    tet, tsubsc_lat, tsubsc_lon, tsc_alt_km, tls, tsubsolar_lat, \
+                    tsubsolar_lon, mars_sun_km = self.spice_positions(
                         apoapse_et[i])
 
                 # place calculations into arrays
                 et[i, j] = tet
                 subsc_lat[i, j] = tsubsc_lat
                 subsc_lon[i, j] = tsubsc_lon
-                sc_alt_km[i, j] = tsc_alt_km
+                sc_alt[i, j] = tsc_alt_km
                 mars_sun_dist[i, j] = mars_sun_km
                 solar_longitude[i, j] = tls
                 subsolar_lat[i, j] = tsubsolar_lat
                 subsolar_lon[i, j] = tsubsolar_lon
 
-        # make a dictionary of the calculations
-        orbit_data = {
-            'orbit_numbers': orbit_numbers,
-            'et': et,
-            'subsc_lat': subsc_lat,
-            'subsc_lon': subsc_lon,
-            'subsc_alt_km': sc_alt_km,
-            'solar_longitude': solar_longitude,
-            'subsolar_lat': subsolar_lat,
-            'subsolar_lon': subsolar_lon,
-            'mars_sun_km': mars_sun_dist,
-            'position_indices': np.array(['orbit start (periapse - 21.4 minutes)', 'periapse', 'apoapse']),
-        }
-
-        # return the calculations
-        return orbit_data
-
-
-if __name__ == '__main__':
-    from pyuvs.spice import Spice
-    from pyuvs.science_week import ScienceWeek
-
-    p = '/media/kyle/Samsung_T5/IUVS_data/spice'
-    Spice().load_spice(p)
-
-    sw = ScienceWeek()
-    start = sw.week_start_date(0)
-    d = datetime.combine(start, datetime.min.time())
-    print(spice.datetime2et(d))
-
-
-
-    '''g = OrbitalGeometry()
-    foo = g.get_orbit_positions()
-
-    print(foo['orbit_numbers'][3999])
-    print(foo['subsc_lat'][3999, 2])
-    print(foo['subsc_alt_km'][3999, 2])
-    print(foo['solar_longitude'][3999, 2])'''
-    #import pickle
-    #with open('/home/kyle/myOrbitDict.pickle', 'wb') as handle:
-    #    pickle.dump(foo, handle)
+        return et, subsc_lat, subsc_lon, sc_alt, mars_sun_dist, solar_longitude, \
+               subsolar_lat, subsolar_lon
