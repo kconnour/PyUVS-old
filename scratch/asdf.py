@@ -1,8 +1,9 @@
-from astropy.io import fits
+import pickle
 
+with open('/home/kyle/myOrbitDict.pickle', 'rb') as handle:
+    foo = pickle.load(handle)
 
-hdul = fits.open('/media/kyle/Samsung_T5/IUVS_data/orbit07200/mvn_iuv_l1b_apoapse-orbit07287-muv_20180627T205457_v13_r01.fits.gz')
-#print(hdul['pixelgeometry'].data.columns)
-lat = hdul['pixelgeometry'].data['pixel_vec']
-print(lat.shape)
-#print(lat[0, 0, :].shape)
+print(foo['orbit_numbers'][-1])
+print(foo['subsc_lat'][3999, 2])
+print(foo['subsc_alt_km'][3999, 2])
+print(foo['solar_longitude'][3999, 2])

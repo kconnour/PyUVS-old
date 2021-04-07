@@ -14,7 +14,7 @@ def setup_package():
         install_requires=[
             'astropy>=4.2',
             'numpy>=1.20.0',
-            'pdoc3>=0.9.2',
+            'spiceypy>=4.0.0',
         ],
     )
 
