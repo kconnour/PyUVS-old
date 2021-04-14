@@ -6,6 +6,10 @@ import warnings
 import numpy as np
 
 
+class EarthMarsTimeConverter:
+    
+
+
 class ScienceWeek:
     """ScienceWeek can convert between dates and MAVEN science weeks.
 

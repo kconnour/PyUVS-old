@@ -1,6 +1,0 @@
-Repos
---- pyuvs-data may deal with data
---- pyuvs-spice for spice stuff
---- pyuvs-database for apoapse/periapse database + science week?
---- pyuvs-projection for projections
---- pyuvs-dashboard for the weekly data dashboard
