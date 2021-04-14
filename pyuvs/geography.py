@@ -149,7 +149,3 @@ def find_location(orbit, data_location, feature):
     coordinates = check_location(feature, make_location_dict())
     best_scan, best_position, best_integration, closest_distance = find_closest_location(files, coordinates)
     return best_scan, best_position, best_integration, closest_distance
-
-
-
-

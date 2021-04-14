@@ -205,7 +205,7 @@ class OrbitalGeometry:
             'solar_longitude': solar_longitude,
             'subsolar_lat': subsolar_lat,
             'subsolar_lon': subsolar_lon,
-            'mars_sun_km': mars_sun_dist,
+            'mars_sun_dist': mars_sun_dist,
         }
         return orbit_data
 

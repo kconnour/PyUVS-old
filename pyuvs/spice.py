@@ -198,10 +198,7 @@ class Spice:
                     for fname in fnamelist]
 
         # find the individual dates
-        uniquedates, uniquedateindex = np.unique(datepart, return_index=True)
-
-        # extract the finald ate
-        last = uniquedates[-1]
+        last = np.unique(datepart)[-1]
 
         # if a date is chosen for after, then include only the latest kernels
         # after the specified date
@@ -211,7 +208,7 @@ class Spice:
 
         # otherwise, return all the latest kernels
         else:
-            retlist = [f for f, d in zip(fnamelist, datepart)]
+            retlist = fnamelist
 
         # if user wants, return also the date of the last of the latest kernels
         if getlast:
