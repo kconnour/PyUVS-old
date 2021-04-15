@@ -1,13 +1,103 @@
-"""science_week.py contains ScienceWeek, which can perform conversions between
-Earth times and MAVEN times.
+"""The time module contains classes for converting Earth times into Martian
+times.
 """
-from datetime import date, timedelta
+# TODO: consider making an ET class to go to Earth times
+from datetime import date, datetime, timedelta
 import warnings
+import julian
 import numpy as np
 
 
-class EarthMarsTimeConverter:
-    
+class UTC:
+    """An object that can convert between UTC times and Martian times.
+
+    UTC accepts a a coordinated universal time and contains methods to convert
+    it to various Martian times.
+
+    """
+
+    def __init__(self, time: datetime) -> None:
+        """
+        Parameters
+        ----------
+        time
+            The UTC time.
+
+        Raises
+        ------
+        TypeError
+            Raised if time is not an instance of datetime.datetime.
+
+        """
+        self.__time = time
+        self.__raise_type_error_if_not_datetime()
+
+        self.__input_julian_date = julian.to_jd(self.__time, fmt='jd')
+        self.__sols_per_mars_year = 668.6
+        self.__julian_ref = 2442765.667
+        self.__mars_year_ref = 12
+        self.__seconds_earth_day = 86400
+        self.__seconds_mars_day = 88775.245
+
+    def __raise_type_error_if_not_datetime(self) -> None:
+        if not isinstance(self.__time, datetime):
+            raise TypeError('time must be an instance of datetime.datetime.')
+
+    def to_sol(self) -> float:
+        """Convert the UTC to Martian sol.
+
+        Returns
+        -------
+        The Martian sol.
+
+        """
+        delta_julian = self.__input_julian_date - self.__julian_ref
+        day_length_ratio = self.__seconds_earth_day / self.__seconds_mars_day
+        return delta_julian * day_length_ratio % self.__sols_per_mars_year
+
+    def to_fractional_mars_year(self) -> float:
+        """Convert the UTC to fractional Martian year.
+
+        Returns
+        -------
+        The fractional Martian year.
+
+        """
+        delta_julian = self.__input_julian_date - self.__julian_ref
+        day_length_ratio = self.__seconds_earth_day / self.__seconds_mars_day
+        return delta_julian * day_length_ratio / self.__sols_per_mars_year + \
+            self.__mars_year_ref
+
+    def to_whole_mars_year(self) -> int:
+        """Convert the UTC to the Martian year.
+
+        Returns
+        -------
+        The Martian year.
+
+        """
+        return int(np.floor(self.to_fractional_mars_year()))
+
+    def to_ls(self) -> float:
+        """Convert the UTC to Martian solar longitude.
+
+        Returns
+        -------
+        The solar longitude [degrees].
+
+        References
+        ----------
+        The equation used to convert to Ls can be found in `this paper
+        <https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/97GL01950>`_
+
+        """
+        j2000 = julian.to_jd(datetime(2000, 1, 1, 12, 0, 0))
+        dt_j2000 = self.__input_julian_date - j2000
+        m = np.radians(19.41 + 0.5240212 * dt_j2000)
+        a = 270.39 + 0.5240384 * dt_j2000
+        ls = a + (10.691 + 3.7*10**-7 * dt_j2000) * np.sin(m) + \
+            0.623*np.sin(2*m) + 0.05*np.sin(3*m) + 0.005*np.sin(4*m)
+        return ls % 360
 
 
 class ScienceWeek:
@@ -167,3 +257,9 @@ class ScienceWeek:
     def __warn_if_week_is_negative(week: int) -> None:
         if week < 0:
             warnings.warn('The input week should not be negative.')
+
+
+u = UTC(datetime(2018, 6, 27))
+print(u.to_ls())
+print(u.to_fractional_mars_year())
+print(u.to_sol())

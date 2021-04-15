@@ -1,5 +1,6 @@
+"""The geography module contains classes to compute geographic information.
+"""
 import numpy as np
-from pyuvs.data_contents import L1bDataContents
 
 
 class Geography:
