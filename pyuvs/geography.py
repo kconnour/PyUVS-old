@@ -1,5 +1,6 @@
+"""The geography module contains classes to compute geographic information.
+"""
 import numpy as np
-from pyuvs.data_contents import L1bDataContents
 
 
 class Geography:
@@ -12,7 +13,7 @@ class Geography:
         locations = {'gale_crater': (-5.24, 127.48)}
         return locations
 
-    def closest_pixel(self, contents: L1bDataContents,
+    def closest_pixel(self, contents,
                       location: tuple, threshhold: float = 15) -> tuple:
         lats = contents.latitude[:, :, 4]
         lons = contents.longitude[:, :, 4]
@@ -88,64 +89,64 @@ class Geography:
         return a
 
 
-def find_closest_location(files, coordinates, threshhold=25, best_scan=False):
-    """
-
-    Parameters
-    ----------
-    files
-    coordinates
-    threshhold
-    best_scan
-
-    Returns
-    -------
-
-    """
-    for scan, file in enumerate(files):
-        # Get all the pixel center latitudes and longitudes from each file
-        hdulist = fits.open(file)
-        latitudes = hdulist['pixelgeometry'].data['pixel_corner_lat'][:, :, 4]
-        longitudes = hdulist['pixelgeometry'].data['pixel_corner_lon'][:, :, 4]
-
-        # Find the distances between these points and the target point
-        distances = haversine(coordinates[0], coordinates[1], latitudes, longitudes)
-        closest_distance = np.amin(distances)
-        if closest_distance < threshhold:
-            closest_distance_ind = np.where(np.amin(distances) == distances)
-            threshhold = closest_distance
-            best_scan = scan
-
-    if not best_scan:
-        print('The requested feature is not in this orbit')
-        return
-    else:
-        return best_scan, closest_distance_ind[0][0], closest_distance_ind[1][0], threshhold
-
-
-def find_location(orbit, data_location, feature):
-    """
-
-    Parameters
-    ----------
-    orbit
-    data_location
-    feature
-
-    Returns
-    -------
-
-    Examples
-    -------
-    >>> find_location(3453, '/media/kyle/Samsung_T5/IUVS_data/', 'arsia')
-    (8, 32, 2, 0.8211884454454046)
-    >>> find_location(3453, '/media/kyle/Samsung_T5/IUVS_data/', 'north_pole')
-    That location is not a known location. Add it to the dictionary to continue
-    >>> find_location(3455, '/media/kyle/Samsung_T5/IUVS_data/', 'arsia')
-    The requested feature is not in this orbit
-    """
-    files = filter_files(orbit, data_location)
-
-    coordinates = check_location(feature, make_location_dict())
-    best_scan, best_position, best_integration, closest_distance = find_closest_location(files, coordinates)
-    return best_scan, best_position, best_integration, closest_distance
+    '''def find_closest_location(files, coordinates, threshhold=25, best_scan=False):
+        """
+    
+        Parameters
+        ----------
+        files
+        coordinates
+        threshhold
+        best_scan
+    
+        Returns
+        -------
+    
+        """
+        for scan, file in enumerate(files):
+            # Get all the pixel center latitudes and longitudes from each file
+            hdulist = fits.open(file)
+            latitudes = hdulist['pixelgeometry'].data['pixel_corner_lat'][:, :, 4]
+            longitudes = hdulist['pixelgeometry'].data['pixel_corner_lon'][:, :, 4]
+    
+            # Find the distances between these points and the target point
+            distances = haversine(coordinates[0], coordinates[1], latitudes, longitudes)
+            closest_distance = np.amin(distances)
+            if closest_distance < threshhold:
+                closest_distance_ind = np.where(np.amin(distances) == distances)
+                threshhold = closest_distance
+                best_scan = scan
+    
+        if not best_scan:
+            print('The requested feature is not in this orbit')
+            return
+        else:
+            return best_scan, closest_distance_ind[0][0], closest_distance_ind[1][0], threshhold
+    
+    
+    def find_location(orbit, data_location, feature):
+        """
+    
+        Parameters
+        ----------
+        orbit
+        data_location
+        feature
+    
+        Returns
+        -------
+    
+        Examples
+        -------
+        >>> find_location(3453, '/media/kyle/Samsung_T5/IUVS_data/', 'arsia')
+        (8, 32, 2, 0.8211884454454046)
+        >>> find_location(3453, '/media/kyle/Samsung_T5/IUVS_data/', 'north_pole')
+        That location is not a known location. Add it to the dictionary to continue
+        >>> find_location(3455, '/media/kyle/Samsung_T5/IUVS_data/', 'arsia')
+        The requested feature is not in this orbit
+        """
+        files = filter_files(orbit, data_location)
+    
+        coordinates = check_location(feature, make_location_dict())
+        best_scan, best_position, best_integration, closest_distance = find_closest_location(files, coordinates)
+        return best_scan, best_position, best_integration, closest_distance'''
