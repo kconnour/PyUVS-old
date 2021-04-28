@@ -15,6 +15,7 @@ def sci_notation(number: float, decimals: int = None) -> str:
     -------
     Conventionally-formatted number.
     """
+    # TODO: If coefficient is 1, just return exponent
     try:
         if decimals is None:
             ndigits = len(str(number).replace('.', ''))
@@ -24,6 +25,3 @@ def sci_notation(number: float, decimals: int = None) -> str:
         return fr'${coefficient} \times 10^{int(exponent)}$'
     except ValueError as ve:
         print('Number must be a float, you asshole.')
-
-
-print(sci_notation('3.14159'))
