@@ -1,19 +1,8 @@
 PyUVS
---- files.py
---- geography.py
 --- orbit.py
 --- spice.py
 --- time.py
 - l1b
-
-files.py
---- (same as it currently is... but no defaults set)
-
-geography.py
---- Geography
-    --- (define locations as properties)
-    --- angular_distance() (using Haversine)
-    --- spatial_distance() (using Haversine)
 
 orbit.py
 --- OrbitalGeometry

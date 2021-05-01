@@ -13,6 +13,7 @@ It is one of the all time great packages.
    :caption: Useful links
 
    rst/files
+   rst/geography
 
 Indices and tables
 ==================
