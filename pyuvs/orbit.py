@@ -262,5 +262,5 @@ class OrbitalGeometry:
                 subsolar_lat[i, j] = tsubsolar_lat
                 subsolar_lon[i, j] = tsubsolar_lon
 
-        return et, subsc_lat, subsc_lon, sc_alt, mars_sun_dist, solar_longitude, \
-               subsolar_lat, subsolar_lon
+        return et, subsc_lat, subsc_lon, sc_alt, mars_sun_dist, \
+            solar_longitude, subsolar_lat, subsolar_lon

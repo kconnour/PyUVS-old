@@ -14,6 +14,9 @@ It is one of the all time great packages.
 
    rst/files
    rst/geography
+   rst/mars_time
+   rst/orbit
+   rst/spice
 
 Indices and tables
 ==================

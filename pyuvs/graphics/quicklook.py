@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
 from pyuvs.files import FileFinder, DataFilenameCollection
-from pyuvs.misc import get_project_path
 from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
 

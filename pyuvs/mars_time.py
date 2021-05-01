@@ -9,13 +9,12 @@ import numpy as np
 
 
 class UTC:
-    """An object that can convert between UTC times and Martian times.
+    """An object that can convert UTC times into Martian times.
 
     UTC accepts a a coordinated universal time and contains methods to convert
     it to various Martian times.
 
     """
-
     def __init__(self, time: datetime) -> None:
         """
         Parameters
@@ -46,10 +45,6 @@ class UTC:
     def to_sol(self) -> float:
         """Convert the UTC to Martian sol.
 
-        Returns
-        -------
-        The Martian sol.
-
         """
         delta_julian = self.__input_julian_date - self.__julian_ref
         day_length_ratio = self.__seconds_earth_day / self.__seconds_mars_day
@@ -57,10 +52,6 @@ class UTC:
 
     def to_fractional_mars_year(self) -> float:
         """Convert the UTC to fractional Martian year.
-
-        Returns
-        -------
-        The fractional Martian year.
 
         """
         delta_julian = self.__input_julian_date - self.__julian_ref
@@ -71,19 +62,11 @@ class UTC:
     def to_whole_mars_year(self) -> int:
         """Convert the UTC to the Martian year.
 
-        Returns
-        -------
-        The Martian year.
-
         """
         return int(np.floor(self.to_fractional_mars_year()))
 
     def to_ls(self) -> float:
         """Convert the UTC to Martian solar longitude.
-
-        Returns
-        -------
-        The solar longitude [degrees].
 
         References
         ----------
@@ -259,7 +242,8 @@ class ScienceWeek:
             warnings.warn('The input week should not be negative.')
 
 
-u = UTC(datetime(2018, 6, 27))
-print(u.to_ls())
-print(u.to_fractional_mars_year())
-print(u.to_sol())
+if __name__ == '__main__':
+    u = UTC(datetime(2018, 6, 27))
+    print(u.to_ls())
+    print(u.to_fractional_mars_year())
+    print(u.to_sol())

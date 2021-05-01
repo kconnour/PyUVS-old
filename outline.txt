@@ -1,18 +1,6 @@
 PyUVS
---- orbit.py
---- spice.py
 --- time.py
 - l1b
-
-orbit.py
---- OrbitalGeometry
-    --- find_apsis_et()
-    --- position_at_et()
-    --- apsis_positions()
-    --- get_segment_start_end_times()
-
-spice.py
---- Spice (same ias it currently is)
 
 time.py
 --- ScienceWeek (same as it currently is)

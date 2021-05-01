@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any, Generator
 from warnings import warn
 import numpy as np
-from pyuvs.misc import orbit_code
 
 
 # TODO: Consider renaming this since it works on xml and QLs
@@ -873,3 +872,17 @@ class FileFinder:
     @staticmethod
     def __get_absolute_paths_of_glob(inp_glob: Generator) -> list[str]:
         return sorted([str(f) for f in inp_glob if f.is_file()])
+
+
+def orbit_code(orbit: int) -> str:
+    """Make the 5 digit "code" for an input orbit.
+
+    Parameters
+    ----------
+    orbit
+        The orbit number.
+
+    """
+    if not isinstance(orbit, int):
+        raise TypeError('orbit must be an int.')
+    return str(orbit).zfill(5)
