@@ -5,13 +5,14 @@
 
 Welcome to PyUVS's documentation!
 =================================
+This documents the PyUVS package---a set of tools to work with MAVEN/IUVS data.
+It is one of the all time great packages.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Useful links
 
-   files
-   science_week
+   rst/files
 
 Indices and tables
 ==================

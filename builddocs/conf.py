@@ -30,7 +30,8 @@ author = 'kconnour'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'sphinx_autodoc_typehints'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -62,4 +63,4 @@ napoleon_include_special_with_doc = True
 autodoc_typehints = 'none'
 
 # Mock imports so autodoc can work
-#autodoc_mock_imports = ['pyRT_DISORT.utilities']
+autodoc_mock_imports = ['pyuvs', 'numpy', 'astropy']

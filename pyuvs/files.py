@@ -11,22 +11,20 @@ from pyuvs.misc import orbit_code
 
 
 # TODO: Consider renaming this since it works on xml and QLs
-# TODO: After revising this, it is untested
 # TODO: pylint says I have too many instance variables (21 / 7)
 class DataFilename:
-    """DataFilename is a data structure containing info from IUVS filenames.
+    """A data structure containing info from IUVS filenames.
 
     DataFilename accepts a string of an absolute path to an IUVS filename
     and extracts all information related to the observation and processing
     pipeline from the input.
 
     """
-
     def __init__(self, path: str) -> None:
         """
         Parameters
         ----------
-        path: str
+        path
             The absolute path of an IUVS data product.
 
         Raises
@@ -178,22 +176,12 @@ class DataFilename:
     def path(self) -> str:
         """Get the input absolute path.
 
-        Returns
-        -------
-        str
-            The input absolute path.
-
         """
         return self.__path
 
     @property
     def filename(self) -> str:
         """Get the filename from the absolute path.
-
-        Returns
-        -------
-        str
-            The filename.
 
         """
         return self.__filename
@@ -202,22 +190,12 @@ class DataFilename:
     def spacecraft(self) -> str:
         """Get the spacecraft code from the filename.
 
-        Returns
-        -------
-        str
-            The spacecraft code.
-
         """
         return self.__spacecraft
 
     @property
     def instrument(self) -> str:
         """Get the instrument code from the filename.
-
-        Returns
-        -------
-        str
-            The instrument code.
 
         """
         return self.__instrument
@@ -226,22 +204,12 @@ class DataFilename:
     def level(self) -> str:
         """Get the data product level from the filename.
 
-        Returns
-        -------
-        str
-            The data product level.
-
         """
         return self.__level
 
     @property
     def description(self) -> str:
         """Get the description from the filename.
-
-        Returns
-        -------
-        str
-            The observation description.
 
         """
         return self.__description
@@ -250,22 +218,12 @@ class DataFilename:
     def segment(self) -> str:
         """Get the observation segment from the filename.
 
-        Returns
-        -------
-        str
-            The observation segment.
-
         """
         return self.__segment
 
     @property
     def orbit(self) -> int:
         """Get the orbit number from the filename.
-
-        Returns
-        -------
-        orbit: int
-            The orbit number.
 
         """
         return self.__orbit
@@ -274,22 +232,12 @@ class DataFilename:
     def channel(self) -> str:
         """Get the observation channel from the filename.
 
-        Returns
-        -------
-        str
-            The observation channel.
-
         """
         return self.__channel
 
     @property
     def timestamp(self) -> str:
         """Get the timestamp of the observation from the filename.
-
-        Returns
-        -------
-        str
-            The timestamp of the observation.
 
         """
         return self.__timestamp
@@ -298,22 +246,12 @@ class DataFilename:
     def date(self) -> str:
         """Get the date of the observation from the filename.
 
-        Returns
-        -------
-        str
-            The date of the observation.
-
         """
         return self.__date
 
     @property
     def year(self) -> int:
         """Get the year of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The year of the observation.
 
         """
         return self.__year
@@ -322,22 +260,12 @@ class DataFilename:
     def month(self) -> int:
         """Get the month of the observation from the filename.
 
-        Returns
-        -------
-        int
-            The month of the observation.
-
         """
         return self.__month
 
     @property
     def day(self) -> int:
         """Get the day of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The day of the observation.
 
         """
         return self.__day
@@ -346,22 +274,12 @@ class DataFilename:
     def time(self) -> str:
         """Get the time of the observation from the filename.
 
-        Returns
-        -------
-        str
-            The time of the observation.
-
         """
         return self.__time
 
     @property
     def hour(self) -> int:
         """Get the hour of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The hour of the observation.
 
         """
         return self.__hour
@@ -370,22 +288,12 @@ class DataFilename:
     def minute(self) -> int:
         """Get the minute of the observation from the filename.
 
-        Returns
-        -------
-        int
-            The minute of the observation.
-
         """
         return self.__minute
 
     @property
     def second(self) -> int:
         """Get the second of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The second of the observation.
 
         """
         return self.__second
@@ -394,22 +302,12 @@ class DataFilename:
     def version(self) -> str:
         """Get the version code from the filename.
 
-        Returns
-        -------
-        str
-            The version code.
-
         """
         return self.__version
 
     @property
     def revision(self) -> str:
         """Get the revision code from the filename.
-
-        Returns
-        -------
-        rstr
-            The revision code.
 
         """
         return self.__revision
@@ -418,29 +316,22 @@ class DataFilename:
     def extension(self) -> str:
         """Get the extension of filename.
 
-        Returns
-        -------
-        str
-            The extension.
-
         """
         return self.__extension
 
 
-# TODO: after revising this, it is untested
 class DataFilenameCollection:
-    """A DataFilenameCollection is a data structure for holding IUVS files.
+    """A data structure for holding IUVS files.
 
     A DataFilenameCollection checks that the input files are IUVS data files and
     only keeps the most recent data files.
 
     """
-
     def __init__(self, files: list[str]) -> None:
         """
         Parameters
         ----------
-        files: list[str]
+        files
             Absolute paths of IUVS data files.
 
         Raises
@@ -508,13 +399,8 @@ class DataFilenameCollection:
         return len(self.__filenames)
 
     @property
-    def filenames(self):
+    def filenames(self) -> list[DataFilename]:
         """Get the collection of DataFilenames made from the input files.
-
-        Returns
-        -------
-        list[DataFilename]
-            DataFilename for each latest data file in the input files.
 
         """
         return self.__filenames
@@ -523,28 +409,22 @@ class DataFilenameCollection:
     def n_files(self) -> int:
         """Get the number of unique files.
 
-        Returns
-        -------
-        int
-            The number of unique files present.
-
         """
         return self.__n_files
 
 
 class DataPath:
-    """A DataPath object creates absolute paths to where data products reside.
+    """Create absolute paths to where data products reside.
 
     DataPath contains methods to create strings of absolute paths to where data
     products reside, given a set of assumptions.
 
     """
-
     def __init__(self, path: str) -> None:
         """
         Parameters
         ----------
-        path: str
+        path
             Absolute path of the IUVS data root location.
 
         Raises
@@ -580,14 +460,8 @@ class DataPath:
 
         Parameters
         ----------
-        orbit: int
+        orbit
             The orbit number.
-
-        Returns
-        -------
-        str
-            The path with orbit block appended corresponding to the input
-            orbit.
 
         Raises
         ------
@@ -610,14 +484,8 @@ class DataPath:
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits
             The orbit numbers.
-
-        Returns
-        -------
-        list[str]
-            The path with orbit block appended corresponding to the input
-            orbits.
 
         Raises
         ------
@@ -661,13 +529,12 @@ class DataPath:
 
 
 class DataPattern:
-    """A DataPattern object creates glob search patterns for IUVS data.
+    """Create glob search patterns for IUVS data.
 
     DataPattern contains methods to create strings of glob search patterns,
     tailored to IUVS data.
 
     """
-
     def data_pattern(self, level: str = '*', segment: str = '*',
                      orbit: str = '*', channel: str = '*',
                      timestamp: str = '*', version: str = '*',
@@ -676,25 +543,20 @@ class DataPattern:
 
         Parameters
         ----------
-        level: str, optional
-            The level pattern to get data from. Default is '*'.
-        segment: str, optional
-            The segment pattern to get data from. Default is '*'.
-        orbit: str, optional
-            The orbit pattern to get data from. Default is '*'.
-        channel: str, optional
-            The channel pattern to get data from. Default is '*'.
-        timestamp: str, optional
-            The timestamp pattern to get data from. Default is '*'.
-        version: str, optional
-            The version pattern to get data from. Default is '*'.
-        extension: str, optional
-            The extension pattern to get data from. Default is 'fits'.
-
-        Returns
-        -------
-        str
-            The pattern with the input sub-patterns.
+        level
+            The level pattern to get data from.
+        segment
+            The segment pattern to get data from.
+        orbit
+            The orbit pattern to get data from.
+        channel
+            The channel pattern to get data from.
+        timestamp
+            The timestamp pattern to get data from.
+        version
+            The version pattern to get data from.
+        extension
+            The extension pattern to get data from.
 
         Examples
         --------
@@ -722,17 +584,12 @@ class DataPattern:
 
         Parameters
         ----------
-        orbit: int
+        orbit
             The orbit number to get data from.
-        segment: str
+        segment
             The segment pattern to get data from.
-        channel: str
+        channel
             The channel pattern to get data from.
-
-        Returns
-        -------
-        pattern: str
-            The glob pattern that matches the input patterns.
 
         Raises
         ------
@@ -762,17 +619,12 @@ class DataPattern:
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits
             Orbits to make patterns for.
-        segment: str
+        segment
             The segment pattern to get data from.
-        channel: str
+        channel
             The channel pattern to get data from.
-
-        Returns
-        -------
-        list[str]
-            Patterns for each input orbit.
 
         Raises
         ------
@@ -798,13 +650,8 @@ class DataPattern:
 
         Parameters
         ----------
-        patterns: list[str]
+        patterns
             Patterns to search for.
-
-        Returns
-        -------
-        str
-            The glob search pattern that accounts for the input patterns.
 
         Raises
         ------
@@ -836,11 +683,6 @@ class DataPattern:
         pattern: str
             Generic glob pattern.
 
-        Returns
-        -------
-        str
-            Input pattern with `**/` prepended.
-
         Examples
         --------
         >>> dp = DataPattern()
@@ -856,7 +698,7 @@ class DataPattern:
 
 
 class FileClassifier:
-    """FileClassifier determines if IUVS data filenames meet a condition.
+    """Determine if IUVS data filenames meet a condition.
 
     A FileClassifier object contains methods to determine if a
     DataFilenameCollection fits a given condition.
@@ -875,31 +717,17 @@ class FileClassifier:
     def all_l1b(self) -> bool:
         """Determine if all files in the collection are level 1b data files.
 
-        Returns
-        -------
-        bool
-            True if all files are level 1b; False otherwise.
-
         """
         return all((f.level == 'l1b' for f in self.__dfc.filenames))
 
     def all_l1c(self) -> bool:
         """Determine if all files in the collection are level 1c data files.
 
-        Returns
-        -------
-        bool
-            True if all files are level 1c; False otherwise.
         """
         return all((f.level == 'l1c' for f in self.__dfc.filenames))
 
     def all_apoapse(self) -> bool:
         """Determine if all files in the collection are apoapse data files.
-
-        Returns
-        -------
-        bool
-            True if all files are from the apoapse segment; False otherwise.
 
         """
         return all((f.segment == 'apoapse' for f in self.__dfc.filenames))
@@ -907,21 +735,11 @@ class FileClassifier:
     def all_periapse(self) -> bool:
         """Determine if all files in the collection are periapse data files.
 
-        Returns
-        -------
-        bool
-            True if all files are from the periapse segment; False otherwise.
-
         """
         return all((f.segment == 'periapse' for f in self.__dfc.filenames))
 
     def all_ech(self) -> bool:
         """Determine if all files in the collection are echelle data files..
-
-        Returns
-        -------
-        bool
-            True if all files are from the ech channel; False otherwise.
 
         """
         return all((f.channel == 'ech' for f in self.__dfc.filenames))
@@ -930,11 +748,6 @@ class FileClassifier:
         """Determine if all files in the collection are far-ultraviolet data
         files.
 
-        Returns
-        -------
-        bool
-            True if all files are from the fuv channel; False otherwise.
-
         """
         return all((f.channel == 'fuv' for f in self.__dfc.filenames))
 
@@ -942,28 +755,22 @@ class FileClassifier:
         """Determine if all files in the collection are mid-ultraviolet data
         files.
 
-        Returns
-        -------
-        bool
-            True if all files are from the muv segment; False otherwise.
-
         """
         return all((f.channel == 'muv' for f in self.__dfc.filenames))
 
 
 class FileFinder:
-    """FileFinder helps users find IUVS data files on their computer.
+    """Find IUVS data files on their computer.
 
     FileFinder holds methods that help the user find files on their computer
     given a set of assumptions.
 
     """
-
     def __init__(self, path: str) -> None:
         """
         Parameters
         ----------
-        path: str
+        path
             The absolute path where to begin looking for IUVS data files.
 
         Raises
@@ -991,25 +798,20 @@ class FileFinder:
             raise OSError(f'The path "{self.__path}" does not exist on this '
                           'computer.')
 
-    def soschob(self, orbit: int, segment: str = 'apoapse',
-                channel: str = 'muv') -> DataFilenameCollection:
+    def soschob(self, orbit: int, segment: str, channel: str) \
+            -> DataFilenameCollection:
         """Make a DataFilenameCollection for files matching an input orbit,
         segment pattern, and channel pattern, assuming orbits are organized in
         blocks of 100.
 
         Parameters
         ----------
-        orbit: int
+        orbit
             The orbit to get files from.
-        segment: str
-            The observing segment to get files from. Default is 'apoapse'.
-        channel: str
-            The observing mode to get files from. Default is 'muv'.
-
-        Returns
-        -------
-        DataFilenameCollection:
-            Matching files from the input orbit, segment, and channel.
+        segment
+            The observing segment to get files from.
+        channel
+            The observing mode to get files from.
 
         """
         p = DataPath(self.__path).block(orbit)
@@ -1017,25 +819,20 @@ class FileFinder:
         abs_paths = self.__glob_files(p, pat)
         return DataFilenameCollection(abs_paths)
 
-    def multi_orbit_files(self, orbits: list[int], segment: str = 'apoapse',
-                          channel: str = 'muv') -> DataFilenameCollection:
+    def multi_orbit_files(self, orbits: list[int], segment: str, channel: str) \
+            -> DataFilenameCollection:
         """Make a DataFilenameCollection for an input list of orbits,
         segment pattern, and channel pattern, assuming orbits are organized in
         blocks of 100.
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits
             Orbits to get files from.
-        segment: str
-            The observing segment to get files from. Default is 'apoapse'.
-        channel: str
-            The observing channel to get files from. Default is 'muv'.
-
-        Returns
-        -------
-        DataFilenameCollection
-            Matching files from the input orbits, segment, and channel.
+        segment
+            The observing segment to get files from.
+        channel
+            The observing channel to get files from.
 
         """
         p = DataPath(self.__path).block_paths(orbits)
@@ -1044,28 +841,22 @@ class FileFinder:
         abs_paths = [k for f in path_list for k in f]
         return DataFilenameCollection(abs_paths)
 
-    def orbit_range_files(self, orbit_start: int, orbit_end: int,
-                          segment: str = 'apoapse', channel: str = 'muv') \
-            -> DataFilenameCollection:
+    def orbit_range_files(self, orbit_start: int, orbit_end: int, segment: str,
+                          channel: str) -> DataFilenameCollection:
         """ Make a DataFilenameCollection for all orbits in a range of orbits
         with a segment pattern and channel pattern, assuming orbits are
         organized in blocks of 100.
 
         Parameters
         ----------
-        orbit_start: int
+        orbit_start
             The starting orbit to get files from.
-        orbit_end: int
+        orbit_end
             The ending orbit to get files from.
-        segment: str
-            The observing segment to get files from. Default is 'apoapse'.
-        channel: str
-            The observing channel to get files from. Default is 'muv'.
-
-        Returns
-        -------
-        DataFilenameCollection
-            Matching files from the input orbit range, segment, and channel.
+        segment
+            The observing segment to get files from.
+        channel
+            The observing channel to get files from.
 
         """
         orbits = list(range(orbit_start, orbit_end))

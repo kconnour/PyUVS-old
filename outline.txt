@@ -1,0 +1,71 @@
+PyUVS
+--- files.py
+--- geography.py
+--- orbit.py
+--- spice.py
+--- time.py
+- l1b
+
+files.py
+--- (same as it currently is... but no defaults set)
+
+geography.py
+--- Geography
+    --- (define locations as properties)
+    --- angular_distance() (using Haversine)
+    --- spatial_distance() (using Haversine)
+
+orbit.py
+--- OrbitalGeometry
+    --- find_apsis_et()
+    --- position_at_et()
+    --- apsis_positions()
+    --- get_segment_start_end_times()
+
+spice.py
+--- Spice (same ias it currently is)
+
+time.py
+--- ScienceWeek (same as it currently is)
+--- MarsTime
+   --- utc2sol()
+   --- utc2ls()
+   --- et2utc()
+   --- et2sol()
+   --- et2ls()
+
+l1b subpackage
+--- data_classifier.py
+--- data_contents.py
+--- files.py
+
+data_classifier.py
+--- DataClassifier
+    --- single_integration()
+    --- dayside()
+    --- relay()
+    --- geometry()
+
+--- DataCollectionClassifier
+    --- get_swath_numbers()
+    --- all_dayside()
+    --- all_relay()
+    --- all_geometry()
+
+data_contents.py
+--- L1bContents (same as is)
+
+files.py
+--- Same as pyuvs.files but with l1b hard coded in
+
+Wish list
+--- database.py
+    -- import_existing, create_columns, set_orbital_range, save, fill_columns
+--- dashboard.py
+--- instrument.py
+    --- define l1b constants (slit width, mirror_angle, etc.)
+--- apoapse dayside l1b --> l1c
+--- Integrate NO brightnesses
+--- QLs
+--- Globes
+--- Cylindrical maps
