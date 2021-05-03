@@ -94,8 +94,8 @@ class _L1bIntegrationContents:
         - Timestamp (missing)
         - ET (missing)
         - UTC (missing)
-        - mirror_dn
-        - mirror_deg (missing)
+        - mirror_dn (missing)
+        - mirror_deg
         - fov_deg (missing)
         - lya_centroid (missing)
         - det_temp_c (missing)
@@ -115,7 +115,7 @@ class _L1bIntegrationContents:
 
     @property
     def mirror_angles(self) -> np.ndarray:
-        """ Get the file's mirror angles.
+        """ Get the file's mirror angles [degrees].
 
         """
         return self.__get_integration()['mirror_deg']
@@ -207,6 +207,32 @@ class _L1bObservationContents:
 
         """
         return self.__get_observation()['mcp_volt'][0]
+
+
+class _L1bSpacecraftGeometry:
+    def __init__(self, hdulist: fits.hdu.hdulist.HDUList) -> None:
+        self.__hdulist = hdulist
+
+    def print_spacecraftgeometry_columns(self) -> None:
+        """ Print the columns in the "SpacecraftGeometry" structure.
+
+        """
+        print(self.__get_spacecraftgeometry().columns)
+
+    def __get_spacecraftgeometry(self) -> fits.fitsrec.FITS_rec:
+        return self.__hdulist['spacecraftgeometry'].data
+
+    @property
+    def vx_instrument_inertial(self) -> np.ndarray:
+        return self.__get_spacecraftgeometry()['vx_instrument_inertial']
+
+    @property
+    def v_spacecraft_rate_inertial(self) -> np.ndarray:
+        return self.__get_spacecraftgeometry()['v_spacecraft_rate_inertial']
+
+    @property
+    def sub_solar_lon(self) -> np.ndarray:
+        return self.__get_spacecraftgeometry()['sub_solar_lon']
 
 
 # TODO: add columns
@@ -302,6 +328,7 @@ class _L1bPixelgeometryContents:
 
 class L1bDataContents(_IUVSDataContents,
                       _L1bIntegrationContents,
+                      _L1bSpacecraftGeometry,
                       _L1bPixelgeometryContents,
                       _L1bObservationContents):
     """ An L1bDataContents object can retrieve info from the contents of an
@@ -345,5 +372,6 @@ class L1bDataContents(_IUVSDataContents,
         hdulist = fits.open(filename.path)
         _IUVSDataContents.__init__(self, hdulist)
         _L1bIntegrationContents.__init__(self, hdulist)
+        _L1bSpacecraftGeometry.__init__(self, hdulist)
         _L1bPixelgeometryContents.__init__(self, hdulist)
         _L1bObservationContents.__init__(self, hdulist)
