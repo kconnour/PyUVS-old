@@ -5,12 +5,18 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from pyuvs.files import FileFinder, DataFilenameCollection, orbit_code
 from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
 from pyuvs.graphics.coloring import HistogramEqualizer
-from pyuvs.l1b.pixel_corners import PixelCorners
 
+"""
+_QuicklookPlotter
+
+"""
+
+# TODO: this is flipped compared to Zac's QLs
 # TODO: Add ability to choose spectral indices in HistogramEqualizer
 # TODO: this breaks on a single integration
 # TODO: should HEQ break if I try to apply the coloring to a file that didn't
@@ -34,7 +40,7 @@ class ApoapseMUVQuicklook:
         data_axis = self.__add_ax(self.__fig, 0.05, 0.95, 5 / 8, 7 / 8)
         geo_axis = self.__add_ax(self.__fig, 0.05, 0.95, 1 / 4 + 3 / 32,
                                  5 / 8 - 1 / 32)
-        lt_axis = self.__add_ax(self.__fig, 0.05, 0.475, 3 / 16, 1 / 4 + 1 / 16)
+        lt_axis = self.__add_ax(self.__fig, 0.05, 0.275, 3 / 16, 1 / 4 + 1 / 16)
         sza_axis = self.__add_ax(self.__fig, 0.525, 0.95, 3 / 16,
                                  1 / 4 + 1 / 16)
         ea_axis = self.__add_ax(self.__fig, 0.05, 0.475, 1 / 32, 1 / 32 + 1 / 8)
@@ -67,20 +73,55 @@ class ApoapseMUVQuicklook:
 
     def __fill_plots(self):
         #self.__fill_data_axis()
-        #print('done with data')
         self.__fill_local_time_axis()
+        self.__fill_solar_zenith_angle_axis()
+        self.__fill_emission_angle_axis()
+        self.__fill_phase_angle_axis()
 
     def __fill_data_axis(self):
-        ql = DaysideQuicklook(self.__files, self.__flatfield,
-                              self.__axes['data'], self.__swath_numbers,
-                              self.__flip)
-        ql.histogram_equalize()
+        ql = Quicklook(self.__files, self.__axes['data'], self.__swath_numbers,
+                       self.__flip)
+        ql.histogram_equalize_dayside(self.__flatfield)
 
     def __fill_local_time_axis(self) -> None:
-        ql = DaysideQuicklook(self.__files, self.__flatfield,
-                              self.__axes['local_time'], self.__swath_numbers,
-                              self.__flip)
-        ql.fill_with_local_time('twilight_shifted', 6, 18)
+        lt_axis = self.__axes['local_time']
+        ql = Quicklook(self.__files, lt_axis, self.__swath_numbers, self.__flip)
+        img = ql.fill_local_time()
+
+        ticks = np.linspace(6, 18, num=5)
+        self.__add_colorbar(img, lt_axis, ticks, 'Local Time [hours]')
+
+    def __fill_solar_zenith_angle_axis(self) -> None:
+        sza_axis = self.__axes['solar_zenith_angle']
+        ql = Quicklook(self.__files, sza_axis, self.__swath_numbers, self.__flip)
+        img = ql.fill_solar_zenith_angle()
+
+        ticks = np.linspace(0, 180, num=7)
+        self.__add_colorbar(img, sza_axis, ticks, 'Solar Zenith Angle [degrees]')
+
+    def __fill_emission_angle_axis(self) -> None:
+        ea_axis = self.__axes['emission_angle']
+        ql = Quicklook(self.__files, ea_axis, self.__swath_numbers, self.__flip)
+        img = ql.fill_emission_angle()
+
+        ticks = np.linspace(0, 90, num=7)
+        self.__add_colorbar(img, ea_axis, ticks, 'Emission Angle [degrees]')
+
+    def __fill_phase_angle_axis(self) -> None:
+        pa_axis = self.__axes['phase_angle']
+        ql = Quicklook(self.__files, pa_axis, self.__swath_numbers, self.__flip)
+        img = ql.fill_phase_angle()
+
+        ticks = np.linspace(0, 180, num=7)
+        self.__add_colorbar(img, pa_axis, ticks, 'Phase Angle [degrees]')
+
+    @staticmethod
+    def __add_colorbar(img, ax, ticks, label) -> None:
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+        cbar = plt.colorbar(img, cax=cax, ticks=ticks)
+        cbar.ax.tick_params(labelsize=7)
+        cbar.set_label(label)
 
     @staticmethod
     def savefig(location):
@@ -103,21 +144,20 @@ class ApoapseMUVQuicklookCreator:
             savelocation, self.__save_name.replace('00000', orbit_code(orbit))))
 
 
-class DaysideQuicklook:
+# TODO: type hint axis
+class Quicklook:
     """Put a quicklook-style plot in an axis.
 
-    Quicklook has methods to add a quicklook to an axis.
+    Quicklook has methods to add a variety of quicklooks into an axis.
 
     """
-    def __init__(self, files: DataFilenameCollection, flatfield: np.ndarray,
-                 ax, swath_numbers: list[int], flip: bool):
+    def __init__(self, files: DataFilenameCollection,
+                 ax, swath_numbers: list[int], flip: bool) -> None:
         """
         Parameters
         ----------
         files
             A collection of files to plot a quicklook for.
-        flatfield
-            The flatfield for the files.
         ax
             The axis to put the quicklook into.
         swath_numbers
@@ -127,33 +167,42 @@ class DaysideQuicklook:
 
         """
         self.__files = files
-        self.__flatfield = flatfield
         self.__ax = ax
         self.__swath_numbers = swath_numbers
         self.__flip = flip
         self.__slit_width = 10.64
 
-    def histogram_equalize(self, min_lat: float = -90, max_lat: float = 90,
-                 min_lon: float = 0, max_lon: float = 360,
-                 min_sza: float = 0, max_sza: float = 102,
-                 low_percentile: float = 1, high_percentile: float = 99) \
-            -> None:
+    def histogram_equalize_dayside(
+            self, flatfield: np.ndarray, min_lat: float = -90,
+            max_lat: float = 90, min_lon: float = 0, max_lon: float = 360,
+            min_sza: float = 0, max_sza: float = 102, low_percentile: float = 1,
+            high_percentile: float = 99) -> None:
         """ Make a quicklook with histogram equalization.
 
         Parameters
         ----------
+        flatfield
+            The flatfield [n_positions, n_wavelengths] for the files.
         min_lat
+            The minimum latitude to consider when making the coloring.
         max_lat
+            The maximum latitude to consider when making the coloring.
         min_lon
+            The minimum longitude to consider when making the coloring.
         max_lon
+            The maximum longitude to consider when making the coloring.
         min_sza
+            The minimum solar zenith angle to consider when making the coloring.
         max_sza
+            The maximum solar zenith angle to consider when making the coloring.
         low_percentile
+            The percentile where data below it will be set to 0.
         high_percentile
+            The percentile where data below it will be set to 1.
 
         """
         heq = HistogramEqualizer(
-            self.__files, self.__flatfield, min_lat, max_lat, min_lon, max_lon,
+            self.__files, flatfield, min_lat, max_lat, min_lon, max_lon,
             min_sza, max_sza, low_percentile, high_percentile)
         for c, f in enumerate(self.__files.filenames):
             l1b = L1bDataContents(f)
@@ -165,8 +214,40 @@ class DaysideQuicklook:
             fill = self.__make_plot_fill(l1b)
             self.__plot_custom_primary(X, Y, fill, reshaped_colors)
 
+    def fill_local_time(self):
+        for c, f in enumerate(self.__files.filenames):
+            l1b = L1bDataContents(f)
+            lt = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.local_time)
+            X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
+            img = self.__ax.pcolormesh(X, Y, lt, cmap='twilight_shifted', vmin=6, vmax=18)
+        return img
+
+    def fill_solar_zenith_angle(self):
+        for c, f in enumerate(self.__files.filenames):
+            l1b = L1bDataContents(f)
+            sza = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.solar_zenith_angle)
+            X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
+            img = self.__ax.pcolormesh(X, Y, sza, cmap='cividis_r', vmin=0, vmax=180)
+        return img
+
+    def fill_emission_angle(self):
+        for c, f in enumerate(self.__files.filenames):
+            l1b = L1bDataContents(f)
+            ea = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.emission_angle)
+            X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
+            img = self.__ax.pcolormesh(X, Y, ea, cmap='cividis_r', vmin=0, vmax=90)
+        return img
+
+    def fill_phase_angle(self):
+        for c, f in enumerate(self.__files.filenames):
+            l1b = L1bDataContents(f)
+            pa = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.phase_angle)
+            X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
+            img = self.__ax.pcolormesh(X, Y, pa, cmap='cividis_r', vmin=0, vmax=180)
+        return img
+
     @staticmethod
-    def __reshape_data_for_pcolormesh(colors) -> np.ndarray:
+    def __reshape_data_for_pcolormesh(colors: np.ndarray) -> np.ndarray:
         colors = np.moveaxis(colors, 0, -1)
         return np.reshape(colors, (colors.shape[0] * colors.shape[1],
                                    colors.shape[2]))
@@ -189,21 +270,12 @@ class DaysideQuicklook:
 
     @staticmethod
     def __make_plot_fill(file: L1bDataContents) -> np.ndarray:
-        fill = np.ones((file.n_integrations, file.n_positions))
-        fill[np.where(file.altitude[:, :, 4] != 0)] = np.nan
-        return fill
+        return np.where(file.altitude[:, :, 4] != 0, np.nan, 1)
 
     def __plot_custom_primary(self, X, Y, fill, colors) -> None:
         img = self.__ax.pcolormesh(X, Y, fill, color=colors, linewidth=0,
                                    edgecolors='none')
         img.set_array(None)
-
-    def fill_with_local_time(self, cmap: str, vmin: float, vmax: float) -> None:
-        for c, f in enumerate(self.__files.filenames):
-            l1b = L1bDataContents(f)
-            X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
-            corners = PixelCorners(l1b).local_time()[:, :, 0]
-            self.__ax.pcolormesh(X, Y, corners, cmap=cmap, vmin=vmin, vmax=vmax)
 
 
 if __name__ == '__main__':
