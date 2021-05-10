@@ -6,30 +6,35 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-from matplotlib.transforms import Bbox
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+import matplotlib.ticker as ticker
 from pyuvs.files import FileFinder, DataFilenameCollection, orbit_code
 from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
 from pyuvs.graphics.coloring import HistogramEqualizer
 
-"""
-_QuicklookPlotter
 
-"""
+# TODO: get properties from data (method)
+# TODO: get properties from database (method)
+class ApoapseMUVQuicklookCreator:
+    def __init__(self) -> None:
+        self.__save_name = 'mvn_iuv_ql_apoapse-orbit00000-muv-TEST.png'
+
+    def process_quicklook(self, data_location: str, flatfield_location: str,
+                          orbit: int, swath, flip, savelocation: str):
+        files = FileFinder(data_location).soschob(orbit, segment='apoapse',
+                                                  channel='muv')
+        flatfield = np.load(flatfield_location)
+        ql = ApoapseMUVQuicklook(files, flatfield, swath, flip)
+        ql.savefig(os.path.join(
+            savelocation, self.__save_name.replace('00000', orbit_code(orbit))))
+
 
 # TODO: this is flipped compared to Zac's QLs
 # TODO: Add ability to choose spectral indices in HistogramEqualizer
 # TODO: this breaks on a single integration
 # TODO: should HEQ break if I try to apply the coloring to a file that didn't
 #  make the coloring?
-# TODO: set the ticks separately from the numbers on the colorbar
-# TODO: EA should have the same colorbar as SZA and PA but only use half of it
-# TODO: labels on the right side
 # TODO banner
-# TODO: minor ticks on the colorbars
-
-
 class ApoapseMUVQuicklook:
     def __init__(self, files: DataFilenameCollection, flatfield: np.ndarray,
                  swath_numbers: list[int], flip: bool) -> None:
@@ -41,7 +46,23 @@ class ApoapseMUVQuicklook:
 
         self.__set_quicklook_rc_params()
         self.__axes = self.__setup_axes()
-        # self.__fill_plots()
+        self.__fill_plots()
+
+    # TODO: I hate this function and I can't completely identify why
+    @staticmethod
+    def __set_quicklook_rc_params() -> None:
+        # Make sure the typeface isn't outlined when saved as a .pdf
+        plt.rc('pdf', fonttype=42)  # ???
+        plt.rc('ps', fonttype=42)  # postscript
+
+        # Set the plot to be $\LaTeXe{}$-like
+        plt.rc('font', **{'family': 'STIXGeneral'})  # Set the typeface to stix
+        plt.rc('mathtext', fontset='stix')  # Set all math font to stix
+        plt.rc('text', usetex=False)
+
+        plt_thick = 0.5
+        plt.rc('lines', linewidth=plt_thick)
+        plt.rc('axes', linewidth=plt_thick)
 
     def __setup_axes(self):
         axes = self.__setup_fig_and_axes()
@@ -49,6 +70,7 @@ class ApoapseMUVQuicklook:
         for key in axes.keys():
             self.__turn_off_ticks(axes[key])
             self.__set_axis_limits(axes[key])
+            self.__set_background_black(axes[key])
         return axes
 
     def __setup_fig_and_axes(self):
@@ -93,23 +115,6 @@ class ApoapseMUVQuicklook:
                 'phase_angle_colorbar': axes[9]}
 
     @staticmethod
-    def __set_quicklook_rc_params() -> None:
-        # Make sure the typeface isn't outlined when saved as a .pdf
-        plt.rc('pdf', fonttype=42)  # ???
-        plt.rc('ps', fonttype=42)  # postscript
-
-        # Set the plot to be $\LaTeXe{}$-like
-        font_size = 8
-        plt.rc('axes', titlepad=3)  # Set a little space around the title
-        plt.rc('font', **{'family': 'STIXGeneral'})  # Set the typeface to stix
-        plt.rc('mathtext', fontset='stix')  # Set all math font to stix
-        plt.rc('text', usetex=False)
-
-        plt_thick = 0.5
-        plt.rc('lines', linewidth=plt_thick)
-        plt.rc('axes', linewidth=plt_thick)
-
-    @staticmethod
     def __turn_off_frame(axis: plt.Axes) -> None:
         axis.set_frame_on(False)
 
@@ -121,6 +126,10 @@ class ApoapseMUVQuicklook:
     def __set_axis_limits(self, axis: plt.Axes) -> None:
         axis.set_xlim(0, self.__slit_width * (self.__swath_numbers[-1] + 1))
         axis.set_ylim(60, 120)
+
+    @staticmethod
+    def __set_background_black(axis: plt.Axes) -> None:
+        axis.set_facecolor((0, 0, 0))
 
     def __fill_plots(self) -> None:
         #self.__fill_data_axis()
@@ -137,8 +146,8 @@ class ApoapseMUVQuicklook:
     def __fill_local_time_axis(self) -> None:
         self.__setup_local_time_colorbar()
         lt_axis = self.__axes['local_time']
-        # ql = Quicklook(self.__files, lt_axis, self.__swath_numbers, self.__flip)
-        # img = ql.fill_local_time()
+        ql = Quicklook(self.__files, lt_axis, self.__swath_numbers, self.__flip)
+        ql.fill_local_time()
 
     def __setup_local_time_colorbar(self):
         lt_cbar_axis = self.__axes['local_time_colorbar']
@@ -146,13 +155,14 @@ class ApoapseMUVQuicklook:
         norm = colors.Normalize(vmin=6, vmax=18)
         label = 'Local Time [hours]'
         lt_cbar = self.__setup_colorbar(lt_cbar_axis, cmap, norm, label)
-        # TODO: set ticks here
+        lt_cbar.ax.yaxis.set_major_locator(ticker.MultipleLocator(3))
+        lt_cbar.ax.yaxis.set_minor_locator(ticker.MultipleLocator(1))
 
     def __fill_solar_zenith_angle_axis(self) -> None:
         self.__setup_solar_zenith_angle_colorbar()
         sza_axis = self.__axes['solar_zenith_angle']
-        # ql = Quicklook(self.__files, sza_axis, self.__swath_numbers, self.__flip)
-        # img = ql.fill_solar_zenith_angle()
+        ql = Quicklook(self.__files, sza_axis, self.__swath_numbers, self.__flip)
+        ql.fill_solar_zenith_angle()
 
     def __setup_solar_zenith_angle_colorbar(self):
         sza_cbar_axis = self.__axes['solar_zenith_angle_colorbar']
@@ -160,33 +170,33 @@ class ApoapseMUVQuicklook:
         norm = colors.Normalize(vmin=0, vmax=180)
         label = 'Solar Zenith Angle [$\degree$]'
         sza_cbar = self.__setup_colorbar(sza_cbar_axis, cmap, norm, label)
-        # TODO: set ticks here
+        sza_cbar.ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+        sza_cbar.ax.yaxis.set_minor_locator(ticker.MultipleLocator(10))
+
+        # TODO: this is how to add cbar lines
+        # sza_cbar.ax.axhline()
 
     def __fill_emission_angle_axis(self) -> None:
+        self.__setup_emission_angle_colorbar()
         ea_axis = self.__axes['emission_angle']
         ql = Quicklook(self.__files, ea_axis, self.__swath_numbers, self.__flip)
-        img = ql.fill_emission_angle()
-
-        ticks = np.linspace(0, 90, num=10, dtype='int')
-        tick_labels = np.where(ticks % 15, '', ticks)
-        self.__add_colorbar(img, ea_axis, ticks, 'Emission Angle [degrees]', tick_labels)
+        ql.fill_emission_angle()
 
     def __setup_emission_angle_colorbar(self):
         ea_cbar_axis = self.__axes['emission_angle_colorbar']
+        # TODO: copy this cmap and place it in the EA plotting axis
         cmap = colors.LinearSegmentedColormap.from_list('cividis_half', copy.copy(plt.get_cmap('cividis_r'))(np.linspace(0, 0.5, 256)))
         norm = colors.Normalize(vmin=0, vmax=90)
         label = 'Emission Angle [$\degree$]'
         ea_cbar = self.__setup_colorbar(ea_cbar_axis, cmap, norm, label)
-        # TODO: set ticks here
+        ea_cbar.ax.yaxis.set_major_locator(ticker.MultipleLocator(15))
+        ea_cbar.ax.yaxis.set_minor_locator(ticker.MultipleLocator(5))
 
     def __fill_phase_angle_axis(self) -> None:
+        self.__setup_phase_angle_colorbar()
         pa_axis = self.__axes['phase_angle']
         ql = Quicklook(self.__files, pa_axis, self.__swath_numbers, self.__flip)
-        img = ql.fill_phase_angle()
-
-        ticks = np.linspace(0, 180, num=19, dtype='int')
-        tick_labels = np.where(ticks % 30, '', ticks)
-        self.__add_colorbar(img, pa_axis, ticks, 'Phase Angle [degrees]', tick_labels)
+        ql.fill_phase_angle()
         
     def __setup_phase_angle_colorbar(self):
         pa_cbar_axis = self.__axes['phase_angle_colorbar']
@@ -194,7 +204,11 @@ class ApoapseMUVQuicklook:
         norm = colors.Normalize(vmin=0, vmax=180)
         label = 'Phase Angle [$\degree$]'
         pa_cbar = self.__setup_colorbar(pa_cbar_axis, cmap, norm, label)
-        # TODO: set ticks here
+        pa_cbar.ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+        pa_cbar.ax.yaxis.set_minor_locator(ticker.MultipleLocator(10))
+
+        # TODO: this is how to add cbar lines
+        # sza_cbar.ax.axhline()
 
     @staticmethod
     def __setup_colorbar(axis, cmap, norm, label):
@@ -205,22 +219,6 @@ class ApoapseMUVQuicklook:
     @staticmethod
     def savefig(location: str) -> None:
         plt.savefig(location, dpi=300)
-
-
-# TODO: get properties from data (method)
-# TODO: get properties from database (method)
-class ApoapseMUVQuicklookCreator:
-    def __init__(self) -> None:
-        self.__save_name = 'mvn_iuv_ql_apoapse-orbit00000-muv.png'
-
-    def process_quicklook(self, data_location: str, flatfield_location: str,
-                          orbit: int, swath, flip, savelocation: str):
-        files = FileFinder(data_location).soschob(orbit, segment='apoapse',
-                                                  channel='muv')
-        flatfield = np.load(flatfield_location)
-        ql = ApoapseMUVQuicklook(files, flatfield, swath, flip)
-        ql.savefig(os.path.join(
-            savelocation, self.__save_name.replace('00000', orbit_code(orbit))))
 
 
 class Quicklook:
@@ -297,32 +295,28 @@ class Quicklook:
             l1b = L1bDataContents(f)
             lt = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.local_time)
             X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
-            img = self.__ax.pcolormesh(X, Y, lt, cmap='twilight_shifted', vmin=6, vmax=18)
-        return img
+            self.__ax.pcolormesh(X, Y, lt, cmap='twilight_shifted', vmin=6, vmax=18)
 
     def fill_solar_zenith_angle(self):
         for c, f in enumerate(self.__files.filenames):
             l1b = L1bDataContents(f)
             sza = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.solar_zenith_angle)
             X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
-            img = self.__ax.pcolormesh(X, Y, sza, cmap='cividis_r', vmin=0, vmax=180)
-        return img
+            self.__ax.pcolormesh(X, Y, sza, cmap='cividis_r', vmin=0, vmax=180)
 
     def fill_emission_angle(self):
         for c, f in enumerate(self.__files.filenames):
             l1b = L1bDataContents(f)
             ea = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.emission_angle)
             X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
-            img = self.__ax.pcolormesh(X, Y, ea, cmap='cividis_r', vmin=0, vmax=90)
-        return img
+            self.__ax.pcolormesh(X, Y, ea, cmap='cividis_r', vmin=0, vmax=90)
 
     def fill_phase_angle(self):
         for c, f in enumerate(self.__files.filenames):
             l1b = L1bDataContents(f)
             pa = np.where(l1b.altitude[:, :, 4] != 0, np.nan, l1b.phase_angle)
             X, Y = self.__make_plot_grid(l1b, self.__swath_numbers[c])
-            img = self.__ax.pcolormesh(X, Y, pa, cmap='cividis_r', vmin=0, vmax=180)
-        return img
+            self.__ax.pcolormesh(X, Y, pa, cmap='cividis_r', vmin=0, vmax=180)
 
     @staticmethod
     def __reshape_data_for_pcolormesh(colors: np.ndarray) -> np.ndarray:
@@ -344,6 +338,7 @@ class Quicklook:
             np.linspace(angles[0] - delta_angles / 2,
                         angles[-1] + delta_angles / 2, file.n_integrations + 1)
         )
+        Y = 180 - Y
         return X, Y
 
     @staticmethod
