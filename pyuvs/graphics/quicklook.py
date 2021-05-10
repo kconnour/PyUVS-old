@@ -1,9 +1,11 @@
 """
 
 """
+import copy
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 from matplotlib.transforms import Bbox
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from pyuvs.files import FileFinder, DataFilenameCollection, orbit_code
@@ -38,9 +40,57 @@ class ApoapseMUVQuicklook:
         self.__slit_width = 10.64
 
         self.__set_quicklook_rc_params()
-        self.__fig = plt.figure(figsize=(5, 10))
-        self.__axes = self.__make_axes()
-        self.__fill_plots()
+        self.__axes = self.__setup_axes()
+        # self.__fill_plots()
+
+    def __setup_axes(self):
+        axes = self.__setup_fig_and_axes()
+        self.__turn_off_frame(axes['text'])
+        for key in axes.keys():
+            self.__turn_off_ticks(axes[key])
+            self.__set_axis_limits(axes[key])
+        return axes
+
+    def __setup_fig_and_axes(self):
+        text_axis_height = 1
+        data_axis_height = 2
+        angular_axis_height = 1
+        colorbar_width = 1/15
+        height_ratios = [text_axis_height, data_axis_height, data_axis_height,
+                         angular_axis_height, angular_axis_height]
+        width_ratios = [1, colorbar_width, 1, colorbar_width]
+
+        fig, axes = plt.subplots(5, 4, figsize=(6, 8),
+                                 gridspec_kw={'height_ratios': height_ratios,
+                                              'width_ratios': width_ratios},
+                                 constrained_layout=True)
+
+        gs = axes[0, 0].get_gridspec()
+        [ax.remove() for ax in axes[0, :]]
+        fig.add_subplot(gs[0, :])
+
+        for row in [1, 2]:
+            gs = axes[row, 0].get_gridspec()
+            [ax.remove() for ax in axes[row, :3]]
+            fig.add_subplot(gs[row, :3])
+
+        return self.__create_axis_dict(fig.axes)
+
+    @staticmethod
+    def __create_axis_dict(axes):
+        return {'text': axes[10],
+                'data': axes[11],
+                'data_colorbar': axes[0],
+                'geography': axes[12],
+                'geography_colorbar': axes[1],
+                'local_time': axes[2],
+                'local_time_colorbar': axes[3],
+                'solar_zenith_angle': axes[4],
+                'solar_zenith_angle_colorbar': axes[5],
+                'emission_angle': axes[6],
+                'emission_angle_colorbar': axes[7],
+                'phase_angle': axes[8],
+                'phase_angle_colorbar': axes[9]}
 
     @staticmethod
     def __set_quicklook_rc_params() -> None:
@@ -55,35 +105,13 @@ class ApoapseMUVQuicklook:
         plt.rc('mathtext', fontset='stix')  # Set all math font to stix
         plt.rc('text', usetex=False)
 
-        plt_thick = 0.4
-        plt.rc('lines', linewidth=0.8)
+        plt_thick = 0.5
+        plt.rc('lines', linewidth=plt_thick)
         plt.rc('axes', linewidth=plt_thick)
 
-    def __make_axes(self):
-        data_axis = self.__add_ax(self.__fig, 0.05, 0.95, 5 / 8, 7 / 8)
-        geo_axis = self.__add_ax(self.__fig, 0.05, 0.95, 1 / 4 + 3 / 32,
-                                 5 / 8 - 1 / 32)
-        lt_axis = self.__add_ax(self.__fig, 0.05, 0.45, 3 / 16, 1 / 4 + 1 / 16)
-        sza_axis = self.__add_ax(self.__fig, 0.525, 0.9, 3 / 16,
-                                 1 / 4 + 1 / 16)
-        ea_axis = self.__add_ax(self.__fig, 0.05, 0.45, 1 / 32, 1 / 32 + 1 / 8)
-        pa_axis = self.__add_ax(self.__fig, 0.525, 0.9, 1 / 32, 1 / 32 + 1 / 8)
-
-        return {'data': data_axis,
-                'geography': geo_axis,
-                'local_time': lt_axis,
-                'solar_zenith_angle': sza_axis,
-                'emission_angle': ea_axis,
-                'phase_angle': pa_axis}
-
-    def __add_ax(self, fig, hmin: float, hmax: float, vmin: float,
-                 vmax: float) -> plt.axis:
-        axis = fig.add_subplot(1, 1, 1)
-        axis.set_position(Bbox([[hmin, vmin], [hmax, vmax]]))
-        axis.set_facecolor((0, 0, 0, 1))
-        self.__turn_off_ticks(axis)
-        self.__set_axis_limits(axis)
-        return axis
+    @staticmethod
+    def __turn_off_frame(axis: plt.Axes) -> None:
+        axis.set_frame_on(False)
 
     @staticmethod
     def __turn_off_ticks(axis: plt.Axes) -> None:
@@ -107,22 +135,32 @@ class ApoapseMUVQuicklook:
         ql.histogram_equalize_dayside(self.__flatfield)
 
     def __fill_local_time_axis(self) -> None:
+        self.__setup_local_time_colorbar()
         lt_axis = self.__axes['local_time']
-        ql = Quicklook(self.__files, lt_axis, self.__swath_numbers, self.__flip)
-        img = ql.fill_local_time()
+        # ql = Quicklook(self.__files, lt_axis, self.__swath_numbers, self.__flip)
+        # img = ql.fill_local_time()
 
-        ticks = np.linspace(6, 18, num=13, dtype='int')
-        tick_labels = np.where(ticks % 3, '', ticks)
-        self.__add_colorbar(img, lt_axis, ticks, 'Local Time [hours]', tick_labels)
+    def __setup_local_time_colorbar(self):
+        lt_cbar_axis = self.__axes['local_time_colorbar']
+        cmap = 'twilight_shifted'
+        norm = colors.Normalize(vmin=6, vmax=18)
+        label = 'Local Time [hours]'
+        lt_cbar = self.__setup_colorbar(lt_cbar_axis, cmap, norm, label)
+        # TODO: set ticks here
 
     def __fill_solar_zenith_angle_axis(self) -> None:
+        self.__setup_solar_zenith_angle_colorbar()
         sza_axis = self.__axes['solar_zenith_angle']
-        ql = Quicklook(self.__files, sza_axis, self.__swath_numbers, self.__flip)
-        img = ql.fill_solar_zenith_angle()
+        # ql = Quicklook(self.__files, sza_axis, self.__swath_numbers, self.__flip)
+        # img = ql.fill_solar_zenith_angle()
 
-        ticks = np.linspace(0, 180, num=19, dtype='int')
-        tick_labels = np.where(ticks % 30, '', ticks)
-        self.__add_colorbar(img, sza_axis, ticks, 'Solar Zenith Angle [degrees]', tick_labels)
+    def __setup_solar_zenith_angle_colorbar(self):
+        sza_cbar_axis = self.__axes['solar_zenith_angle_colorbar']
+        cmap = 'cividis_r'
+        norm = colors.Normalize(vmin=0, vmax=180)
+        label = 'Solar Zenith Angle [$\degree$]'
+        sza_cbar = self.__setup_colorbar(sza_cbar_axis, cmap, norm, label)
+        # TODO: set ticks here
 
     def __fill_emission_angle_axis(self) -> None:
         ea_axis = self.__axes['emission_angle']
@@ -133,6 +171,14 @@ class ApoapseMUVQuicklook:
         tick_labels = np.where(ticks % 15, '', ticks)
         self.__add_colorbar(img, ea_axis, ticks, 'Emission Angle [degrees]', tick_labels)
 
+    def __setup_emission_angle_colorbar(self):
+        ea_cbar_axis = self.__axes['emission_angle_colorbar']
+        cmap = colors.LinearSegmentedColormap.from_list('cividis_half', copy.copy(plt.get_cmap('cividis_r'))(np.linspace(0, 0.5, 256)))
+        norm = colors.Normalize(vmin=0, vmax=90)
+        label = 'Emission Angle [$\degree$]'
+        ea_cbar = self.__setup_colorbar(ea_cbar_axis, cmap, norm, label)
+        # TODO: set ticks here
+
     def __fill_phase_angle_axis(self) -> None:
         pa_axis = self.__axes['phase_angle']
         ql = Quicklook(self.__files, pa_axis, self.__swath_numbers, self.__flip)
@@ -141,18 +187,20 @@ class ApoapseMUVQuicklook:
         ticks = np.linspace(0, 180, num=19, dtype='int')
         tick_labels = np.where(ticks % 30, '', ticks)
         self.__add_colorbar(img, pa_axis, ticks, 'Phase Angle [degrees]', tick_labels)
+        
+    def __setup_phase_angle_colorbar(self):
+        pa_cbar_axis = self.__axes['phase_angle_colorbar']
+        cmap = 'cividis_r'
+        norm = colors.Normalize(vmin=0, vmax=180)
+        label = 'Phase Angle [$\degree$]'
+        pa_cbar = self.__setup_colorbar(pa_cbar_axis, cmap, norm, label)
+        # TODO: set ticks here
 
     @staticmethod
-    def __add_colorbar(img, ax: plt.Axes, ticks: np.ndarray, label: str,
-                       tick_labels: np.ndarray) -> None:
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes('right', size='5%', pad=0.05)
-        #cbar = plt.colorbar(img, cax=cax, ticks=ticks)
-        cbar = plt.colorbar(img, cax=cax)
-        cbar.set_ticks(ticks)
-        cbar.set_ticklabels(tick_labels)
-        cbar.ax.tick_params(labelsize=6)
-        cbar.set_label(label, fontsize=6)
+    def __setup_colorbar(axis, cmap, norm, label):
+        data_sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+        data_sm.set_array(np.array([]))
+        return plt.colorbar(data_sm, cax=axis, label=label)
 
     @staticmethod
     def savefig(location: str) -> None:
