@@ -326,7 +326,7 @@ class _L1bPixelgeometryContents:
         return self.__get_pixelgeometry()['pixel_local_time']
 
 
-class L1bDataContents(_IUVSDataContents,
+'''class L1bDataContents(_IUVSDataContents,
                       _L1bIntegrationContents,
                       _L1bSpacecraftGeometry,
                       _L1bPixelgeometryContents,
@@ -374,4 +374,65 @@ class L1bDataContents(_IUVSDataContents,
         _L1bIntegrationContents.__init__(self, hdulist)
         _L1bSpacecraftGeometry.__init__(self, hdulist)
         _L1bPixelgeometryContents.__init__(self, hdulist)
-        _L1bObservationContents.__init__(self, hdulist)
+        _L1bObservationContents.__init__(self, hdulist)'''
+
+
+class L1bDataContents:
+    def __init__(self, filename: DataFilename) -> None:
+        """
+
+        Parameters
+        ----------
+        filename
+        """
+        self.__hdulist = fits.open(filename.path)
+        self.__primary_shape = self.__primary_shape()
+
+    def __primary_shape(self) -> tuple[int, int, int]:
+        primary = self.__hdulist['primary'].data
+        ndims = np.ndim(primary)
+        if ndims == 2:
+            return primary[np.newaxis, :, :].shape
+        elif ndims == 3:
+            return primary.shape
+        else:
+            message = f'This file has {ndims} dimensions, not the standard 2 ' \
+                      f'or 3. Unsure how to deal with this file...'
+            raise IndexError(message)
+
+    def __getattr__(self, method):
+        return getattr(self.val, method)
+
+    def __getitem__(self, x):
+        return self.__hdulist[x]
+
+    def info(self) -> None:
+        """ Print info about the input file.
+
+        """
+        self.__hdulist.info()
+
+    @property
+    def n_integrations(self) -> int:
+        """ Get the number of integrations in this observation file.
+
+        """
+        return self.__primary_shape[0]
+
+    @property
+    def n_positions(self) -> int:
+        """ Get the number of detector positions in this observation file.
+
+        """
+        return self.__primary_shape[1]
+
+    @property
+    def n_wavelengths(self) -> int:
+        """ Get the number of wavelengths used in this observation file.
+
+        """
+        return self.__primary_shape[2]
+
+    @property
+    def hdulist(self) -> fits.hdu.hdulist.HDUList:
+        return self.__hdulist

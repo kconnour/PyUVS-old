@@ -362,6 +362,7 @@ class Quicklook:
         field = np.flipud(self.__resize_map(field))
         return cmap(norm(field))
 
+    # TODO: make Zac look into gaussian smoothing with astropy
     @staticmethod
     def __resize_map(map_field):
         map_field = resize(map_field, (1800, 3600))
@@ -454,10 +455,13 @@ class Quicklook:
         hifi_spa = res
         hifi_int = int(hifi_spa / n_spa * n_int)
         # make arrays of ephemeris time and array to hold the new swath vector calculations
+
+        # here thru 481 just interpolate et_arr and vec_arr onto new grid (int, pos) and (int, pos, 3) adn they're all just center values
+
         et_arr = np.expand_dims(et, 1) * np.ones((n_int, n_spa))
         et_arr = resize(et_arr, (hifi_int, hifi_spa), mode='edge')
         vec_arr = np.zeros((hifi_int + 1, hifi_spa + 1, 3))
-        # make an artificially-divided slit and create new array of swath vectors
+        # make an artificially-divided swath and create new array of swath vectors
         if self.__flip:
             lower_left = vec[0, :, 0, 0]
             upper_left = vec[-1, :, 0, 1]
@@ -531,6 +535,7 @@ class Quicklook:
                     context_map[i, j] = map_data[map_lat, map_lon]
                 # if the SPICE calculation fails, this (probably) means it didn't intercept the planet
                 except:
+                    # This pixel (or the vector) didn't intercept the planet
                     pass
         # get mirror angles
         angles = hdul['integration'].data[
