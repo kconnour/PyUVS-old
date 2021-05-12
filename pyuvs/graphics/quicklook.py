@@ -16,6 +16,7 @@ from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
 from pyuvs.graphics.coloring import HistogramEqualizer
 from pyuvs.spice import Spice
+from pyuvs.constants import slit_width
 
 
 # TODO: get properties from data (method)
@@ -53,7 +54,7 @@ class ApoapseMUVQuicklook:
         self.__flip = flip
         self.__spice_directory = spice_directory
         self.__species = species
-        self.__slit_width = 10.64
+        self.__slit_width = slit_width
 
         self.__axes = self.__setup_fig_and_axes()
         self.__fill_plots()
@@ -143,7 +144,7 @@ class ApoapseMUVQuicklook:
         axis.set_yticks([])
 
     def __set_axis_limits(self, axis: plt.Axes) -> None:
-        axis.set_xlim(0, self.__slit_width * (self.__swath_numbers[-1] + 1))
+        axis.set_xlim(0, slit_width * (self.__swath_numbers[-1] + 1))
         axis.set_ylim(60, 120)
 
     @staticmethod
