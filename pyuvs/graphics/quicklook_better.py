@@ -1,4 +1,17 @@
 """
+ApoapseMUVQuicklookCreator
+ApoapseMUVQuicklook
+Banner
+Colorbar                             (done)
+Quicklook
+QuicklookColorbarBundle
+AuxillaryArray                       (done)
+SurfaceGeographyMap                  (done)
+MagneticFieldMap                     (done)
+Colormaps                            (done)
+HighResolutionGeometryCreator
+_SwathGeometryCreator
+_SwathArrays
 
 """
 from astropy.io import fits
@@ -25,23 +38,20 @@ from pyuvs.constants import slit_width
 # TODO: should HEQ break if I try to apply the coloring to a file that didn't
 #  make the coloring?
 # TODO banner
+# TODO: choose scaling factor instead of positions
 class ApoapseMUVQuicklook:
     def __init__(self, files: DataFilenameCollection, flatfield: np.ndarray,
                  swath_numbers: list[int], flip: bool, spice_directory: str,
-                 species: str) -> None:
+                 ) -> None:
         self.__files = files
         self.__flatfield = flatfield
         self.__swath_numbers = swath_numbers
         self.__n_swaths = self.__swath_numbers[-1] + 1
         self.__flip = flip
         self.__spice_directory = spice_directory
-        self.__species = species
-        self.__slit_width = slit_width
 
         self.__axes = self.__setup_fig_and_axes()
-
-        self.__turn_off_text_frame()   # Go in a banner function
-        self.__fill_plots()
+        self.__make_banner()
 
     def __setup_fig_and_axes(self):
         self.__set_quicklook_rc_params()
@@ -109,24 +119,15 @@ class ApoapseMUVQuicklook:
                 'phase_angle': axes[8],
                 'phase_angle_colorbar': axes[9]}
 
-    def __turn_off_text_frame(self) -> None:
-        self.__axes['text'].set_frame_on(False)
+    def __make_banner(self):
+        ban = Banner(self.__axes['text'])
 
-    def __fill_plots(self) -> None:
-        if self.__species == 'NO':
-            self.__fill_plots_no_nightglow()
-        # TODO: add this
-        elif self.__species == 'aurora':
-            print('coming soon')
-        else:
-            raise SystemExit('invalid species')
-
-    def __fill_plots_no_nightglow(self):
-        # TODO: generalize this
+    def fill_plots_no_nightglow(self):
         map_dir = np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy')
         hrgc = HighResolutionGeometryCreator(
             self.__spice_directory, map_dir, 200, self.__flip)
 
+        map_ql = self.__setup_map_quicklook()
         lt_bundle = self.__setup_local_time_bundle()
         sza_bundle = self.__setup_solar_zenith_angle_bundle()
         ea_bundle = self.__setup_emission_angle_bundle()
@@ -134,6 +135,10 @@ class ApoapseMUVQuicklook:
 
         for c, f in enumerate(self.__files.filenames):
             arrays = hrgc.swath_geometry(L1bDataContents(f))
+
+            map_ql.plot_precomputed_swath_map(
+                arrays.context_map, arrays.x, arrays.y, arrays.cx,
+                self.__swath_numbers[c])
             lt_bundle.plot_precomputed_swath_bundle_from_cmap(
                 arrays.local_time, arrays.x, arrays.y,
                 self.__swath_numbers[c])
@@ -146,6 +151,60 @@ class ApoapseMUVQuicklook:
             pa_bundle.plot_precomputed_swath_bundle_from_cmap(
                 arrays.phase_angle, arrays.x, arrays.y,
                 self.__swath_numbers[c])
+
+    def fill_plots_aurora(self):
+        map_dir = np.load('/home/kyle/repos/pyuvs/aux/magnetic_field_closed_probability.npy')
+        hrgc = HighResolutionGeometryCreator(
+            self.__spice_directory, map_dir, 200, self.__flip)
+
+        map_ql = self.__setup_map_quicklook()
+        lt_bundle = self.__setup_local_time_bundle()
+        sza_bundle = self.__setup_solar_zenith_angle_bundle()
+        ea_bundle = self.__setup_emission_angle_bundle()
+        pa_bundle = self.__setup_phase_angle_bundle()
+
+        for c, f in enumerate(self.__files.filenames):
+            arrays = hrgc.swath_geometry(L1bDataContents(f))
+
+            map_ql.plot_precomputed_swath_map(
+                arrays.context_map, arrays.x, arrays.y, arrays.cx,
+                self.__swath_numbers[c])
+            lt_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.local_time, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+            sza_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.solar_zenith_angle, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+            ea_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.emission_angle, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+            pa_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.phase_angle, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+
+    def __setup_map_quicklook(self):
+        map_ql = Quicklook(self.__axes['geography'])
+        self.__axes['geography_colorbar'].remove()
+        map_ql.turn_off_plot_ticks()
+        map_ql.set_background_black()
+        map_ql.set_axis_limits(self.__n_swaths)
+        return map_ql
+
+    def __setup_magnetic_field_bundle(self):
+        colormap = Colormaps()
+        colormap.set_magnetic_field()
+        field_bundle = QuicklookColorbarBundle(
+            self.__axes['geography'],
+            self.__axes['geography_colorbar'],
+            colormap.cmap, colormap.norm
+        )
+        field_bundle.turn_off_plot_ticks()
+        field_bundle.set_background_black()
+        field_bundle.set_axis_limits(self.__n_swaths)
+        field_bundle.set_label('Closed field line probability')
+        field_bundle.add_major_ticks(0.2)
+        field_bundle.add_minor_ticks(0.05)
+        return field_bundle
 
     def __setup_local_time_bundle(self):
         colormap = Colormaps()
@@ -212,8 +271,242 @@ class ApoapseMUVQuicklook:
         plt.savefig(location, dpi=300)
 
 
+class Banner:
+    def __init__(self, axis):
+        self.__axis = axis
+        self.__setup_axis()
+
+    def __setup_axis(self):
+        self.__turn_off_text_frame()
+        self.__turn_off_plot_ticks()
+
+    def __turn_off_text_frame(self) -> None:
+        self.__axis.set_frame_on(False)
+
+    def __turn_off_plot_ticks(self) -> None:
+        self.__axis.set_xticks([])
+        self.__axis.set_yticks([])
+
+
+class Quicklook:
+    def __init__(self, axis):
+        self.__axis = axis
+
+    def set_axis_limits(self, n_swaths: int) -> None:
+        self.__axis.set_xlim(0, slit_width * n_swaths)
+        self.__axis.set_ylim(60, 120)
+
+    def set_background_black(self) -> None:
+        self.__axis.set_facecolor((0, 0, 0))
+
+    def turn_off_plot_ticks(self) -> None:
+        self.__axis.set_xticks([])
+        self.__axis.set_yticks([])
+
+    def plot_precomputed_swath_map(self, array, x, y, cx, swath_number) -> None:
+        y = (120 - y) + 60
+        # offset X array by swath number
+        X = x + slit_width * swath_number
+
+        array = array.reshape(array.shape[0] * array.shape[1], array.shape[2])
+
+        self.__axis.pcolormesh(X, y, np.ones_like(cx), color=array, linewidth=0,
+                               edgecolors='none',
+                               rasterized=True).set_array(None)
+
+    def plot_precomputed_swath_from_cmap(self, array, x, y, swath_number, cmap, norm) -> None:
+        y = (120 - y) + 60
+        # offset X array by swath number
+        X = x + slit_width * swath_number
+
+        self.__axis.pcolormesh(X, y, array, cmap=cmap, norm=norm)
+
+
+class Colorbar:
+    """A class that designates an axis as a colorbar with specified properties.
+
+    This fills an axis with an input colormap. It provides methods to add
+    additional information to the colorbar.
+
+    Parameters
+    ----------
+    axis
+        The axis to designate as a colorbar.
+    cmap
+        The colormap to fill the axis.
+    norm
+        The normalization to apply to the colormap.
+
+    """
+    def __init__(self, axis: plt.Axes, cmap: colors.LinearSegmentedColormap,
+                 norm: colors.Normalize) -> None:
+        self.__axis = axis
+        self.__cmap = cmap
+        self.__norm = norm
+        self.__colorbar = self.__make_colorbar()
+
+    def __make_colorbar(self):
+        data_sm = plt.cm.ScalarMappable(cmap=self.__cmap, norm=self.__norm)
+        data_sm.set_array(np.array([]))
+        return plt.colorbar(data_sm, cax=self.__axis)
+
+    def set_label(self, label: str) -> None:
+        self.__colorbar.set_label(label)
+
+    def add_major_ticks(self, major_ticks: float) -> None:
+        self.__colorbar.ax.yaxis.set_major_locator(
+            ticker.MultipleLocator(major_ticks))
+
+    def add_minor_ticks(self, minor_ticks: float) -> None:
+        self.__colorbar.ax.yaxis.set_minor_locator(
+            ticker.MultipleLocator(minor_ticks))
+
+    @property
+    def cmap(self) -> colors.LinearSegmentedColormap:
+        return self.__cmap
+
+    @property
+    def norm(self) -> colors.Normalize:
+        return self.__norm
+
+
+class QuicklookColorbarBundle(Quicklook, Colorbar):
+    """Bundle together QL and its colorbar.
+
+    """
+    def __init__(self, quicklook_ax: plt.Axes, colorbar_ax: plt.Axes, cmap,
+                 norm) -> None:
+        Quicklook.__init__(self, quicklook_ax)
+        Colorbar.__init__(self, colorbar_ax, cmap, norm)
+
+    def plot_precomputed_swath_bundle_from_cmap(self, array, x, y, swath_number):
+        self.plot_precomputed_swath_from_cmap(array, x, y, swath_number,
+                                              self.cmap, self.norm)
+
+
+class AuxiliaryArray:
+    """Abstract base class to read in an auxiliary numpy array.
+
+    This acts like a numpy array, but provides some more convenient error
+    handling.
+
+    Parameters
+    ----------
+    file_path
+        Absolute path of the array to read in.
+
+    """
+    def __init__(self, file_path: str) -> None:
+        self.__file_path = file_path
+        self.__array = self.__load_array()
+
+    def __load_array(self) -> np.ndarray:
+        try:
+            return np.load(self.__file_path)
+        except TypeError:
+            message = 'file_path must be a string.'
+            raise TypeError(message)
+        except ValueError:
+            message = 'file_path does not point to a numpy array'
+            raise ValueError(message)
+
+    def __getattr__(self, method):
+        return getattr(self.__array, method)
+
+    @property
+    def array(self) -> np.ndarray:
+        return self.__array
+
+    @array.setter
+    def array(self, val: np.ndarray) -> None:
+        self.__array = val
+
+
+class SurfaceGeographyMap(AuxiliaryArray):
+    """Read in an auxiliary geography map.
+
+    This class will read in the standard geographic map used with IUVS data
+    unless another file is specified. It otherwise acts like a numpy.ndarray.
+
+    Parameters
+    ----------
+    file_path
+       Absolute path of the array to read in.
+
+    """
+    def __init__(self, file_path=None):
+        file_path = self.__make_file_path(file_path)
+        super().__init__(file_path)
+
+    # TODO: This is fragile and depends on project structure... fix that
+    @staticmethod
+    def __make_file_path(file) -> str:
+        if file is None:
+            file = os.path.join(os.getcwd(), '..', '..', 'aux',
+                                'mars_surface_map.npy')
+        return file
+
+
+class MagneticFieldMap(AuxiliaryArray):
+    """Read in an auxiliary Martian closed magnetic field probability map.
+
+    This class will read in the standard magnetic field map used with IUVS data
+    unless another file is specified. It otherwise acts like a numpy.ndarray.
+
+    Parameters
+    ----------
+    file_path
+       Absolute path of the array to read in.
+
+    """
+    def __init__(self, file_path=None):
+
+        file_path = self.__make_file_path(file_path)
+        super().__init__(file_path)
+        self.__make_map_high_resolution()
+
+    # TODO: This is fragile and depends on project structure... fix that
+    @staticmethod
+    def __make_file_path(file) -> str:
+        if file is None:
+            file = os.path.join(os.getcwd(), '..', '..', 'aux',
+                                'magnetic_field_closed_probability.npy')
+        return file
+
+    def __make_map_high_resolution(self):
+        self.array = self.__create_high_resolution_map()
+
+    def __create_high_resolution_map(self):
+        field = np.flipud(self.array)    # to match the flipped QL I think
+        highres_map = self.__resize_map(field)
+        return self.__colorize_map(highres_map)
+
+    # TODO: make Zac look into gaussian smoothing with astropy
+    @staticmethod
+    def __resize_map(map_field):
+        map_field = resize(map_field, (1800, 3600))
+        V = map_field.copy()
+        V[np.isnan(map_field)] = 0
+        VV = gaussian_filter(V, sigma=1)
+        W = 0 * map_field.copy() + 1
+        W[np.isnan(map_field)] = 0
+        WW = gaussian_filter(W, sigma=1)
+        map_field = VV / WW
+        map_field /= np.nanmax(map_field)
+        return map_field
+
+    @staticmethod
+    def __colorize_map(field):
+        colormap = Colormaps()
+        colormap.set_magnetic_field()
+        return colormap.cmap(colormap.norm(field))
+
+
 class Colormaps:
-    """ Make an object to hold predefined colormaps.
+    """ A class that holds colormaps.
+
+    Colormaps contains some preset colormaps. Calling any methods changes the
+    object's known colormap and norm are.
 
     """
     def __init__(self) -> None:
@@ -244,95 +537,12 @@ class Colormaps:
         self.__norm = colors.Normalize(vmin=0, vmax=180)
 
     @property
-    def cmap(self):
+    def cmap(self) -> colors.LinearSegmentedColormap:
         return self.__cmap
 
     @property
-    def norm(self):
+    def norm(self) -> colors.Normalize:
         return self.__norm
-
-
-class Colorbar:
-    """Fill a colorbar. Add methods to add more info to it
-
-    """
-    def __init__(self, axis, cmap, norm):
-        self.__axis = axis
-        self.__cmap = cmap
-        self.__norm = norm
-        self.__colorbar = self.__make_colorbar()
-
-    def __make_colorbar(self):
-        data_sm = plt.cm.ScalarMappable(cmap=self.__cmap, norm=self.__norm)
-        data_sm.set_array(np.array([]))
-        return plt.colorbar(data_sm, cax=self.__axis)
-
-    def set_label(self, label: str) -> None:
-        self.__colorbar.set_label(label)
-
-    def add_major_ticks(self, major_ticks: float) -> None:
-        self.__colorbar.ax.yaxis.set_major_locator(
-            ticker.MultipleLocator(major_ticks))
-
-    def add_minor_ticks(self, minor_ticks: float) -> None:
-        self.__colorbar.ax.yaxis.set_minor_locator(
-            ticker.MultipleLocator(minor_ticks))
-
-    @property
-    def cmap(self):
-        return self.__cmap
-
-    @property
-    def norm(self):
-        return self.__norm
-
-
-class Quicklook:
-    def __init__(self, axis):
-        self.__axis = axis
-
-    def set_axis_limits(self, n_swaths: int) -> None:
-        self.__axis.set_xlim(0, slit_width * n_swaths)
-        self.__axis.set_ylim(60, 120)
-
-    def set_background_black(self) -> None:
-        self.__axis.set_facecolor((0, 0, 0))
-
-    def turn_off_plot_ticks(self) -> None:
-        self.__axis.set_xticks([])
-        self.__axis.set_yticks([])
-
-    def plot_precomputed_swath(self, array, x, y, cx, swath_number) -> None:
-        y = (120 - y) + 60
-        # offset X array by swath number
-        x += slit_width * swath_number
-
-        array = array.reshape(array.shape[0] * array.shape[1], array.shape[2])
-
-        self.__axis.pcolormesh(x, y, np.ones_like(cx), color=array, linewidth=0,
-                               edgecolors='none',
-                               rasterized=True).set_array(None)
-
-    def plot_precomputed_swath_from_cmap(self, array, x, y, swath_number, cmap, norm) -> None:
-        y = (120 - y) + 60
-        # offset X array by swath number
-        X = x + slit_width * swath_number
-
-        self.__axis.pcolormesh(X, y, array, cmap=cmap, norm=norm)
-
-
-class QuicklookColorbarBundle(Quicklook, Colorbar):
-    """Bundle together QL and its colorbar.
-
-    """
-    def __init__(self, quicklook_ax: plt.Axes, colorbar_ax: plt.Axes, cmap,
-                 norm) -> None:
-        Quicklook.__init__(self, quicklook_ax)
-        Colorbar.__init__(self, colorbar_ax, cmap, norm)
-
-    def plot_precomputed_swath_bundle_from_cmap(self, array, x, y, swath_number):
-        self.plot_precomputed_swath_from_cmap(array, x, y, swath_number,
-                                              self.cmap, self.norm)
 
 
 class HighResolutionGeometryCreator:
@@ -622,59 +832,6 @@ class _SwathArrays:
         self.__cy = val
 
 
-'''class Quicklook:
-    def __init__(self, files: DataFilenameCollection, ax: plt.Axes,
-                 swath_numbers: list[int], flip: bool) -> None:
-        """
-        Parameters
-        ----------
-        files
-            A collection of files to plot a quicklook for.
-        ax
-            The axis to put the quicklook into.
-        swath_numbers
-            The swath numbers for each of the swaths in the files.
-        flip
-            Denote whether the files were beta-angle flipped.
-
-        """
-        self.__files = files
-        self.__ax = ax
-        self.__swath_numbers = swath_numbers
-        self.__flip = flip
-        self.__slit_width = 10.64
-
-    # fill preprocessed data method
-
-    def fill_context_map(self, spice_directory):
-        sfc_map = np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy')
-        hrgc = HighResolutionGeometryCreator(spice_directory,
-            np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy'), 200,
-            self.__flip)
-        for c, f in enumerate(self.__files.filenames):
-            l1b = L1bDataContents(f)
-
-            arrays = hrgc.swath_geometry(l1b)
-
-            y = (120 - y) + 60
-            # offset X array by swath number
-            x += self.__slit_width * self.__swath_numbers[c]
-
-            cm = cm.reshape(cm.shape[0] * cm.shape[1], cm.shape[2])
-
-            self.__ax.pcolormesh(x, y, np.ones_like(cx), color=cm, linewidth=0,
-                                 edgecolors='none',
-                       rasterized=True).set_array(None)'''
-
-
-
-
-# TODO: make HRGC in ApoapseMUVQL
-# TODO: make QL class with ability to plot a swath (not loop thru files)
-# TODO: modify Bundle class to call the QL swath plotter
-# TODO: choose scaling factor instead of positions
-
-
 if __name__ == '__main__':
     from pyuvs.files import FileFinder
     files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(3453, segment='apoapse', channel='muv')
@@ -682,5 +839,6 @@ if __name__ == '__main__':
     sp = '/media/kyle/Samsung_T5/IUVS_data/spice'
     saveloc = '/home/kyle'
     swaths = [0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5]
-    ql = ApoapseMUVQuicklook(files, np.load(ff), swaths, False, sp, 'NO')
-    ql.savefig('/home/kyle/veryVeryGoodJunk.png')
+    #ql = ApoapseMUVQuicklook(files, np.load(ff), swaths, False, sp)
+    #ql.fill_plots_aurora()
+    #ql.savefig('/home/kyle/veryVeryGoodJunk.png')
