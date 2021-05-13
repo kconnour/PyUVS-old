@@ -1,7 +1,6 @@
 """
 
 """
-import spiceypy.utils.exceptions
 from astropy.io import fits
 import copy
 import os
@@ -12,12 +11,205 @@ import matplotlib.ticker as ticker
 from scipy.ndimage import gaussian_filter
 from skimage.transform import resize
 import spiceypy as spice
+import spiceypy.utils.exceptions
 from pyuvs.files import FileFinder, DataFilenameCollection, orbit_code
 from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
 from pyuvs.graphics.coloring import HistogramEqualizer
 from pyuvs.spice import Spice
 from pyuvs.constants import slit_width
+
+
+# TODO: Add ability to choose spectral indices in HistogramEqualizer
+# TODO: this breaks on a single integration
+# TODO: should HEQ break if I try to apply the coloring to a file that didn't
+#  make the coloring?
+# TODO banner
+class ApoapseMUVQuicklook:
+    def __init__(self, files: DataFilenameCollection, flatfield: np.ndarray,
+                 swath_numbers: list[int], flip: bool, spice_directory: str,
+                 species: str) -> None:
+        self.__files = files
+        self.__flatfield = flatfield
+        self.__swath_numbers = swath_numbers
+        self.__n_swaths = self.__swath_numbers[-1] + 1
+        self.__flip = flip
+        self.__spice_directory = spice_directory
+        self.__species = species
+        self.__slit_width = slit_width
+
+        self.__axes = self.__setup_fig_and_axes()
+
+        self.__turn_off_text_frame()   # Go in a banner function
+        self.__fill_plots()
+
+    def __setup_fig_and_axes(self):
+        self.__set_quicklook_rc_params()
+        fig, axis_grid = self.__make_axis_grid()
+        self.__combine_top_axes_rows(fig, axis_grid)
+        return self.__create_axis_dict(fig.axes)
+
+    # TODO: I hate this function and I can't completely identify why
+    @staticmethod
+    def __set_quicklook_rc_params() -> None:
+        # Make sure the typeface isn't outlined when saved as a .pdf
+        plt.rc('pdf', fonttype=42)  # ???
+        plt.rc('ps', fonttype=42)  # postscript
+
+        # Set the plot to be $\LaTeXe{}$-like
+        plt.rc('font', **{'family': 'STIXGeneral'})  # Set the typeface to stix
+        plt.rc('mathtext', fontset='stix')  # Set all math font to stix
+        plt.rc('text', usetex=False)
+
+        plt_thick = 0.5
+        plt.rc('lines', linewidth=plt_thick)
+        plt.rc('axes', linewidth=plt_thick)
+
+    @staticmethod
+    def __make_axis_grid():
+        text_axis_height = 1
+        data_axis_height = 2
+        angular_axis_height = 1
+        colorbar_width = 1/15
+        height_ratios = [text_axis_height, data_axis_height, data_axis_height,
+                         angular_axis_height, angular_axis_height]
+        width_ratios = [1, colorbar_width, 1, colorbar_width]
+
+        fig, axes = plt.subplots(5, 4, figsize=(6, 8),
+                                 gridspec_kw={'height_ratios': height_ratios,
+                                              'width_ratios': width_ratios},
+                                 constrained_layout=True)
+        return fig, axes
+
+    def __combine_top_axes_rows(self, fig, axes):
+        self.__combine_row_of_axes(fig, axes, 0, None)
+        self.__combine_row_of_axes(fig, axes, 1, 3)
+        self.__combine_row_of_axes(fig, axes, 2, 3)
+
+    @staticmethod
+    def __combine_row_of_axes(fig, axes, row, end_index):
+        gs = axes[row, 0].get_gridspec()
+        [ax.remove() for ax in axes[row, :end_index]]
+        fig.add_subplot(gs[row, :end_index])
+        return fig, axes
+
+    @staticmethod
+    def __create_axis_dict(axes):
+        return {'text': axes[10],
+                'data': axes[11],
+                'data_colorbar': axes[0],
+                'geography': axes[12],
+                'geography_colorbar': axes[1],
+                'local_time': axes[2],
+                'local_time_colorbar': axes[3],
+                'solar_zenith_angle': axes[4],
+                'solar_zenith_angle_colorbar': axes[5],
+                'emission_angle': axes[6],
+                'emission_angle_colorbar': axes[7],
+                'phase_angle': axes[8],
+                'phase_angle_colorbar': axes[9]}
+
+    def __turn_off_text_frame(self) -> None:
+        self.__axes['text'].set_frame_on(False)
+
+    def __fill_plots(self) -> None:
+        if self.__species == 'NO':
+            self.__fill_plots_no_nightglow()
+        # TODO: add this
+        elif self.__species == 'aurora':
+            print('coming soon')
+        else:
+            raise SystemExit('invalid species')
+
+    def __fill_plots_no_nightglow(self):
+        # TODO: generalize this
+        map_dir = np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy')
+        hrgc = HighResolutionGeometryCreator(
+            self.__spice_directory, map_dir, 200, self.__flip)
+
+        lt_bundle = self.__setup_local_time_bundle()
+        sza_bundle = self.__setup_solar_zenith_angle_bundle()
+        ea_bundle = self.__setup_emission_angle_bundle()
+        pa_bundle = self.__setup_phase_angle_bundle()
+
+        for c, f in enumerate(self.__files.filenames):
+            arrays = hrgc.swath_geometry(L1bDataContents(f))
+            lt_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.local_time, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+            sza_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.solar_zenith_angle, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+            ea_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.emission_angle, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+            pa_bundle.plot_precomputed_swath_bundle_from_cmap(
+                arrays.phase_angle, arrays.x, arrays.y,
+                self.__swath_numbers[c])
+
+    def __setup_local_time_bundle(self):
+        colormap = Colormaps()
+        colormap.set_local_time()
+        lt_bundle = QuicklookColorbarBundle(
+            self.__axes['local_time'],
+            self.__axes['local_time_colorbar'],
+            colormap.cmap, colormap.norm)
+        lt_bundle.turn_off_plot_ticks()
+        lt_bundle.set_background_black()
+        lt_bundle.set_axis_limits(self.__n_swaths)
+        lt_bundle.set_label('Local Time [hours]')
+        lt_bundle.add_major_ticks(3)
+        lt_bundle.add_minor_ticks(1)
+        return lt_bundle
+
+    def __setup_solar_zenith_angle_bundle(self):
+        colormap = Colormaps()
+        colormap.set_solar_zenith_angle()
+        sza_bundle = QuicklookColorbarBundle(
+            self.__axes['solar_zenith_angle'],
+            self.__axes['solar_zenith_angle_colorbar'],
+            colormap.cmap, colormap.norm)
+        sza_bundle.turn_off_plot_ticks()
+        sza_bundle.set_background_black()
+        sza_bundle.set_axis_limits(self.__n_swaths)
+        sza_bundle.set_label(r'Solar Zenith Angle [$\degree$]')
+        sza_bundle.add_major_ticks(30)
+        sza_bundle.add_minor_ticks(10)
+        return sza_bundle
+
+    def __setup_emission_angle_bundle(self):
+        colormap = Colormaps()
+        colormap.set_emission_angle()
+        ea_bundle = QuicklookColorbarBundle(
+            self.__axes['emission_angle'],
+            self.__axes['emission_angle_colorbar'],
+            colormap.cmap, colormap.norm)
+        ea_bundle.turn_off_plot_ticks()
+        ea_bundle.set_background_black()
+        ea_bundle.set_axis_limits(self.__n_swaths)
+        ea_bundle.set_label(r'Emission Angle [$\degree$]')
+        ea_bundle.add_major_ticks(15)
+        ea_bundle.add_minor_ticks(5)
+        return ea_bundle
+
+    def __setup_phase_angle_bundle(self):
+        colormap = Colormaps()
+        colormap.set_phase_angle()
+        pa_bundle = QuicklookColorbarBundle(
+            self.__axes['phase_angle'],
+            self.__axes['phase_angle_colorbar'],
+            colormap.cmap, colormap.norm)
+        pa_bundle.turn_off_plot_ticks()
+        pa_bundle.set_background_black()
+        pa_bundle.set_axis_limits(self.__n_swaths)
+        pa_bundle.set_label(r'Phase Angle [$\degree$]')
+        pa_bundle.add_major_ticks(30)
+        pa_bundle.add_minor_ticks(10)
+        return pa_bundle
+
+    @staticmethod
+    def savefig(location: str) -> None:
+        plt.savefig(location, dpi=300)
 
 
 class Colormaps:
@@ -86,79 +278,61 @@ class Colorbar:
         self.__colorbar.ax.yaxis.set_minor_locator(
             ticker.MultipleLocator(minor_ticks))
 
+    @property
+    def cmap(self):
+        return self.__cmap
 
-class QuicklookColorbarBundle:
-    """Bundle together QL and its colorbar. Add methods to fill them.
+    @property
+    def norm(self):
+        return self.__norm
+
+
+class Quicklook:
+    def __init__(self, axis):
+        self.__axis = axis
+
+    def set_axis_limits(self, n_swaths: int) -> None:
+        self.__axis.set_xlim(0, slit_width * n_swaths)
+        self.__axis.set_ylim(60, 120)
+
+    def set_background_black(self) -> None:
+        self.__axis.set_facecolor((0, 0, 0))
+
+    def turn_off_plot_ticks(self) -> None:
+        self.__axis.set_xticks([])
+        self.__axis.set_yticks([])
+
+    def plot_precomputed_swath(self, array, x, y, cx, swath_number) -> None:
+        y = (120 - y) + 60
+        # offset X array by swath number
+        x += slit_width * swath_number
+
+        array = array.reshape(array.shape[0] * array.shape[1], array.shape[2])
+
+        self.__axis.pcolormesh(x, y, np.ones_like(cx), color=array, linewidth=0,
+                               edgecolors='none',
+                               rasterized=True).set_array(None)
+
+    def plot_precomputed_swath_from_cmap(self, array, x, y, swath_number, cmap, norm) -> None:
+        y = (120 - y) + 60
+        # offset X array by swath number
+        X = x + slit_width * swath_number
+
+        self.__axis.pcolormesh(X, y, array, cmap=cmap, norm=norm)
+
+
+class QuicklookColorbarBundle(Quicklook, Colorbar):
+    """Bundle together QL and its colorbar.
 
     """
-    def __init__(self, quicklook_ax: plt.Axes, colorbar_ax: plt.Axes) -> None:
-        self.__quicklook_ax = quicklook_ax
-        self.__colorbar_ax = colorbar_ax
+    def __init__(self, quicklook_ax: plt.Axes, colorbar_ax: plt.Axes, cmap,
+                 norm) -> None:
+        Quicklook.__init__(self, quicklook_ax)
+        Colorbar.__init__(self, colorbar_ax, cmap, norm)
 
-    def fill_magnetic_field(self, files: DataFilenameCollection,
-                            swath_number: list[int], flip: bool, spice_directory) -> None:
-        cmap = Colormaps()
-        cmap.set_magnetic_field()
-
-        #ql = Quicklook(files, self.__quicklook_ax, swath_number, flip)
-        #ql.fill_magnetic_field(spice_directory, cmap, norm)
-
-        cbar = Colorbar(self.__colorbar_ax, cmap.cmap, cmap.norm)
-        cbar.set_label('Closed field line probability')
-        cbar.add_major_ticks(0.2)
-        cbar.add_minor_ticks(0.05)
-
-    def fill_local_time(self, files: DataFilenameCollection,
-                        swath_number: list[int], flip: bool) -> None:
-        cmap = Colormaps()
-        cmap.set_local_time()
-
-        #ql = Quicklook(files, self.__quicklook_ax, swath_number, flip)
-        #ql.fill_local_time(cmap, norm)
-
-        cbar = Colorbar(self.__colorbar_ax, cmap.cmap, cmap.norm)
-        cbar.set_label('Local Time [hours]')
-        cbar.add_major_ticks(3)
-        cbar.add_minor_ticks(1)
-
-    def fill_solar_zenith_angle(self, files: DataFilenameCollection,
-                                swath_number: list[int], flip: bool) -> None:
-        cmap = Colormaps()
-        cmap.set_solar_zenith_angle()
-
-        #ql = Quicklook(files, self.__quicklook_ax, swath_number, flip)
-        #ql.fill_local_time(cmap, norm)
-
-        cbar = Colorbar(self.__colorbar_ax, cmap.cmap, cmap.norm)
-        cbar.set_label(r'Solar Zenith Angle [$\degree$]')
-        cbar.add_major_ticks(30)
-        cbar.add_minor_ticks(10)
-
-    def fill_emission_angle(self, files: DataFilenameCollection,
-                            swath_number: list[int], flip: bool) -> None:
-        cmap = Colormaps()
-        cmap.set_emission_angle()
-
-        #ql = Quicklook(files, self.__quicklook_ax, swath_number, flip)
-        #ql.fill_local_time(cmap, norm)
-
-        cbar = Colorbar(self.__colorbar_ax, cmap.cmap, cmap.norm)
-        cbar.set_label(r'Emission Angle [$\degree$]')
-        cbar.add_major_ticks(15)
-        cbar.add_minor_ticks(5)
-
-    def fill_phase_angle(self, files: DataFilenameCollection,
-                         swath_number: list[int], flip: bool) -> None:
-        cmap = Colormaps()
-        cmap.set_phase_angle()
-
-        #ql = Quicklook(files, self.__quicklook_ax, swath_number, flip)
-        #ql.fill_local_time(cmap, norm)
-
-        cbar = Colorbar(self.__colorbar_ax, cmap.cmap, cmap.norm)
-        cbar.set_label(r'Phase Angle [$\degree$]')
-        cbar.add_major_ticks(30)
-        cbar.add_minor_ticks(10)
+    def plot_precomputed_swath_bundle_from_cmap(self, array, x, y, swath_number):
+        self.plot_precomputed_swath_from_cmap(array, x, y, swath_number,
+                                              self.cmap, self.norm)
 
 
 class HighResolutionGeometryCreator:
@@ -280,6 +454,26 @@ class _SwathGeometryCreator:
         return latitude, longitude, local_time, solar_zenith_angle, \
                emission_angle, phase_angle, context_map
 
+    def __make_pcolormesh_angles(self):
+        angles = self.__file['integration'].data['mirror_deg'] * 2
+        dang = np.diff(angles)[0]
+        x, y = np.meshgrid(np.linspace(0, slit_width, self.__positions + 1),
+                           np.linspace(angles[0] - dang / 2,
+                                       angles[-1] + dang / 2, self.__integrations + 1))
+
+        dslit = slit_width / self.__positions
+
+        cx, cy = np.meshgrid(
+            np.linspace(0 + dslit, slit_width - dslit, self.__positions),
+            np.linspace(angles[0], angles[-1], self.__integrations))
+
+        if self.__flip:
+            x = np.fliplr(x)
+            y = (np.fliplr(y) - 90) / (-1) + 90
+            cx = np.fliplr(cx)
+            cy = (np.fliplr(cy) - 90) / (-1) + 90
+        return x, y, cx, cy
+
     def __fill_high_resolution_arrays(self):
         latitude = self.__arrays.latitude
         longitude = self.__arrays.longitude
@@ -296,11 +490,12 @@ class _SwathGeometryCreator:
                     self.__get_pixel_values(et, pixel_vector)
                 latitude[i, j] = lat
                 longitude[i, j] = lon
-                local_time[i, j] = sza
+                local_time[i, j] = lt
                 solar_zenith_angle[i, j] = sza
                 emission_angle[i, j] = ea
                 phase_angle[i, j] = pa
                 context_map[i, j] = con_map
+        x, y, cx, cy = self.__make_pcolormesh_angles()
 
         self.__arrays.latitude = latitude
         self.__arrays.longitude = longitude
@@ -309,6 +504,10 @@ class _SwathGeometryCreator:
         self.__arrays.emission_angle = emission_angle
         self.__arrays.phase_angle = phase_angle
         self.__arrays.context_map = context_map
+        self.__arrays.x = x
+        self.__arrays.y = y
+        self.__arrays.cx = cx
+        self.__arrays.cy = cy
 
     @property
     def arrays(self):
@@ -325,6 +524,10 @@ class _SwathArrays:
         self.__emission_angle = self.__make_array_of_nans(shape)
         self.__phase_angle = self.__make_array_of_nans(shape)
         self.__context_map = self.__make_array_of_nans(shape + (4,))
+        self.__x = self.__make_array_of_nans((shape[0] + 1, shape[1] + 1))
+        self.__y = self.__make_array_of_nans((shape[0] + 1, shape[1] + 1))
+        self.__cx = self.__make_array_of_nans(shape)
+        self.__cy = self.__make_array_of_nans(shape)
 
     @staticmethod
     def __make_array_of_nans(shape: tuple) -> np.ndarray:
@@ -386,8 +589,40 @@ class _SwathArrays:
     def context_map(self, val):
         self.__context_map = val
 
+    @property
+    def x(self):
+        return self.__x
 
-class Quicklook:
+    @x.setter
+    def x(self, val):
+        self.__x = val
+
+    @property
+    def y(self):
+        return self.__y
+
+    @y.setter
+    def y(self, val):
+        self.__y = val
+
+    @property
+    def cx(self):
+        return self.__cx
+
+    @cx.setter
+    def cx(self, val):
+        self.__cx = val
+
+    @property
+    def cy(self):
+        return self.__cy
+
+    @cy.setter
+    def cy(self, val):
+        self.__cy = val
+
+
+'''class Quicklook:
     def __init__(self, files: DataFilenameCollection, ax: plt.Axes,
                  swath_numbers: list[int], flip: bool) -> None:
         """
@@ -409,14 +644,43 @@ class Quicklook:
         self.__flip = flip
         self.__slit_width = 10.64
 
+    # fill preprocessed data method
+
+    def fill_context_map(self, spice_directory):
+        sfc_map = np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy')
+        hrgc = HighResolutionGeometryCreator(spice_directory,
+            np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy'), 200,
+            self.__flip)
+        for c, f in enumerate(self.__files.filenames):
+            l1b = L1bDataContents(f)
+
+            arrays = hrgc.swath_geometry(l1b)
+
+            y = (120 - y) + 60
+            # offset X array by swath number
+            x += self.__slit_width * self.__swath_numbers[c]
+
+            cm = cm.reshape(cm.shape[0] * cm.shape[1], cm.shape[2])
+
+            self.__ax.pcolormesh(x, y, np.ones_like(cx), color=cm, linewidth=0,
+                                 edgecolors='none',
+                       rasterized=True).set_array(None)'''
+
+
+
+
+# TODO: make HRGC in ApoapseMUVQL
+# TODO: make QL class with ability to plot a swath (not loop thru files)
+# TODO: modify Bundle class to call the QL swath plotter
+# TODO: choose scaling factor instead of positions
+
+
 if __name__ == '__main__':
     from pyuvs.files import FileFinder
     files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(3453, segment='apoapse', channel='muv')
-    hrgc = HighResolutionGeometryCreator('/media/kyle/Samsung_T5/IUVS_data/spice',
-                                         np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy'), 200, False)
-
-    for f in files.filenames:
-        l1b = L1bDataContents(f)
-        arrays = hrgc.swath_geometry(l1b)
-        print(arrays.latitude.shape)
-        raise SystemExit(9)
+    ff = '/home/kyle/repos/pyuvs/aux/flatfield133.npy'
+    sp = '/media/kyle/Samsung_T5/IUVS_data/spice'
+    saveloc = '/home/kyle'
+    swaths = [0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5]
+    ql = ApoapseMUVQuicklook(files, np.load(ff), swaths, False, sp, 'NO')
+    ql.savefig('/home/kyle/veryVeryGoodJunk.png')
