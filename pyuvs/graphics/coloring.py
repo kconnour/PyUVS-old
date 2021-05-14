@@ -1,7 +1,53 @@
+import copy
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 from pyuvs.files import DataFilenameCollection
 from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
+
+
+class Colormaps:
+    """ A class that holds colormaps.
+
+    Colormaps contains some preset colormaps. Calling any methods changes the
+    object's known colormap and norm are.
+
+    """
+    def __init__(self) -> None:
+        self.__cmap = None
+        self.__norm = None
+
+    def set_magnetic_field(self) -> None:
+        self.__cmap = plt.get_cmap('Blues_r')
+        self.__norm = colors.Normalize(vmin=0, vmax=1)
+
+    def set_local_time(self) -> None:
+        self.__cmap = plt.get_cmap('twilight_shifted')
+        self.__norm = colors.Normalize(vmin=6, vmax=18)
+
+    def set_solar_zenith_angle(self) -> None:
+        self.__cmap = plt.get_cmap('cividis_r')
+        self.__norm = colors.Normalize(vmin=0, vmax=180)
+
+    # TODO: surely this can be cleaner...
+    def set_emission_angle(self) -> None:
+        self.__cmap = colors.LinearSegmentedColormap.from_list(
+            'cividis_half', copy.copy(plt.get_cmap('cividis_r'))
+            (np.linspace(0, 0.5, 256)))
+        self.__norm = colors.Normalize(vmin=0, vmax=90)
+
+    def set_phase_angle(self) -> None:
+        self.__cmap = plt.get_cmap('cividis_r')
+        self.__norm = colors.Normalize(vmin=0, vmax=180)
+
+    @property
+    def cmap(self) -> colors.LinearSegmentedColormap:
+        return self.__cmap
+
+    @property
+    def norm(self) -> colors.Normalize:
+        return self.__norm
 
 
 # TODO: choose spectral indices

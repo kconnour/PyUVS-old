@@ -644,7 +644,7 @@ class QuicklookColorbarBundle:
 
 if __name__ == '__main__':
     pa = '/media/kyle/Samsung_T5/IUVS_data'
-    ff = '/home/kyle/repos/pyuvs/aux/flatfield133.npy'
+    ff = '/home/kyle/repos/pyuvs/aux/muv_flatfield.npy'
     sp = '/media/kyle/Samsung_T5/IUVS_data/spice'
     saveloc = '/home/kyle'
 
