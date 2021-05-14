@@ -1,4 +1,5 @@
 import numpy as np
+from pyuvs.files import DataFilenameCollection
 from pyuvs.l1b.data_contents import L1bDataContents
 
 
@@ -56,13 +57,51 @@ class DataClassifier:
 
 
 class DataCollectionClassifier:
-    pass
+    def __init__(self, files: DataFilenameCollection):
+        self.__files = files
+
+    def swath_number(self) -> list[int]:
+        swath = []
+        current_swath = 0
+        first_file = True
+        for file in self.__files.filenames:
+            l1b = L1bDataContents(file)
+
+            # Determine which way the mirror is scanning
+            integration = l1b['integration'].data
+            positive_mirror_direction = integration['mirror_deg'][-1] - \
+                                        integration['mirror_deg'][0] > 0
+            starting_mirror_angle = integration['mirror_deg'][0]
+
+            # If it's the first file, it's obviously in the first swath
+            if first_file:
+                previous_ending_angle = integration['mirror_deg'][-1]
+                swath.append(0)
+                first_file = False
+                continue
+
+            if positive_mirror_direction and starting_mirror_angle < previous_ending_angle:
+                current_swath += 1
+            if not positive_mirror_direction and starting_mirror_angle > previous_ending_angle:
+                current_swath += 1
+
+            swath.append(current_swath)
+            previous_ending_angle = integration['mirror_deg'][-1]
+
+        return swath
+
+    def dayside(self) -> list[bool]:
+        day = []
+        for file in self.__files.filenames:
+            l1b = L1bDataContents(file)
+            classifier = DataClassifier(l1b)
+            day.append(classifier.dayside())
+        return day
 
 
 if __name__ == '__main__':
     from pyuvs.files import FileFinder
     files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(3453, segment='apoapse', channel='muv')
-    for f in files.filenames:
-        l1b = L1bDataContents(f)
-        dc = DataClassifier(l1b)
-        print(dc.geometry(), dc.relay(), dc.beta_flip())
+    dfc = DataCollectionClassifier(files)
+    print(dfc.swath_number())
+    print(dfc.dayside())

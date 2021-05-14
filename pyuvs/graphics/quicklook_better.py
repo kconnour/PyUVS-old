@@ -1,19 +1,4 @@
-"""
-ApoapseMUVQuicklookCreator
-ApoapseMUVQuicklook
-Banner
-Colorbar                             (done)
-Quicklook
-QuicklookColorbarBundle
-AuxillaryArray                       (done)
-SurfaceGeographyMap                  (done)
-MagneticFieldMap                     (done)
-Colormaps                            (done)
-HighResolutionGeometryCreator
-_SwathGeometryCreator
-_SwathArrays
 
-"""
 from astropy.io import fits
 import copy
 import os
@@ -27,7 +12,7 @@ import spiceypy as spice
 import spiceypy.utils.exceptions
 from pyuvs.files import FileFinder, DataFilenameCollection, orbit_code
 from pyuvs.l1b.data_contents import L1bDataContents
-from pyuvs.l1b.data_classifier import DataClassifier
+from pyuvs.l1b.data_classifier import DataCollectionClassifier, DataClassifier
 from pyuvs.graphics.coloring import HistogramEqualizer
 from pyuvs.spice import Spice
 from pyuvs.constants import slit_width
@@ -39,19 +24,46 @@ from pyuvs.constants import slit_width
 #  make the coloring?
 # TODO banner
 # TODO: choose scaling factor instead of positions
+# TODO: FF class
+class ApoapseMUVQuicklookCreator:
+    def __init__(self) -> None:
+        self.__save_name = 'mvn_iuv_ql_apoapse-orbit00000-muv-TEST.png'
+
+    def process_quicklook_from_files(
+            self, orbit: int, data_location: str, flatfield_location: str,
+            spice_directory: str, savelocation: str) -> None:
+        files = FileFinder(data_location).soschob(orbit, segment='apoapse',
+                                                  channel='muv')
+        flatfield = np.load(flatfield_location)
+        dfc = DataCollectionClassifier(files)
+        swath_numbers = dfc.swath_number()
+        dayside = dfc.dayside()
+        l1b = L1bDataContents(files.filenames[0])
+        flip = DataClassifier(l1b).beta_flip()
+        print(swath_numbers)
+        print(dayside)
+        print(flip)
+
+
+        #ql = ApoapseMUVQuicklook(files, flatfield, swath, flip, spice_directory,
+        #                         species)
+        #ql.savefig(os.path.join(
+        #    savelocation, self.__save_name.replace('00000', orbit_code(orbit))))
+
+
 class ApoapseMUVQuicklook:
     def __init__(self, files: DataFilenameCollection, flatfield: np.ndarray,
-                 swath_numbers: list[int], flip: bool, spice_directory: str,
-                 ) -> None:
+                 swath_numbers: list[int], dayside: list[bool], flip: bool,
+                 spice_directory: str) -> None:
         self.__files = files
         self.__flatfield = flatfield
         self.__swath_numbers = swath_numbers
         self.__n_swaths = self.__swath_numbers[-1] + 1
+        self.__dayside = dayside
         self.__flip = flip
         self.__spice_directory = spice_directory
 
         self.__axes = self.__setup_fig_and_axes()
-        self.__make_banner()
 
     def __setup_fig_and_axes(self):
         self.__set_quicklook_rc_params()
@@ -119,13 +131,15 @@ class ApoapseMUVQuicklook:
                 'phase_angle': axes[8],
                 'phase_angle_colorbar': axes[9]}
 
-    def __make_banner(self):
+    # TODO: Do the banner stuff here
+    def add_banner(self):
         ban = Banner(self.__axes['text'])
 
     def fill_plots_no_nightglow(self):
-        map_dir = np.load('/home/kyle/repos/pyuvs/aux/mars_surface_map.npy')
+        geography_map = SurfaceGeographyMap()
+        field_map = MagneticFieldMap()
         hrgc = HighResolutionGeometryCreator(
-            self.__spice_directory, map_dir, 200, self.__flip)
+            self.__spice_directory, geography_map.array, field_map.array, 200, self.__flip)
 
         map_ql = self.__setup_map_quicklook()
         lt_bundle = self.__setup_local_time_bundle()
@@ -137,7 +151,7 @@ class ApoapseMUVQuicklook:
             arrays = hrgc.swath_geometry(L1bDataContents(f))
 
             map_ql.plot_precomputed_swath_map(
-                arrays.context_map, arrays.x, arrays.y, arrays.cx,
+                arrays.geography_map, arrays.x, arrays.y, arrays.cx,
                 self.__swath_numbers[c])
             lt_bundle.plot_precomputed_swath_bundle_from_cmap(
                 arrays.local_time, arrays.x, arrays.y,
@@ -153,22 +167,30 @@ class ApoapseMUVQuicklook:
                 self.__swath_numbers[c])
 
     def fill_plots_aurora(self):
-        map_dir = np.load('/home/kyle/repos/pyuvs/aux/magnetic_field_closed_probability.npy')
+        geography_map = SurfaceGeographyMap()
+        field_map = MagneticFieldMap()
         hrgc = HighResolutionGeometryCreator(
-            self.__spice_directory, map_dir, 200, self.__flip)
+            self.__spice_directory, geography_map.array, field_map.array, 200, self.__flip)
 
-        map_ql = self.__setup_map_quicklook()
+        map_bundle = self.__setup_magnetic_field_bundle()
         lt_bundle = self.__setup_local_time_bundle()
         sza_bundle = self.__setup_solar_zenith_angle_bundle()
         ea_bundle = self.__setup_emission_angle_bundle()
         pa_bundle = self.__setup_phase_angle_bundle()
 
         for c, f in enumerate(self.__files.filenames):
+            print(c)
             arrays = hrgc.swath_geometry(L1bDataContents(f))
 
-            map_ql.plot_precomputed_swath_map(
-                arrays.context_map, arrays.x, arrays.y, arrays.cx,
-                self.__swath_numbers[c])
+            if self.__dayside[c]:
+                map_bundle.plot_precomputed_swath_map(
+                    arrays.geography_map, arrays.x, arrays.y, arrays.cx,
+                    self.__swath_numbers[c])
+            else:
+                map_bundle.plot_precomputed_swath_map(
+                    arrays.field_map, arrays.x, arrays.y, arrays.cx,
+                    self.__swath_numbers[c])
+
             lt_bundle.plot_precomputed_swath_bundle_from_cmap(
                 arrays.local_time, arrays.x, arrays.y,
                 self.__swath_numbers[c])
@@ -181,6 +203,9 @@ class ApoapseMUVQuicklook:
             pa_bundle.plot_precomputed_swath_bundle_from_cmap(
                 arrays.phase_angle, arrays.x, arrays.y,
                 self.__swath_numbers[c])
+
+        if all(self.__dayside):
+            self.__axes['geography_colorbar'].remove()
 
     def __setup_map_quicklook(self):
         map_ql = Quicklook(self.__axes['geography'])
@@ -546,23 +571,28 @@ class Colormaps:
 
 
 class HighResolutionGeometryCreator:
-    def __init__(self, spice_directory, context_map: np.ndarray,
+    def __init__(self, spice_directory, geography_map: np.ndarray,
+                 field_map: np.ndarray,
                  artificial_positions: int, flip: bool):
         Spice().load_spice(spice_directory)
-        self.__map = context_map
+        self.__geography_map = geography_map
+        self.__field_map = field_map
         self.__positions = artificial_positions
         self.__flip = flip
 
     def swath_geometry(self, file: L1bDataContents):
         return _SwathGeometryCreator(
-            file, self.__map, self.__positions, self.__flip).arrays
+            file, self.__geography_map, self.__field_map,
+            self.__positions, self.__flip).arrays
 
 
 class _SwathGeometryCreator:
-    def __init__(self, file: L1bDataContents, context_map: np.ndarray,
+    def __init__(self, file: L1bDataContents, geography_map: np.ndarray,
+                 field_map: np.ndarray,
                  artificial_positions: int, flip: bool):
         self.__file = file
-        self.__map = context_map
+        self.__geography_map = geography_map
+        self.__field_map = field_map
         self.__positions = artificial_positions
         self.__integrations = self.__get_artificial_integrations()
         self.__arrays = _SwathArrays(self.__integrations, self.__positions)
@@ -641,7 +671,8 @@ class _SwathGeometryCreator:
             trgepc, srfvec, phase, solar, emission = \
                 self.__compute_illumination_angles(et, spoint)
         except spiceypy.utils.exceptions.NotFoundError:
-            return np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan
+            return np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, \
+                   np.nan
 
         rpoint, colatpoint, lonpoint = spice.recsph(spoint)
 
@@ -660,9 +691,14 @@ class _SwathGeometryCreator:
         phase_angle = np.degrees(phase)
         map_lat = int(np.round(np.degrees(colatpoint), 1) * 10)
         map_lon = int(np.round(np.degrees(lonpoint), 1) * 10)
-        context_map = self.__map[map_lat, map_lon]
+        if map_lat == 1800:
+            map_lat = 1799
+        if map_lon == 3600:
+            map_lon = 3599
+        geography_map = self.__geography_map[map_lat, map_lon]
+        field_map = self.__field_map[map_lat, map_lon]
         return latitude, longitude, local_time, solar_zenith_angle, \
-               emission_angle, phase_angle, context_map
+               emission_angle, phase_angle, geography_map, field_map
 
     def __make_pcolormesh_angles(self):
         angles = self.__file['integration'].data['mirror_deg'] * 2
@@ -691,12 +727,13 @@ class _SwathGeometryCreator:
         solar_zenith_angle = self.__arrays.solar_zenith_angle
         emission_angle = self.__arrays.emission_angle
         phase_angle = self.__arrays.phase_angle
-        context_map = self.__arrays.context_map
+        geography_map = self.__arrays.geography_map
+        field_map = self.__arrays.field_map
         for i in range(latitude.shape[0]):
             for j in range(latitude.shape[1]):
                 et = self.__et[i, j]
                 pixel_vector = self.__pixel_vec[i, j, :]
-                lat, lon, lt, sza, ea, pa, con_map = \
+                lat, lon, lt, sza, ea, pa, geo_map, b_map = \
                     self.__get_pixel_values(et, pixel_vector)
                 latitude[i, j] = lat
                 longitude[i, j] = lon
@@ -704,7 +741,8 @@ class _SwathGeometryCreator:
                 solar_zenith_angle[i, j] = sza
                 emission_angle[i, j] = ea
                 phase_angle[i, j] = pa
-                context_map[i, j] = con_map
+                geography_map[i, j] = geo_map
+                field_map[i, j] = b_map
         x, y, cx, cy = self.__make_pcolormesh_angles()
 
         self.__arrays.latitude = latitude
@@ -713,7 +751,8 @@ class _SwathGeometryCreator:
         self.__arrays.solar_zenith_angle = solar_zenith_angle
         self.__arrays.emission_angle = emission_angle
         self.__arrays.phase_angle = phase_angle
-        self.__arrays.context_map = context_map
+        self.__arrays.geography_map = geography_map
+        self.__arrays.field_map = field_map
         self.__arrays.x = x
         self.__arrays.y = y
         self.__arrays.cx = cx
@@ -733,7 +772,8 @@ class _SwathArrays:
         self.__solar_zenith_angle = self.__make_array_of_nans(shape)
         self.__emission_angle = self.__make_array_of_nans(shape)
         self.__phase_angle = self.__make_array_of_nans(shape)
-        self.__context_map = self.__make_array_of_nans(shape + (4,))
+        self.__geography_map = self.__make_array_of_nans(shape + (4,))
+        self.__field_map = self.__make_array_of_nans(shape + (4,))
         self.__x = self.__make_array_of_nans((shape[0] + 1, shape[1] + 1))
         self.__y = self.__make_array_of_nans((shape[0] + 1, shape[1] + 1))
         self.__cx = self.__make_array_of_nans(shape)
@@ -792,12 +832,20 @@ class _SwathArrays:
         self.__phase_angle = val
 
     @property
-    def context_map(self):
-        return self.__context_map
+    def geography_map(self):
+        return self.__geography_map
 
-    @context_map.setter
-    def context_map(self, val):
-        self.__context_map = val
+    @geography_map.setter
+    def geography_map(self, val):
+        self.__geography_map = val
+
+    @property
+    def field_map(self):
+        return self.__field_map
+
+    @field_map.setter
+    def field_map(self, val):
+        self.__field_map = val
 
     @property
     def x(self):
@@ -834,11 +882,13 @@ class _SwathArrays:
 
 if __name__ == '__main__':
     from pyuvs.files import FileFinder
-    files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(3453, segment='apoapse', channel='muv')
-    ff = '/home/kyle/repos/pyuvs/aux/flatfield133.npy'
+    d = '/media/kyle/Samsung_T5/IUVS_data'
+    files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(5406, segment='apoapse', channel='muv')
+    ff = '/home/kyle/repos/pyuvs/aux/flatfield50rebin.npy'
     sp = '/media/kyle/Samsung_T5/IUVS_data/spice'
     saveloc = '/home/kyle'
-    swaths = [0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5]
-    #ql = ApoapseMUVQuicklook(files, np.load(ff), swaths, False, sp)
-    #ql.fill_plots_aurora()
-    #ql.savefig('/home/kyle/veryVeryGoodJunk.png')
+
+    ql = ApoapseMUVQuicklookCreator()
+    ql.process_quicklook_from_files(5406, d, ff, sp, saveloc)
+
+    #ql.savefig('/home/kyle/veryVeryGoodJunkAurora.png')
