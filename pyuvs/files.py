@@ -2,6 +2,7 @@
 computer.
 """
 import copy
+import fnmatch as fnm
 import os
 from pathlib import Path
 from typing import Any, Generator
@@ -9,31 +10,54 @@ from warnings import warn
 import numpy as np
 
 
-# TODO: Consider renaming this since it works on xml and QLs
-# TODO: pylint says I have too many instance variables (21 / 7)
-class DataFilename:
-    """A data structure containing info from IUVS filenames.
+class IUVSDataPath:
+    def __init__(self, path: str) -> None:
+        self.__path = path
+        #self.__raise_file_not_found_error_if_file_does_not_exist()
 
-    DataFilename accepts a string of an absolute path to an IUVS filename
-    and extracts all information related to the observation and processing
-    pipeline from the input.
+        #self.__filename = self.__extract_filename_from_path()
+        #self.__raise_file_exists_error_if_not_iuvs_file()
+
+    def foo(self):
+        p = Path(self.__path)
+        print(p.name)
+
+
+    '''def __raise_file_not_found_error_if_file_does_not_exist(self) -> None:
+        if not os.path.exists(self.__path):
+            raise FileNotFoundError('The input path does not exist.')
+
+    def __extract_filename_from_path(self) -> str:
+        try:
+            return os.path.basename(self.__path)
+        except TypeError as te:
+            raise TypeError('Cannot get the basename from the path.') from te
+
+    def __raise_file_exists_error_if_not_iuvs_file(self) -> None:
+        if not self.__filename.startswith('mvn_iuv_'):
+            raise FileExistsError('The input file is not an IUVS file.')'''
+
+class DataFilename:
+    """A data structure containing info from a single IUVS filename.
+
+    It ensures the input filename represents an IUVS filename and extracts all
+    information related to the observation and processing pipeline from the
+    input.
+
+    Parameters
+    ----------
+    path
+        The absolute path of an IUVS data product.
+
+    Raises
+    ------
+    FileNotFoundError
+        Raised if the input path does not lead to a valid file.
+    TypeError
+        Raised if the input path is not a string.
 
     """
     def __init__(self, path: str) -> None:
-        """
-        Parameters
-        ----------
-        path
-            The absolute path of an IUVS data product.
-
-        Raises
-        ------
-        FileNotFoundError
-            Raised if the input path does not lead to a valid file.
-        TypeError
-            Raised if the input path is not a string.
-
-        """
         self.__path = path
         self.__raise_file_not_found_error_if_file_does_not_exist()
 
@@ -411,6 +435,50 @@ class DataFilenameCollection:
         """
         return self.__n_files
 
+    def all_l1b(self) -> bool:
+        """Determine if all files in the collection are level 1b data files.
+
+        """
+        return all((f.level == 'l1b' for f in self.filenames))
+
+    def all_l1c(self) -> bool:
+        """Determine if all files in the collection are level 1c data files.
+
+        """
+        return all((f.level == 'l1c' for f in self.filenames))
+
+    def all_apoapse(self) -> bool:
+        """Determine if all files in the collection are apoapse data files.
+
+        """
+        return all((f.segment == 'apoapse' for f in self.filenames))
+
+    def all_periapse(self) -> bool:
+        """Determine if all files in the collection are periapse data files.
+
+        """
+        return all((f.segment == 'periapse' for f in self.filenames))
+
+    def all_ech(self) -> bool:
+        """Determine if all files in the collection are echelle data files..
+
+        """
+        return all((f.channel == 'ech' for f in self.filenames))
+
+    def all_fuv(self) -> bool:
+        """Determine if all files in the collection are far-ultraviolet data
+        files.
+
+        """
+        return all((f.channel == 'fuv' for f in self.filenames))
+
+    def all_muv(self) -> bool:
+        """Determine if all files in the collection are mid-ultraviolet data
+        files.
+
+        """
+        return all((f.channel == 'muv' for f in self.filenames))
+
 
 class DataPath:
     """Create absolute paths to where data products reside.
@@ -696,68 +764,6 @@ class DataPattern:
         return pattern.replace('**', '*')
 
 
-class FileClassifier:
-    """Determine if IUVS data filenames meet a condition.
-
-    A FileClassifier object contains methods to determine if a
-    DataFilenameCollection fits a given condition.
-
-    """
-
-    def __init__(self, collection: DataFilenameCollection) -> None:
-        self.__dfc = collection
-        self.__raise_type_error_if_input_is_not_data_filename_collection()
-
-    def __raise_type_error_if_input_is_not_data_filename_collection(self) \
-            -> None:
-        if not isinstance(self.__dfc, DataFilenameCollection):
-            raise TypeError('collection must be a DataFilenameCollection.')
-
-    def all_l1b(self) -> bool:
-        """Determine if all files in the collection are level 1b data files.
-
-        """
-        return all((f.level == 'l1b' for f in self.__dfc.filenames))
-
-    def all_l1c(self) -> bool:
-        """Determine if all files in the collection are level 1c data files.
-
-        """
-        return all((f.level == 'l1c' for f in self.__dfc.filenames))
-
-    def all_apoapse(self) -> bool:
-        """Determine if all files in the collection are apoapse data files.
-
-        """
-        return all((f.segment == 'apoapse' for f in self.__dfc.filenames))
-
-    def all_periapse(self) -> bool:
-        """Determine if all files in the collection are periapse data files.
-
-        """
-        return all((f.segment == 'periapse' for f in self.__dfc.filenames))
-
-    def all_ech(self) -> bool:
-        """Determine if all files in the collection are echelle data files..
-
-        """
-        return all((f.channel == 'ech' for f in self.__dfc.filenames))
-
-    def all_fuv(self) -> bool:
-        """Determine if all files in the collection are far-ultraviolet data
-        files.
-
-        """
-        return all((f.channel == 'fuv' for f in self.__dfc.filenames))
-
-    def all_muv(self) -> bool:
-        """Determine if all files in the collection are mid-ultraviolet data
-        files.
-
-        """
-        return all((f.channel == 'muv' for f in self.__dfc.filenames))
-
-
 class FileFinder:
     """Find IUVS data files on their computer.
 
@@ -874,8 +880,12 @@ class FileFinder:
         return sorted([str(f) for f in inp_glob if f.is_file()])
 
 
-def orbit_code(orbit: int) -> str:
-    """Make the 5 digit "code" for an input orbit.
+class Orbit:
+    """A class for working with a single MAVEN orbit.
+
+    This class ensures an input orbit is an int. It provides common
+    manipulations performed on an orbit number.
+
 
     Parameters
     ----------
@@ -883,6 +893,140 @@ def orbit_code(orbit: int) -> str:
         The orbit number.
 
     """
-    if not isinstance(orbit, int):
-        raise TypeError('orbit must be an int.')
-    return str(orbit).zfill(5)
+    def __init__(self, orbit: int) -> None:
+        self. __orbit = orbit
+
+        self.__raise_type_error_if_orbit_is_not_int()
+
+    def __raise_type_error_if_orbit_is_not_int(self) -> None:
+        if not isinstance(self.__orbit, int):
+            message = 'orbit must be an int.'
+            raise TypeError(message)
+
+    def code(self) -> str:
+        """Make the 5 digit "code" for this orbit.
+
+        """
+        return self.__generic_code(self.__orbit)
+
+    def block(self) -> int:
+        """Make the orbit block (group of 100 orbits) for this orbit.
+
+        """
+        return int(np.floor(self.__orbit / 100) * 100)
+
+    def block_folder(self) -> str:
+        """Make the IUVS-standard folder name for this orbit.
+
+        """
+        return f'orbit{self.__generic_code(self.block())}'
+
+    @staticmethod
+    def __generic_code(orbit: int) -> str:
+        return str(orbit).zfill(5)
+
+    @property
+    def orbit(self) -> int:
+        """Get the input orbit number.
+
+        """
+        return self.__orbit
+
+
+class _StringMatcher:
+    """A class for matching strings.
+
+    This class ensures an input is a string and provides methods to see if it
+    matches a set of patterns.
+
+    Parameters
+    ----------
+    channel
+        The channel pattern. Can be a glob-like pattern.
+
+    """
+    def __init__(self, pattern: str, name: str) -> None:
+        self.__pattern = pattern
+        self.__name = name
+
+        self.__raise_type_error_if_pattern_is_not_str()
+
+    def __raise_type_error_if_pattern_is_not_str(self) -> None:
+        if not isinstance(self.__pattern, str):
+            message = f'{self.__name} must be an str.'
+            raise TypeError(message)
+
+    def match_str(self, patterns: list[str]) -> list[bool]:
+        """Check if the input strings matches elements in a list of patterns.
+
+        """
+        return [fnm.fnmatch(f, self.__pattern) for f in patterns]
+
+    def raise_value_error_if_invalid_pattern(self, patterns: list[str]) -> None:
+        """Raise a value error if the input to this class does not match a set
+        of input patterns.
+
+        """
+        if not any(self.match_str(patterns)):
+            message = f'{self.__name} does not match any known {self.__name}s.'
+            raise ValueError(message)
+
+    @property
+    def pattern(self):
+        return self.__pattern
+
+
+class Channel(_StringMatcher):
+    """A class for working with IUVS channels.
+
+    This class ensures an input channel is an str and that the pattern matches
+    known channels.
+
+    Parameters
+    ----------
+    channel
+        The channel pattern. Can be a glob-like pattern.
+
+    """
+    def __init__(self, channel: str) -> None:
+        super().__init__(channel, 'channel')
+        self.__channels = ['ech', 'fuv', 'muv']
+        self.raise_value_error_if_invalid_pattern(self.__channels)
+
+    @property
+    def channels(self) -> list[str]:
+        """Get the list of known IUVS channels.
+
+        """
+        return self.__channels
+
+
+class Segment(_StringMatcher):
+    """A class for working with MAVEN orbital segments.
+
+    This class ensures an input segment is an str and that the pattern matches
+    known segments.
+
+    Parameters
+    ----------
+    segment
+        The segment pattern. Can be a glob-like pattern.
+
+    """
+    def __init__(self, segment: str):
+        super().__init__(segment, 'segment')
+        self.__segments = ['apoapse', 'incorona', 'inlimb', 'outcorona',
+                           'outlimb', 'periapse', 'star']
+        self.raise_value_error_if_invalid_pattern(self.__segments)
+
+    @property
+    def segments(self) -> list[str]:
+        """Get the list of known MAVEN orbital segments.
+
+        """
+        return self.__segments
+
+
+if __name__ == '__main__':
+    o = Orbit(3453)
+    print(o.code(), o.block(), o.block_folder())

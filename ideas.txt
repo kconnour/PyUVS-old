@@ -1,0 +1,21 @@
+
+
+files
+   DataFilename
+   DataFilenameCollection
+   DataFilenameCollectionClassifier
+
+
+   l1b.files
+         DataFilename(DataFilename)
+         DataFilenameCollection(DFC)
+
+   l1b.data
+        DataContents
+
+        DataClassifier
+            accepts l1b.DataContents and classifies a single file
+        DataCollectionClassifier
+            all geometry(), any relay(), etc.
+        SoschobClassifier (DCC)
+            can also do swath number, define segment as a property, etc.

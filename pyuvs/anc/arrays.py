@@ -211,14 +211,9 @@ class MUVFlatfield(_AuxiliaryArray):
 
 
 if __name__ == '__main__':
-    #m = SurfaceGeographyMap()
-    #print(m.shape, m.file_location)
-    #b = ClosedMagneticFieldMap()
-    #b.make_map_high_resolution()
-    #b.colorize_map()
-
-    ff = Flatfield()
-    wa = np.load('/pyuvs/aux/muv_flatfield_wavelengths.npy')
-    ff.interpolate_to_new_scheme(50, wa[:-1])
+    ff = MUVFlatfield()
     print(ff.shape)
-
+    new_wavs = np.linspace(200, 300, num=23)
+    # wa = np.load('/home/kyle/repos/pyuvs/pyuvs/anc/muv_flatfield_wavelengths.npy')
+    ff.interpolate_to_new_scheme(50, new_wavs)
+    print(ff.shape)

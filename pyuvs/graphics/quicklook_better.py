@@ -720,12 +720,16 @@ class _SwathArrays:
 if __name__ == '__main__':
     from pyuvs.files import FileFinder
     d = '/media/kyle/Samsung_T5/IUVS_data'
-    files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(5406, segment='apoapse', channel='muv')
-    ff = '/home/kyle/repos/pyuvs/aux/flatfield50rebin.npy'
+    files = FileFinder('/media/kyle/Samsung_T5/IUVS_data').soschob(10904, segment='apoapse', channel='muv')
+    ff = '/home/kyle/repos/pyuvs/anc/flatfield50rebin.npy'
     sp = '/media/kyle/Samsung_T5/IUVS_data/spice'
     saveloc = '/home/kyle'
 
-    ql = ApoapseMUVQuicklookCreator()
-    ql.process_quicklook_from_files(5406, d, ff, sp, saveloc)
+    for f in files.filenames:
+        l1b = L1bDataContents(f)
+        print(l1b['primary'].data.shape, l1b['primary'].header['spe_size'])
+
+    #ql = ApoapseMUVQuicklookCreator()
+    #ql.process_quicklook_from_files(5406, d, ff, sp, saveloc)
 
     #ql.savefig('/home/kyle/veryVeryGoodJunkAurora.png')

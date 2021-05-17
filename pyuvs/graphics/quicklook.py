@@ -341,7 +341,7 @@ class Quicklook:
 
     def fill_context_map(self, spice_directory):
         Spice().load_spice(spice_directory)
-        sfc_map = np.load('/pyuvs/aux/mars_surface_map.npy')
+        sfc_map = np.load('/pyuvs/anc/mars_surface_map.npy')
         for c, f in enumerate(self.__files.filenames):
             hdul = fits.open(f.path)
             lat, lon, sza, ea, pa, lt, x, y, cx, cy, cm = \
@@ -358,7 +358,7 @@ class Quicklook:
                        rasterized=True).set_array(None)
 
     def magnetic_field_map(self, cmap, norm):
-        field = np.load('/pyuvs/aux/magnetic_field_closed_probability.npy')
+        field = np.load('/pyuvs/anc/magnetic_field_closed_probability.npy')
         field = np.flipud(self.__resize_map(field))
         return cmap(norm(field))
 
@@ -644,7 +644,7 @@ class QuicklookColorbarBundle:
 
 if __name__ == '__main__':
     pa = '/media/kyle/Samsung_T5/IUVS_data'
-    ff = '/home/kyle/repos/pyuvs/aux/muv_flatfield.npy'
+    ff = '/home/kyle/repos/pyuvs/anc/muv_flatfield.npy'
     sp = '/media/kyle/Samsung_T5/IUVS_data/spice'
     saveloc = '/home/kyle'
 
