@@ -11,12 +11,12 @@ import matplotlib.ticker as ticker
 from scipy.ndimage import gaussian_filter
 from skimage.transform import resize
 import spiceypy as spice
-from pyuvs.files import FileFinder, DataFilenameCollection, orbit_code
+from pyuvs.files import FileFinder, DataFilenameCollection
 from pyuvs.l1b.data_contents import L1bDataContents
 from pyuvs.l1b.data_classifier import DataClassifier
 from pyuvs.graphics.coloring import HistogramEqualizer
 from pyuvs.spice import Spice
-from pyuvs.constants import slit_width
+from pyuvs.constants import angular_slit_width as slit_width
 
 
 # TODO: get properties from data (method)

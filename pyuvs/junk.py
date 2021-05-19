@@ -41,4 +41,6 @@ class IUVSDataPath:
 
 
 if __name__ == '__main__':
-    i = IUVSDataPath('/home/kyle/mvn_iuv_ql_apoapse-orbit03453-muv-TEST1234.png')
+    from pyuvs.anc.templates import MUVWavelengthCenters
+    ff = MUVWavelengthCenters()
+    print(ff.shape)
