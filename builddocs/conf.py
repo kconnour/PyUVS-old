@@ -63,4 +63,4 @@ napoleon_include_special_with_doc = True
 autodoc_typehints = 'none'
 
 # Mock imports so autodoc can work
-autodoc_mock_imports = ['pyuvs', 'astropy', 'julian', 'numpy', 'spiceypy']
+autodoc_mock_imports = ['pyuvs', 'astropy', 'julian', 'spiceypy']

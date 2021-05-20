@@ -1,6 +1,6 @@
-Mars Time
+Geography
 =========
 
-.. automodule:: pyuvs.mars_time
+.. automodule:: geography
    :members:
    :special-members: __init__
