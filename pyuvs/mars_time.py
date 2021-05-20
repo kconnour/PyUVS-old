@@ -84,15 +84,17 @@ class UTC:
 
 
 class ScienceWeek:
-    """ScienceWeek can convert between dates and MAVEN science weeks.
+    """Convert between dates and MAVEN science weeks.
 
-    ScienceWeek contains a variety of methods that can either convert a week
+    This class contains a variety of methods that can either convert a week
     number into a datetime.date object representing the corresponding Earth
     date, or convert a datetime.date object into MAVEN science weeks.
 
     """
     def __init__(self):
         self.__science_start_date = date(2014, 11, 11)
+        self.__normal_end_date = date(2021, 6, 8)
+        self.__new_start_date = date(2021, 6, 10)
 
     def week_from_date(self, some_date: date) -> int:
         """Compute the MAVEN science week number at an input date.
@@ -121,7 +123,13 @@ class ScienceWeek:
         """
         try:
             self.__warn_if_date_is_before_mission_start(some_date)
-            return (some_date - self.__science_start_date).days // 7
+            if some_date < self.__normal_end_date:
+                return (some_date - self.__science_start_date).days // 7
+            elif self.__normal_end_date < some_date < self.__new_start_date:
+                print('This was the bridge phase.')
+                return None
+            else:
+                return (self.__normal_end_date - self.__science_start_date).days // 7 + (some_date - self.__new_start_date).days // 7
         except TypeError:
             message = 'some_date should be an instance of datetime.date.'
             raise TypeError(message) from None
@@ -240,10 +248,3 @@ class ScienceWeek:
     def __warn_if_week_is_negative(week: int) -> None:
         if week < 0:
             warnings.warn('The input week should not be negative.')
-
-
-if __name__ == '__main__':
-    u = UTC(datetime(2018, 6, 27))
-    print(u.to_ls())
-    print(u.to_fractional_mars_year())
-    print(u.to_sol())

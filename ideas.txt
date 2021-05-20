@@ -1,19 +1,14 @@
 
 
-files
-   DataFilename
-   DataFilenameCollection
-   DataFilenameCollectionClassifier
-
-   l1b.data
-        DataContents
-            same as current l1bdataContents
-        DataClassifier
-            accepts l1b.DataContents and classifies a single file
-        DataCollectionClassifier
-            accepts DataFilenameCollection, ensures it's all l1b, then
-            each method loops through it and creates a DataContents, which
-            calls the DataClassifier methods.
-            all geometry(), any relay(), swath number (even if I had a soschob
-            I can't ensure I have *all* the files. Even if I did I may want
-            to exclude those that are relays)
+l1b.data
+    DataContents
+        same as current l1bdataContents
+    DataClassifier
+        accepts l1b.DataContents and classifies a single file
+    DataCollectionClassifier
+        accepts DataFilenameCollection, ensures it's all l1b, then
+        each method loops through it and creates a DataContents, which
+        calls the DataClassifier methods.
+        all geometry(), any relay(), swath number (even if I had a soschob
+        I can't ensure I have *all* the files. Even if I did I may want
+        to exclude those that are relays)
