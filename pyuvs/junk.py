@@ -1,12 +1,13 @@
 from pathlib import Path
 
 
-class IUVSDataPath:
+class IUVSDataPathChecker:
     def __init__(self, path: str) -> None:
         self.__path = self.__make_path(path)
 
         self.__raise_file_not_found_error_if_file_does_not_exist()
-        self.__raise_file_exists_error_if_not_iuvs_file()
+        self.__raise_value_error_if_not_iuvs_file()
+        self.__raise_value_error_if_not_fits_file()
 
     @staticmethod
     def __make_path(path: str) -> Path:
@@ -21,11 +22,15 @@ class IUVSDataPath:
             message = 'The input path does not exist.'
             raise FileNotFoundError(message)
 
-    def __raise_file_exists_error_if_not_iuvs_file(self) -> None:
+    def __raise_value_error_if_not_iuvs_file(self) -> None:
         if not self.__path.name.startswith('mvn_iuv_'):
-            raise FileExistsError('The input file is not an IUVS file.')
+            message = 'The input file is not an IUVS file.'
+            raise ValueError(message)
 
-
+    def __raise_value_error_if_not_fits_file(self) -> None:
+        if not self.__path.name.startswith('mvn_iuv_'):
+            message = 'The input file is not a .fits file.'
+            raise ValueError(message)
 
     '''
 
