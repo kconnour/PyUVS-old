@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Files &mdash; PyUVS  documentation</title>
+  <title>files &mdash; PyUVS  documentation</title>
   
 
   
@@ -134,7 +134,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Files</li>
+      <li>files</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -154,7 +154,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-files">
-<span id="files"></span><h1>Files<a class="headerlink" href="#module-files" title="Permalink to this headline">¶</a></h1>
+<span id="files"></span><h1>files<a class="headerlink" href="#module-files" title="Permalink to this headline">¶</a></h1>
 <p>The files module contains tools for getting IUVS data files from one’s
 computer.</p>
 <dl class="py class">
@@ -176,12 +176,6 @@ input.</p>
 </ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt id="files.DataFilename.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilename.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt id="files.DataFilename.channel">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel</span></code><a class="headerlink" href="#files.DataFilename.channel" title="Permalink to this definition">¶</a></dt>
@@ -422,22 +416,6 @@ input.</p>
 <p>This class checks that the input files are IUVS data files and only keeps
 the most recent data files.</p>
 <dl class="py method">
-<dt id="files.DataFilenameCollection.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilenameCollection.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>files</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Absolute paths of IUVS data files.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>TypeError</strong> – Raised if the input files are not an iterable.</p></li>
-<li><p><strong>ValueError</strong> – Raised if none of the input files are IUVS data files.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="files.DataFilenameCollection.all_apoapse">
 <code class="sig-name descname"><span class="pre">all_apoapse</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilenameCollection.all_apoapse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine if all files in the collection are apoapse data files.</p>
@@ -546,26 +524,6 @@ files.</p>
 <dd><p>Create absolute paths to where data products reside.</p>
 <p>DataPath contains methods to create strings of absolute paths to where data
 products reside, given a set of assumptions.</p>
-<dl class="py method">
-<dt id="files.DataPath.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataPath.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Absolute path of the IUVS data root location.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>TypeError</strong> – Raised if path is not a str.</p>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<dl class="simple">
-<dt>UserWarning</dt><dd><p>Raised if path does not point to a valid directory.</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
 <dl class="py method">
 <dt id="files.DataPath.block">
 <code class="sig-name descname"><span class="pre">block</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataPath.block" title="Permalink to this definition">¶</a></dt>
@@ -784,22 +742,6 @@ and channel patterns.</p>
 <p>FileFinder holds methods that help the user find files on their computer
 given a set of assumptions.</p>
 <dl class="py method">
-<dt id="files.FileFinder.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.FileFinder.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The absolute path where to begin looking for IUVS data files.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>OSError</strong> – Raised if path does not exist.</p></li>
-<li><p><strong>TypeError</strong> – Raised if path is not a str.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="files.FileFinder.multi_orbit_files">
 <code class="sig-name descname"><span class="pre">multi_orbit_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbits</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.FileFinder.multi_orbit_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a DataFilenameCollection for an input list of orbits,
@@ -873,12 +815,6 @@ manipulations performed on an orbit number.</p>
 <dd class="field-odd"><p><strong>orbit</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The orbit number.</p>
 </dd>
 </dl>
-<dl class="py method">
-<dt id="files.Orbit.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.Orbit.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt id="files.Orbit.block">
 <code class="sig-name descname"><span class="pre">block</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#files.Orbit.block" title="Permalink to this definition">¶</a></dt>

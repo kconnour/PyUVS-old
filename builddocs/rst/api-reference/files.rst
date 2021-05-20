@@ -1,6 +1,5 @@
-Files
+files
 =====
 
 .. automodule:: files
    :members:
-   :special-members: __init__

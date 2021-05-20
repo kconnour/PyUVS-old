@@ -1,5 +1,5 @@
 #########
-Constants
+constants
 #########
 .. automodule:: constants
 
@@ -13,11 +13,6 @@ Instrumental constants
 .. autodata:: constants.pixel_size
 .. autodata:: constants.spatial_slit_width
 
-******************
-Physical constants
-******************
-.. autodata:: constants.kR
-
 *****************
 Martian constants
 *****************
@@ -26,3 +21,8 @@ These values come from the `Mars fact sheet
 
 .. autodata:: constants.mars_mass
 .. autodata:: constants.mars_mean_radius
+
+******************
+Physical constants
+******************
+.. autodata:: constants.kR

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Constants &mdash; PyUVS  documentation</title>
+  <title>constants &mdash; PyUVS  documentation</title>
   
 
   
@@ -87,10 +87,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api-reference.html">API reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Constants</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">constants</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#instrumental-constants">Instrumental constants</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#physical-constants">Physical constants</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#martian-constants">Martian constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#physical-constants">Physical constants</a></li>
 </ul>
 </li>
 </ul>
@@ -145,7 +145,7 @@
         
           <li><a href="../api-reference.html">API reference</a> &raquo;</li>
         
-      <li>Constants</li>
+      <li>constants</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,8 +165,8 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-constants">
-<span id="constants"></span><h1>Constants<a class="headerlink" href="#module-constants" title="Permalink to this headline">¶</a></h1>
-<p>Collection of constants relevant to MAVEN/IUVS.</p>
+<span id="constants"></span><h1>constants<a class="headerlink" href="#module-constants" title="Permalink to this headline">¶</a></h1>
+<p>Collection of constants and conversion factors relevant to MAVEN/IUVS.</p>
 <p>Most are specific to the IUVS instrument, but some help with general photometric
 calculations.</p>
 <div class="section" id="instrumental-constants">
@@ -180,7 +180,7 @@ calculations.</p>
 <dl class="py data">
 <dt id="constants.cmos_pixel_well_depth">
 <code class="sig-prename descclassname"><span class="pre">constants.</span></code><code class="sig-name descname"><span class="pre">cmos_pixel_well_depth</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><em class="property"> <span class="pre">=</span> <span class="pre">3400</span></em><a class="headerlink" href="#constants.cmos_pixel_well_depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saturation level of an IUVS CMOS detector [DN].</p>
+<dd><p>Saturation level of an IUVS CMOS detector pixel [DN].</p>
 </dd></dl>
 
 <dl class="py data">
@@ -208,15 +208,6 @@ calculations.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="physical-constants">
-<h2>Physical constants<a class="headerlink" href="#physical-constants" title="Permalink to this headline">¶</a></h2>
-<dl class="py data">
-<dt id="constants.kR">
-<code class="sig-prename descclassname"><span class="pre">constants.</span></code><code class="sig-name descname"><span class="pre">kR</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">79577471.54594767</span></em><a class="headerlink" href="#constants.kR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Definition of the kilorayleigh [photons/steradian].</p>
-</dd></dl>
-
-</div>
 <div class="section" id="martian-constants">
 <h2>Martian constants<a class="headerlink" href="#martian-constants" title="Permalink to this headline">¶</a></h2>
 <p>These values come from the <a class="reference external" href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html">Mars fact sheet</a>.</p>
@@ -230,6 +221,15 @@ calculations.</p>
 <dt id="constants.mars_mean_radius">
 <code class="sig-prename descclassname"><span class="pre">constants.</span></code><code class="sig-name descname"><span class="pre">mars_mean_radius</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">3389.5</span></em><a class="headerlink" href="#constants.mars_mean_radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>The mean radius of Mars [km].</p>
+</dd></dl>
+
+</div>
+<div class="section" id="physical-constants">
+<h2>Physical constants<a class="headerlink" href="#physical-constants" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt id="constants.kR">
+<code class="sig-prename descclassname"><span class="pre">constants.</span></code><code class="sig-name descname"><span class="pre">kR</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><em class="property"> <span class="pre">=</span> <span class="pre">79577471.54594767</span></em><a class="headerlink" href="#constants.kR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Definition of the kilorayleigh [photons/steradian].</p>
 </dd></dl>
 
 </div>
