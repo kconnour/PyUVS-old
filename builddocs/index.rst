@@ -2,15 +2,15 @@
 Welcome to PyUVS's documentation!
 #################################
 PyUVS is a set of tools to work with MAVEN/IUVS data. Below you can find the
-documentation on its modules, along with its subpackages for more specific
-applications.
+documentation on how to install it, along with info about its modules and its
+subpackages.
 
 .. toctree::
    :maxdepth: 1
-   :caption: API reference
+   :caption: Useful links
 
-   rst/api-reference/constants
-
+   rst/installation
+   rst/api-reference
 
 ******************
 Indices and tables
@@ -18,6 +18,5 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
 
 Last updated: |today|
