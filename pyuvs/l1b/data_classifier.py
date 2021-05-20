@@ -1,6 +1,7 @@
 import numpy as np
 from pyuvs.files import DataFilenameCollection
 from pyuvs.l1b.data_contents import L1bDataContents
+from pyuvs.l1b._files import L1bDataFilenameCollection
 
 
 class DataClassifier:
@@ -58,6 +59,7 @@ class DataClassifier:
 
 class DataCollectionClassifier:
     def __init__(self, files: DataFilenameCollection):
+        L1bDataFilenameCollection(files)
         self.__files = files
 
     def swath_number(self) -> list[int]:
@@ -91,12 +93,23 @@ class DataCollectionClassifier:
         return swath
 
     def dayside(self) -> list[bool]:
-        day = []
-        for file in self.__files.filenames:
-            l1b = L1bDataContents(file)
-            classifier = DataClassifier(l1b)
-            day.append(classifier.dayside())
-        return day
+        return [DataClassifier(L1bDataContents(f)).dayside() for f in self.__files]
+
+    def all_dayside(self) -> bool:
+        return all(self.dayside())
+
+    def any_dayside(self) -> bool:
+        return any(self.dayside())
+
+    def relay(self) -> list[bool]:
+        return [DataClassifier(L1bDataContents(f)).relay() for f in self.__files]
+
+    def all_relay(self) -> bool:
+        return all(self.relay())
+
+    def any_relay(self) -> bool:
+        return any(self.relay())
+
 
 
 if __name__ == '__main__':
