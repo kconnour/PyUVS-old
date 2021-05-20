@@ -3,9 +3,7 @@ computer.
 """
 import copy
 import fnmatch as fnm
-import os
 from pathlib import Path
-from typing import Any, Generator
 from warnings import warn
 import numpy as np
 
@@ -38,7 +36,7 @@ class DataFilename:
 
     @staticmethod
     def __create_path(path: str) -> Path:
-        _DataPathChecker(path)
+        _DataFilePathChecker(path)
         return Path(path)
 
     def __str__(self) -> str:
@@ -222,6 +220,25 @@ class DataFilename:
 
 
 class _DataPathChecker:
+    def __init__(self, path: str):
+        self.__path = self.__make_path(path)
+        self.__warn_if_path_does_not_exist()
+
+    @staticmethod
+    def __make_path(path: str) -> Path:
+        try:
+            return Path(path)
+        except TypeError:
+            message = f'path should be a str, not a {type(path)}.'
+            raise TypeError(message)
+
+    def __warn_if_path_does_not_exist(self) -> None:
+        if not self.__path.exists():
+            message = 'path does not point to a valid directory.'
+            warn(message)
+
+
+class _DataFilePathChecker:
     def __init__(self, path: str) -> None:
         self.__path = self.__make_path(path)
 
@@ -431,8 +448,7 @@ class DataFilenameCollection:
             -> list[DataFilename]:
         try:
             filenames = self.__make_filenames(sorted(files))
-            data_filenames = self.__remove_non_fits_files(filenames)
-            return self.__get_latest_filenames(data_filenames)
+            return self.__get_latest_filenames(filenames)
         except TypeError as te:
             raise TypeError('files must be a list of strings.') from te
 
@@ -546,7 +562,7 @@ class DataFilenameCollection:
         return all((f.channel == 'muv' for f in self.filenames))
 
 
-'''class DataPath:
+class DataPath:
     """Create absolute paths to where data products reside.
 
     DataPath contains methods to create strings of absolute paths to where data
@@ -571,21 +587,12 @@ class DataFilenameCollection:
             Raised if path does not point to a valid directory.
 
         """
-        self.__path = path
+        self.__path = self.__make_path(path)
 
-        self.__raise_error_if_input_is_bad()
-        self.__warn_if_path_does_not_exist()
-
-    def __raise_error_if_input_is_bad(self) -> None:
-        self.__raise_type_error_if_input_is_not_string()
-
-    def __raise_type_error_if_input_is_not_string(self) -> None:
-        if not isinstance(self.__path, str):
-            raise TypeError('path must be a str.')
-
-    def __warn_if_path_does_not_exist(self) -> None:
-        if not os.path.exists(self.__path):
-            warn('path must point to a valid directory.')
+    @staticmethod
+    def __make_path(path: str) -> Path:
+        _DataPathChecker(path)
+        return Path(path)
 
     def block(self, orbit: int) -> str:
         """Make the path to an orbit, assuming orbits are organized in blocks
@@ -608,8 +615,8 @@ class DataFilenameCollection:
         '/foo/bar/orbit07700'
 
         """
-        self.__raise_type_error_if_input_is_not_int(orbit, 'orbit')
-        return os.path.join(self.__path, self.__block_folder_name(orbit))
+        orbit = Orbit(orbit)
+        return str(Path.joinpath(self.__path, orbit.block_folder()))
 
     def block_paths(self, orbits: list[int]) -> list[str]:
         """Make paths to a series of orbits, assuming orbits are organized in
@@ -634,31 +641,10 @@ class DataFilenameCollection:
         ['/foo/bar/orbit03400', '/foo/bar/orbit03500', '/foo/bar/orbit03500']
 
         """
-        self.__raise_type_error_if_input_is_not_list(orbits, 'orbits')
         try:
             return [self.block(f) for f in orbits]
         except TypeError:
             raise ValueError('Each value in orbits must be an int.') from None
-
-    @staticmethod
-    def __raise_type_error_if_input_is_not_int(quantity: Any, name: str) \
-            -> None:
-        if not isinstance(quantity, int):
-            raise TypeError(f'{name} must be an int.')
-
-    def __block_folder_name(self, orbit: int) -> str:
-        orbit_block = self.__orbit_block(orbit)
-        return f'orbit{orbit_code(orbit_block)}'
-
-    @staticmethod
-    def __orbit_block(orbit: int) -> int:
-        return int(np.floor(orbit / 100) * 100)
-
-    @staticmethod
-    def __raise_type_error_if_input_is_not_list(quantity: Any, name: str) \
-            -> None:
-        if not isinstance(quantity, list):
-            raise TypeError(f'{name} must be a list.')
 
 
 class DataPattern:
@@ -741,7 +727,8 @@ class DataPattern:
         """
 
         try:
-            return self.data_pattern(orbit=orbit_code(orbit), segment=segment,
+            o = Orbit(orbit)
+            return self.data_pattern(orbit=o.code(), segment=segment,
                                      channel=channel)
         except TypeError as te:
             raise TypeError('orbit must be an int.') from te
@@ -858,16 +845,10 @@ class FileFinder:
 
     def __raise_error_if_input_path_is_bad(self) -> None:
         self.__raise_type_error_if_path_is_not_str()
-        self.__raise_os_error_if_path_does_not_exist()
 
     def __raise_type_error_if_path_is_not_str(self) -> None:
         if not isinstance(self.__path, str):
             raise TypeError('path must be a str.')
-
-    def __raise_os_error_if_path_does_not_exist(self) -> None:
-        if not os.path.exists(self.__path):
-            raise OSError(f'The path "{self.__path}" does not exist on this '
-                          'computer.')
 
     def soschob(self, orbit: int, segment: str, channel: str) \
             -> DataFilenameCollection:
@@ -938,22 +919,16 @@ class FileFinder:
         return self.__get_absolute_paths_of_glob(g)
 
     @staticmethod
-    def __perform_glob(path: str, pattern: str) -> Generator:
+    def __perform_glob(path: str, pattern: str):
         return Path(path).glob(pattern)
 
     @staticmethod
-    def __get_absolute_paths_of_glob(inp_glob: Generator) -> list[str]:
-        return sorted([str(f) for f in inp_glob if f.is_file()])'''
+    def __get_absolute_paths_of_glob(inp_glob) -> list[str]:
+        return sorted([str(f) for f in inp_glob if f.is_file()])
 
 
 
 if __name__ == '__main__':
-    import glob
-    p = '/media/kyle/Samsung_T5/IUVS_data/orbit03400/mvn_iuv_l1b_periapse-orbit03453-muv_20160708T031729_v13_r01.fits.gz'
-    g = glob.glob('/media/kyle/Samsung_T5/IUVS_data/orbit03400/mvn_iuv_l1b_periapse-orbit03453-muv_*.fits.gz')
-    dfc = DataFilenameCollection(g)
-    for i in dfc:
-        print(i)
-
-    for i in dfc:
-        print(i.timestamp)
+    f = FileFinder('/media/kyle/Samsung_T5/IUVS_data')
+    a = f.soschob(3453, 'apoapse', 'muv')
+    print(a.all_l1b(), a.all_periapse())
