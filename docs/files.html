@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Files &mdash; pyUVS  documentation</title>
+  <title>Files &mdash; PyUVS  documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Science Week" href="science_week.html" />
-    <link rel="prev" title="Welcome to pyUVS’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to PyUVS’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -53,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> pyUVS
+            <a href="index.html" class="icon icon-home"> PyUVS
           
 
           
@@ -103,7 +103,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">pyUVS</a>
+          <a href="index.html">PyUVS</a>
         
       </nav>
 
@@ -162,7 +162,7 @@ computer.</p>
 <dl class="py class">
 <dt id="files.DataFilename">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">files.</span></code><code class="sig-name descname"><span class="pre">DataFilename</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilename" title="Permalink to this definition">¶</a></dt>
-<dd><p>DataFilename is a data structure containing info from IUVS filenames.</p>
+<dd><p>A data structure containing info from IUVS filenames.</p>
 <p>DataFilename accepts a string of an absolute path to an IUVS filename
 and extracts all information related to the observation and processing
 pipeline from the input.</p>
@@ -171,7 +171,7 @@ pipeline from the input.</p>
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilename.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The absolute path of an IUVS data product.</p>
+<dd class="field-odd"><p><strong>path</strong> – The absolute path of an IUVS data product.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
@@ -186,294 +186,126 @@ pipeline from the input.</p>
 <dt id="files.DataFilename.channel">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel</span></code><a class="headerlink" href="#files.DataFilename.channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the observation channel from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The observation channel.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.date">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">date</span></code><a class="headerlink" href="#files.DataFilename.date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the date of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The date of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.day">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">day</span></code><a class="headerlink" href="#files.DataFilename.day" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the day of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The day of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.description">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">description</span></code><a class="headerlink" href="#files.DataFilename.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the description from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The observation description.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.extension">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">extension</span></code><a class="headerlink" href="#files.DataFilename.extension" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the extension of filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The extension.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.filename">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">filename</span></code><a class="headerlink" href="#files.DataFilename.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the filename from the absolute path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The filename.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.hour">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">hour</span></code><a class="headerlink" href="#files.DataFilename.hour" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the hour of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The hour of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.instrument">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">instrument</span></code><a class="headerlink" href="#files.DataFilename.instrument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the instrument code from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The instrument code.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.level">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">level</span></code><a class="headerlink" href="#files.DataFilename.level" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the data product level from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The data product level.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.minute">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">minute</span></code><a class="headerlink" href="#files.DataFilename.minute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the minute of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The minute of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.month">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">month</span></code><a class="headerlink" href="#files.DataFilename.month" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the month of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The month of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.orbit">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">orbit</span></code><a class="headerlink" href="#files.DataFilename.orbit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the orbit number from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>orbit</strong> – The orbit number.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.path">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">path</span></code><a class="headerlink" href="#files.DataFilename.path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the input absolute path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The input absolute path.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.revision">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">revision</span></code><a class="headerlink" href="#files.DataFilename.revision" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the revision code from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The revision code.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>rstr</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.second">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">second</span></code><a class="headerlink" href="#files.DataFilename.second" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the second of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The second of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.segment">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">segment</span></code><a class="headerlink" href="#files.DataFilename.segment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the observation segment from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The observation segment.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.spacecraft">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">spacecraft</span></code><a class="headerlink" href="#files.DataFilename.spacecraft" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the spacecraft code from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The spacecraft code.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.time">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">time</span></code><a class="headerlink" href="#files.DataFilename.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the time of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The time of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.timestamp">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">timestamp</span></code><a class="headerlink" href="#files.DataFilename.timestamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the timestamp of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The timestamp of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.version">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">version</span></code><a class="headerlink" href="#files.DataFilename.version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the version code from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The version code.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="files.DataFilename.year">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">year</span></code><a class="headerlink" href="#files.DataFilename.year" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the year of the observation from the filename.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The year of the observation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -481,7 +313,7 @@ pipeline from the input.</p>
 <dl class="py class">
 <dt id="files.DataFilenameCollection">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">files.</span></code><code class="sig-name descname"><span class="pre">DataFilenameCollection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilenameCollection" title="Permalink to this definition">¶</a></dt>
-<dd><p>A DataFilenameCollection is a data structure for holding IUVS files.</p>
+<dd><p>A data structure for holding IUVS files.</p>
 <p>A DataFilenameCollection checks that the input files are IUVS data files and
 only keeps the most recent data files.</p>
 <dl class="py method">
@@ -489,7 +321,7 @@ only keeps the most recent data files.</p>
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#files.DataFilenameCollection.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>files</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Absolute paths of IUVS data files.</p>
+<dd class="field-odd"><p><strong>files</strong> – Absolute paths of IUVS data files.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
@@ -993,7 +825,7 @@ blocks of 100.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="science_week.html" class="btn btn-neutral float-right" title="Science Week" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pyUVS’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PyUVS’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

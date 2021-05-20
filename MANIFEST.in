@@ -1,1 +1,1 @@
-recursive-include maven-iuvs/aux/*
+recursive-include pyuvs *.npy

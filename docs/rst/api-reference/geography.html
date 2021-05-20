@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Geography &mdash; PyUVS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PyUVS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyUVS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Geography</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/rst/api-reference/geography.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-geography">
+<span id="geography"></span><h1>Geography<a class="headerlink" href="#module-geography" title="Permalink to this headline">¶</a></h1>
+<p>The geography module contains classes to compute geographic information.</p>
+<dl class="py class">
+<dt id="geography.Geography">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">geography.</span></code><code class="sig-name descname"><span class="pre">Geography</span></code><a class="headerlink" href="#geography.Geography" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get info to work with Martian geography.</p>
+<p>Geography contains several defined locations and can get distances on Mars.</p>
+<dl class="py method">
+<dt id="geography.Geography.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#geography.Geography.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="geography.Geography.angular_distance">
+<code class="sig-name descname"><span class="pre">angular_distance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geography.Geography.angular_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the distance [radians] between an array of latitudes and
+longitudes and a target point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The latitudes.</p></li>
+<li><p><strong>longitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The longitudes.</p></li>
+<li><p><strong>target_lat</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target latitude.</p></li>
+<li><p><strong>target_lon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target longitude.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geography.Geography.get_location_indices">
+<code class="sig-name descname"><span class="pre">get_location_indices</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geography.Geography.get_location_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the indices of the latitudes and longitudes that are within a
+threshold distance [km] of a target point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The latitudes.</p></li>
+<li><p><strong>longitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The longitudes.</p></li>
+<li><p><strong>target_lat</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target latitude.</p></li>
+<li><p><strong>target_lon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target longitude.</p></li>
+<li><p><strong>threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The threshold distance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geography.Geography.location_in_arrays">
+<code class="sig-name descname"><span class="pre">location_in_arrays</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geography.Geography.location_in_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether there are any points in the latitudes and
+longitudes that are within a threshold distance from a target point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The latitudes.</p></li>
+<li><p><strong>longitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The longitudes.</p></li>
+<li><p><strong>target_lat</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target latitude.</p></li>
+<li><p><strong>target_lon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target longitude.</p></li>
+<li><p><strong>threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The threshold distance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geography.Geography.locations">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">locations</span></code><a class="headerlink" href="#geography.Geography.locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the known named locations. Each location is
+[degrees north, degrees east].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geography.Geography.r_mars">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">r_mars</span></code><a class="headerlink" href="#geography.Geography.r_mars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the radius of Mars.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="geography.Geography.spatial_distance">
+<code class="sig-name descname"><span class="pre">spatial_distance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">latitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_lon</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#geography.Geography.spatial_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the distance [km] between an array of latitudes and
+longitudes and a target point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>latitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The latitudes.</p></li>
+<li><p><strong>longitudes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The longitudes.</p></li>
+<li><p><strong>target_lat</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target latitude.</p></li>
+<li><p><strong>target_lon</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The target longitude.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, kconnour.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

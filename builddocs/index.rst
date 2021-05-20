@@ -1,21 +1,23 @@
-.. pyUVS documentation master file, created by
-   sphinx-quickstart on Tue Feb 23 12:42:39 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
+#################################
 Welcome to PyUVS's documentation!
-=================================
+#################################
+PyUVS is a set of tools to work with MAVEN/IUVS data. Below you can find the
+documentation on its modules, along with its subpackages for more specific
+applications.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: API reference
 
-   files
-   science_week
+   rst/api-reference/constants
 
+
+******************
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Last updated: |today|

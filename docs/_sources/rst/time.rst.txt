@@ -1,0 +1,6 @@
+Time
+====
+
+.. automodule:: time
+   :members:
+   :special-members: __init__

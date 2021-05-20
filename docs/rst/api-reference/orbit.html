@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Orbit &mdash; PyUVS  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PyUVS
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyUVS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Orbit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/rst/api-reference/orbit.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-orbit">
+<span id="orbit"></span><h1>Orbit<a class="headerlink" href="#module-orbit" title="Permalink to this headline">¶</a></h1>
+<p>The spatial module performs pertinent spatial calculations.</p>
+<dl class="py class">
+<dt id="orbit.OrbitalGeometry">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">orbit.</span></code><code class="sig-name descname"><span class="pre">OrbitalGeometry</span></code><a class="headerlink" href="#orbit.OrbitalGeometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>OrbitalGeometry contains methods for finding spatial quantities from
+MAVEN’s orbit.</p>
+<p class="rubric">Notes</p>
+<p>The class relies on you having already loaded SPICE kernels. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pyuvs.spice.Spice</span></code> for methods to do this.</p>
+<dl class="py method">
+<dt id="orbit.OrbitalGeometry.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orbit.OrbitalGeometry.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="orbit.OrbitalGeometry.find_maven_apsis_et">
+<code class="sig-name descname"><span class="pre">find_maven_apsis_et</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apsis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'apoapse'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.OrbitalGeometry.find_maven_apsis_et" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the ephemeris times at either orbital apses between a start
+and end time. To do this, SPICE checks the Mars-MAVEN distance in steps
+of 1 minute, and returns the local minima (for periapsis) or local
+maxima (for apoapsis).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>end_time</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]) – Ending datetime to get apsis ephemeris times for. Default is
+<code class="code docutils literal notranslate"><span class="pre">None</span></code>, which will get times up until today.</p></li>
+<li><p><strong>apsis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The apsis to get the ephemeris times for. Can be either ‘apoapse’ or
+‘periapse’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>orbits</em> – Relative MAVEN orbit numbers between the start and end dates.</p></li>
+<li><p><em>et</em> – Ephemeris times at the given apsis for all the orbits in the time
+range.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orbit.OrbitalGeometry.get_orbit_positions">
+<code class="sig-name descname"><span class="pre">get_orbit_positions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.OrbitalGeometry.get_orbit_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate orbit segment geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>end_time</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code>]) – The ending time to get orbital positions for.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>orbit_data</em> – Calculations of the following keys:</p>
+<ul>
+<li><p>orbit_number: The relative orbit number.</p></li>
+<li><p>et: The ephemeris time [seconds past J2000].</p></li>
+<li><p>subsc_lat: The sub-spacecraft latitude [degrees].</p></li>
+<li><p>subsc_lon: The sub-spacecraft longitude [degrees].</p></li>
+<li><p>subsc_alt: The sub-spacecraft altitude [km].</p></li>
+<li><p>solar_longiutde: The Ls [degrees].</p></li>
+<li><p>subsolar_lat: The sub-solar latitude [degrees].</p></li>
+<li><p>subsolar_lon: The sub-solar longitude [degrees].</p></li>
+<li><p>mars_sun_dist: The Mars-sun distance [km].</p></li>
+</ul>
+</li>
+<li><p><strong>All of these values are calculated for 3 times</strong> (<em>The start of the orbit</em>)</p></li>
+<li><p><em>(which is 21.4 minutes before periapsis), periapsis, and apoapsis. The</em></p></li>
+<li><p><em>arrays stored in the keys are indexed in this order.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="orbit.OrbitalGeometry.spice_positions">
+<code class="sig-name descname"><span class="pre">spice_positions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">et</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orbit.OrbitalGeometry.spice_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate MAVEN spacecraft position, Mars solar longitude, and the
+subsolar position for a given ephemeris time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>et</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Input epoch in ephemeris seconds past J2000.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>et</strong> (<em>array</em>) – The input ephemeris times. Just givin’em back.</p></li>
+<li><p><strong>subsc_lat</strong> (<em>array</em>) – Sub-spacecraft latitudes in degrees.</p></li>
+<li><p><strong>subsc_lon</strong> (<em>array</em>) – Sub-spacecraft longitudes in degrees.</p></li>
+<li><p><strong>sc_alt_km</strong> (<em>array</em>) – Sub-spacecraft altitudes in kilometers.</p></li>
+<li><p><strong>ls</strong> (<em>array</em>) – Mars solar longitudes in degrees.</p></li>
+<li><p><strong>subsolar_lat</strong> (<em>array</em>) – Sub-solar latitudes in degrees.</p></li>
+<li><p><strong>subsolar_lon</strong> (<em>array</em>) – Sub-solar longitudes in degrees.</p></li>
+<li><p><strong>mars_sun_km</strong> (<em>array</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, kconnour.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

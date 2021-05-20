@@ -2,153 +2,200 @@
 computer.
 """
 import copy
-import os
+import fnmatch as fnm
 from pathlib import Path
-from typing import Any, Generator
 from warnings import warn
 import numpy as np
-from pyuvs.misc import orbit_code
 
 
-# TODO: Consider renaming this since it works on xml and QLs
-# TODO: After revising this, it is untested
-# TODO: pylint says I have too many instance variables (21 / 7)
 class DataFilename:
-    """DataFilename is a data structure containing info from IUVS filenames.
+    """A data structure containing info from a single IUVS filename.
 
-    DataFilename accepts a string of an absolute path to an IUVS filename
-    and extracts all information related to the observation and processing
-    pipeline from the input.
+    It ensures the input filename represents an IUVS filename and extracts all
+    information related to the observation and processing pipeline from the
+    input.
+
+    Parameters
+    ----------
+    path
+        The absolute path of an IUVS data product.
+
+    Raises
+    ------
+    FileNotFoundError
+        Raised if the input path does not lead to a valid file.
+    TypeError
+        Raised if the input path is not a string.
+    ValueError
+        Raised if the file is not an IUVS data file.
 
     """
-
     def __init__(self, path: str) -> None:
+        self.__path = self.__create_path(path)
+        self.__filename = self.__path.name
+
+    @staticmethod
+    def __create_path(path: str) -> Path:
+        _DataFilePathChecker(path)
+        return Path(path)
+
+    def __str__(self) -> str:
+        return str(self.__path)
+
+    @property
+    def path(self) -> str:
+        """Get the input absolute path.
+
         """
-        Parameters
-        ----------
-        path: str
-            The absolute path of an IUVS data product.
+        return str(self.__path)
 
-        Raises
-        ------
-        FileNotFoundError
-            Raised if the input path does not lead to a valid file.
-        TypeError
-            Raised if the input path is not a string.
+    @property
+    def filename(self) -> str:
+        """Get the filename from the absolute path.
 
         """
-        self.__path = path
-        self.__raise_file_not_found_error_if_file_does_not_exist()
+        return self.__filename
 
-        self.__filename = self.__extract_filename_from_path()
-        self.__raise_file_exists_error_if_not_iuvs_file()
+    @property
+    def spacecraft(self) -> str:
+        """Get the spacecraft code from the filename.
 
-        self.__spacecraft = self.__extract_spacecraft_from_filename()
-        self.__instrument = self.__extract_instrument_from_filename()
-        self.__level = self.__extract_level_from_filename()
-        self.__description = self.__extract_description_from_filename()
-        self.__segment = self.__extract_segment_from_description()
-        self.__orbit = self.__extract_orbit_from_description()
-        self.__channel = self.__extract_channel_from_description()
-        self.__timestamp = self.__extract_timestamp_from_filename()
-        self.__date = self.__extract_date_from_timestamp()
-        self.__year = self.__extract_year_from_date()
-        self.__month = self.__extract_month_from_date()
-        self.__day = self.__extract_day_from_date()
-        self.__time = self.__extract_time_from_timestamp()
-        self.__hour = self.__extract_hour_from_time()
-        self.__minute = self.__extract_minute_from_time()
-        self.__second = self.__extract_second_from_time()
-        self.__version = self.__extract_version_from_filename()
-        self.__revision = self.__extract_revision_from_filename()
-        self.__extension = self.__extract_extension_from_filename()
-
-    def __raise_file_not_found_error_if_file_does_not_exist(self) -> None:
-        if not os.path.exists(self.__path):
-            raise FileNotFoundError('The input path does not exist.')
-
-    def __extract_filename_from_path(self) -> str:
-        try:
-            return os.path.basename(self.__path)
-        except TypeError as te:
-            raise TypeError('Cannot get the basename from the path.') from te
-
-    def __raise_file_exists_error_if_not_iuvs_file(self) -> None:
-        if not self.__filename.startswith('mvn_iuv_'):
-            raise FileExistsError('The input file is not an IUVS file.')
-
-    def __extract_spacecraft_from_filename(self) -> str:
+        """
         return self.__split_filename_on_underscore()[0]
 
-    def __extract_instrument_from_filename(self) -> str:
+    @property
+    def instrument(self) -> str:
+        """Get the instrument code from the filename.
+
+        """
         return self.__split_filename_on_underscore()[1]
 
-    def __extract_level_from_filename(self) -> str:
+    @property
+    def level(self) -> str:
+        """Get the data product level from the filename.
+
+        """
         return self.__split_filename_on_underscore()[2]
 
-    def __extract_description_from_filename(self) -> str:
+    @property
+    def description(self) -> str:
+        """Get the description from the filename.
+
+        """
         return self.__split_filename_on_underscore()[3]
 
-    def __extract_segment_from_description(self) -> str:
+    @property
+    def segment(self) -> str:
+        """Get the observation segment from the filename.
+
+        """
         orbit_index = self.__get_split_index_containing_orbit()
         segments = self.__split_description()[:orbit_index]
         return '-'.join(segments)
 
-    def __extract_orbit_from_description(self) -> int:
+    @property
+    def orbit(self) -> int:
+        """Get the orbit number from the filename.
+
+        """
         orbit_index = self.__get_split_index_containing_orbit()
         orbit = self.__split_description()[orbit_index].removeprefix('orbit')
         return int(orbit)
 
-    # TODO: In 3.10 change this to str | type(None)
-    def __extract_channel_from_description(self) -> str:
+    # TODO: in python3.10 change type hint to | type(None)
+    @property
+    def channel(self) -> str:
+        """Get the observation channel from the filename.
+
+        """
         orbit_index = self.__get_split_index_containing_orbit()
         try:
             return self.__split_description()[orbit_index + 1]
         except IndexError:
             return None
 
-    def __extract_timestamp_from_filename(self) -> str:
+    @property
+    def timestamp(self) -> str:
+        """Get the timestamp of the observation from the filename.
+
+        """
         return self.__split_filename_on_underscore()[4]
 
-    def __extract_date_from_timestamp(self) -> str:
+    @property
+    def date(self) -> str:
+        """Get the date of the observation from the filename.
+
+        """
         return self.__split_timestamp()[0]
 
-    def __extract_year_from_date(self) -> int:
-        return int(self.__date[:4])
+    @property
+    def year(self) -> int:
+        """Get the year of the observation from the filename.
 
-    def __extract_month_from_date(self) -> int:
+        """
+        return int(self.date[:4])
+
+    @property
+    def month(self) -> int:
+        """Get the month of the observation from the filename.
+
+        """
         return int(self.date[4:6])
 
-    def __extract_day_from_date(self) -> int:
+    @property
+    def day(self) -> int:
+        """Get the day of the observation from the filename.
+
+        """
         return int(self.date[6:])
 
-    def __extract_time_from_timestamp(self) -> str:
+    @property
+    def time(self) -> str:
+        """Get the time of the observation from the filename.
+
+        """
         return self.__split_timestamp()[1]
 
-    def __extract_hour_from_time(self) -> int:
-        return int(self.__time[:2])
+    @property
+    def hour(self) -> int:
+        """Get the hour of the observation from the filename.
 
-    def __extract_minute_from_time(self) -> int:
-        return int(self.__time[2:4])
+        """
+        return int(self.time[:2])
 
-    def __extract_second_from_time(self) -> int:
-        return int(self.__time[4:])
+    @property
+    def minute(self) -> int:
+        """Get the minute of the observation from the filename.
 
-    # TODO: In 3.10 change this to str | type(None)
-    def __extract_version_from_filename(self) -> str:
-        try:
-            return self.__split_filename_on_underscore()[5]
-        except IndexError:
-            return None
+        """
+        return int(self.time[2:4])
 
-    # TODO: In 3.10 change this to str | type(None)
-    def __extract_revision_from_filename(self) -> str:
-        try:
-            return self.__split_filename_on_underscore()[6]
-        except IndexError:
-            return None
+    @property
+    def second(self) -> int:
+        """Get the second of the observation from the filename.
 
-    def __extract_extension_from_filename(self) -> str:
+        """
+        return int(self.time[4:])
+
+    @property
+    def version(self) -> str:
+        """Get the version code from the filename.
+
+        """
+        return self.__split_filename_on_underscore()[5]
+
+    @property
+    def revision(self) -> str:
+        """Get the revision code from the filename.
+
+        """
+        return self.__split_filename_on_underscore()[6]
+
+    @property
+    def extension(self) -> str:
+        """Get the extension of filename.
+
+        """
         return self.__split_stem_from_extension()[1]
 
     def __split_filename_on_underscore(self) -> list[str]:
@@ -162,285 +209,227 @@ class DataFilename:
         return [stem, extension]
 
     def __split_timestamp(self) -> list[str]:
-        return self.__timestamp.split('T')
+        return self.timestamp.split('T')
 
     def __split_description(self) -> list[str]:
-        return self.__description.split('-')
+        return self.description.split('-')
 
     def __get_split_index_containing_orbit(self) -> int:
         return [c for c, f in enumerate(self.__split_description())
                 if 'orbit' in f][0]
 
-    def __str__(self) -> str:
-        return self.__path
 
-    @property
-    def path(self) -> str:
-        """Get the input absolute path.
+class _DataPathChecker:
+    def __init__(self, path: str):
+        self.__path = self.__make_path(path)
+        self.__warn_if_path_does_not_exist()
 
-        Returns
-        -------
-        str
-            The input absolute path.
+    @staticmethod
+    def __make_path(path: str) -> Path:
+        try:
+            return Path(path)
+        except TypeError:
+            message = f'path should be a str, not a {type(path)}.'
+            raise TypeError(message)
 
-        """
-        return self.__path
+    def __warn_if_path_does_not_exist(self) -> None:
+        if not self.__path.exists():
+            message = 'path does not point to a valid directory.'
+            warn(message)
 
-    @property
-    def filename(self) -> str:
-        """Get the filename from the absolute path.
 
-        Returns
-        -------
-        str
-            The filename.
+class _DataFilePathChecker:
+    def __init__(self, path: str) -> None:
+        self.__path = self.__make_path(path)
 
-        """
-        return self.__filename
+        self.__raise_file_not_found_error_if_file_does_not_exist()
+        self.__raise_value_error_if_not_iuvs_file()
+        self.__raise_value_error_if_not_fits_file()
 
-    @property
-    def spacecraft(self) -> str:
-        """Get the spacecraft code from the filename.
+    @staticmethod
+    def __make_path(path: str) -> Path:
+        try:
+            return Path(path)
+        except TypeError:
+            message = f'path should be a str, not a {type(path)}.'
+            raise TypeError(message)
 
-        Returns
-        -------
-        str
-            The spacecraft code.
+    def __raise_file_not_found_error_if_file_does_not_exist(self) -> None:
+        if not self.__path.exists():
+            message = 'The input path does not exist.'
+            raise FileNotFoundError(message)
 
-        """
-        return self.__spacecraft
+    def __raise_value_error_if_not_iuvs_file(self) -> None:
+        if not self.__path.name.startswith('mvn_iuv_'):
+            message = 'The input file is not an IUVS file.'
+            raise ValueError(message)
 
-    @property
-    def instrument(self) -> str:
-        """Get the instrument code from the filename.
+    def __raise_value_error_if_not_fits_file(self) -> None:
+        if not (self.__path.name.endswith('.fits') or
+                self.__path.name.endswith('.fits.gz')):
+            message = 'The input file is not a .fits file.'
+            raise ValueError(message)
 
-        Returns
-        -------
-        str
-            The instrument code.
 
-        """
-        return self.__instrument
+class Orbit:
+    """A class for working with a single MAVEN orbit.
 
-    @property
-    def level(self) -> str:
-        """Get the data product level from the filename.
+    This class ensures an input orbit is an int. It provides common
+    manipulations performed on an orbit number.
 
-        Returns
-        -------
-        str
-            The data product level.
 
-        """
-        return self.__level
+    Parameters
+    ----------
+    orbit
+        The orbit number.
 
-    @property
-    def description(self) -> str:
-        """Get the description from the filename.
+    """
+    def __init__(self, orbit: int) -> None:
+        self. __orbit = orbit
 
-        Returns
-        -------
-        str
-            The observation description.
+        self.__raise_type_error_if_orbit_is_not_int()
 
-        """
-        return self.__description
+    def __raise_type_error_if_orbit_is_not_int(self) -> None:
+        if not isinstance(self.__orbit, int):
+            message = 'orbit must be an int.'
+            raise TypeError(message)
 
-    @property
-    def segment(self) -> str:
-        """Get the observation segment from the filename.
-
-        Returns
-        -------
-        str
-            The observation segment.
+    def code(self) -> str:
+        """Make the 5 digit "code" for this orbit.
 
         """
-        return self.__segment
+        return self.__generic_code(self.__orbit)
+
+    def block(self) -> int:
+        """Make the orbit block (group of 100 orbits) for this orbit.
+
+        """
+        return int(np.floor(self.__orbit / 100) * 100)
+
+    def block_folder(self) -> str:
+        """Make the IUVS-standard folder name for this orbit.
+
+        """
+        return f'orbit{self.__generic_code(self.block())}'
+
+    @staticmethod
+    def __generic_code(orbit: int) -> str:
+        return str(orbit).zfill(5)
 
     @property
     def orbit(self) -> int:
-        """Get the orbit number from the filename.
-
-        Returns
-        -------
-        orbit: int
-            The orbit number.
+        """Get the input orbit number.
 
         """
         return self.__orbit
 
-    @property
-    def channel(self) -> str:
-        """Get the observation channel from the filename.
 
-        Returns
-        -------
-        str
-            The observation channel.
+class _StringMatcher:
+    """A class for matching strings.
 
-        """
-        return self.__channel
+    This class ensures an input is a string and provides methods to see if it
+    matches a set of patterns.
 
-    @property
-    def timestamp(self) -> str:
-        """Get the timestamp of the observation from the filename.
-
-        Returns
-        -------
-        str
-            The timestamp of the observation.
-
-        """
-        return self.__timestamp
-
-    @property
-    def date(self) -> str:
-        """Get the date of the observation from the filename.
-
-        Returns
-        -------
-        str
-            The date of the observation.
-
-        """
-        return self.__date
-
-    @property
-    def year(self) -> int:
-        """Get the year of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The year of the observation.
-
-        """
-        return self.__year
-
-    @property
-    def month(self) -> int:
-        """Get the month of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The month of the observation.
-
-        """
-        return self.__month
-
-    @property
-    def day(self) -> int:
-        """Get the day of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The day of the observation.
-
-        """
-        return self.__day
-
-    @property
-    def time(self) -> str:
-        """Get the time of the observation from the filename.
-
-        Returns
-        -------
-        str
-            The time of the observation.
-
-        """
-        return self.__time
-
-    @property
-    def hour(self) -> int:
-        """Get the hour of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The hour of the observation.
-
-        """
-        return self.__hour
-
-    @property
-    def minute(self) -> int:
-        """Get the minute of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The minute of the observation.
-
-        """
-        return self.__minute
-
-    @property
-    def second(self) -> int:
-        """Get the second of the observation from the filename.
-
-        Returns
-        -------
-        int
-            The second of the observation.
-
-        """
-        return self.__second
-
-    @property
-    def version(self) -> str:
-        """Get the version code from the filename.
-
-        Returns
-        -------
-        str
-            The version code.
-
-        """
-        return self.__version
-
-    @property
-    def revision(self) -> str:
-        """Get the revision code from the filename.
-
-        Returns
-        -------
-        rstr
-            The revision code.
-
-        """
-        return self.__revision
-
-    @property
-    def extension(self) -> str:
-        """Get the extension of filename.
-
-        Returns
-        -------
-        str
-            The extension.
-
-        """
-        return self.__extension
-
-
-# TODO: after revising this, it is untested
-class DataFilenameCollection:
-    """A DataFilenameCollection is a data structure for holding IUVS files.
-
-    A DataFilenameCollection checks that the input files are IUVS data files and
-    only keeps the most recent data files.
+    Parameters
+    ----------
+    channel
+        The channel pattern. Can be a glob-like pattern.
 
     """
+    def __init__(self, pattern: str, name: str) -> None:
+        self.__pattern = pattern
+        self.__name = name
 
+        self.__raise_type_error_if_pattern_is_not_str()
+
+    def __raise_type_error_if_pattern_is_not_str(self) -> None:
+        if not isinstance(self.__pattern, str):
+            message = f'{self.__name} must be an str.'
+            raise TypeError(message)
+
+    def match_str(self, patterns: list[str]) -> list[bool]:
+        """Check if the input strings matches elements in a list of patterns.
+
+        """
+        return [fnm.fnmatch(f, self.__pattern) for f in patterns]
+
+    def raise_value_error_if_invalid_pattern(self, patterns: list[str]) -> None:
+        """Raise a value error if the input to this class does not match a set
+        of input patterns.
+
+        """
+        if not any(self.match_str(patterns)):
+            message = f'{self.__name} does not match any known {self.__name}s.'
+            raise ValueError(message)
+
+    @property
+    def pattern(self):
+        return self.__pattern
+
+
+class _ChannelChecker(_StringMatcher):
+    """A class for working with IUVS channels.
+
+    This class ensures an input channel is an str and that the pattern matches
+    known channels.
+
+    Parameters
+    ----------
+    channel
+        The channel pattern. Can be a glob-like pattern.
+
+    """
+    def __init__(self, channel: str) -> None:
+        super().__init__(channel, 'channel')
+        self.__channels = ['ech', 'fuv', 'muv']
+        self.raise_value_error_if_invalid_pattern(self.__channels)
+
+    @property
+    def channels(self) -> list[str]:
+        """Get the list of known IUVS channels.
+
+        """
+        return self.__channels
+
+
+class _SegmentChecker(_StringMatcher):
+    """A class for working with MAVEN orbital segments.
+
+    This class ensures an input segment is an str and that the pattern matches
+    known segments.
+
+    Parameters
+    ----------
+    segment
+        The segment pattern. Can be a glob-like pattern.
+
+    """
+    def __init__(self, segment: str):
+        super().__init__(segment, 'segment')
+        self.__segments = ['apoapse', 'incorona', 'inlimb', 'outcorona',
+                           'outlimb', 'periapse', 'star']
+        self.raise_value_error_if_invalid_pattern(self.__segments)
+
+    @property
+    def segments(self) -> list[str]:
+        """Get the list of known MAVEN orbital segments.
+
+        """
+        return self.__segments
+
+
+class DataFilenameCollection:
+    """A data structure for holding IUVS data filenames.
+
+    This class checks that the input files are IUVS data files and only keeps
+    the most recent data files.
+
+    """
     def __init__(self, files: list[str]) -> None:
         """
         Parameters
         ----------
-        files: list[str]
+        files
             Absolute paths of IUVS data files.
 
         Raises
@@ -453,14 +442,13 @@ class DataFilenameCollection:
         """
         self.__filenames = self.__make_latest_data_filenames(files)
         self.__raise_value_error_if_no_input_iuvs_files()
-        self.__n_files = self.__compute_n_files()
+        self.__counter = 0
 
     def __make_latest_data_filenames(self, files: list[str]) \
             -> list[DataFilename]:
         try:
             filenames = self.__make_filenames(sorted(files))
-            data_filenames = self.__remove_non_fits_files(filenames)
-            return self.__get_latest_filenames(data_filenames)
+            return self.__get_latest_filenames(filenames)
         except TypeError as te:
             raise TypeError('files must be a list of strings.') from te
 
@@ -473,11 +461,11 @@ class DataFilenameCollection:
     def __make_filename(filename: str) -> DataFilename:
         try:
             return DataFilename(filename)
-        except FileExistsError:
-            return None
         except FileNotFoundError:
             return None
         except TypeError:
+            return None
+        except ValueError:
             return None
 
     # TODO: this logic can now be simplified since I don't need to keep the indx
@@ -504,17 +492,20 @@ class DataFilenameCollection:
         if not self.__filenames:
             raise ValueError('There were no input IUVS data files.')
 
-    def __compute_n_files(self) -> int:
-        return len(self.__filenames)
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.__counter < self.n_files:
+            self.__counter += 1
+            return self.__filenames[self.__counter - 1]
+        else:
+            self.__counter = 0
+        raise StopIteration
 
     @property
-    def filenames(self):
+    def filenames(self) -> list[DataFilename]:
         """Get the collection of DataFilenames made from the input files.
-
-        Returns
-        -------
-        list[DataFilename]
-            DataFilename for each latest data file in the input files.
 
         """
         return self.__filenames
@@ -523,28 +514,66 @@ class DataFilenameCollection:
     def n_files(self) -> int:
         """Get the number of unique files.
 
-        Returns
-        -------
-        int
-            The number of unique files present.
+        """
+        return len(self.__filenames)
+
+    def all_l1b(self) -> bool:
+        """Determine if all files in the collection are level 1b data files.
 
         """
-        return self.__n_files
+        return all((f.level == 'l1b' for f in self.filenames))
+
+    def all_l1c(self) -> bool:
+        """Determine if all files in the collection are level 1c data files.
+
+        """
+        return all((f.level == 'l1c' for f in self.filenames))
+
+    def all_apoapse(self) -> bool:
+        """Determine if all files in the collection are apoapse data files.
+
+        """
+        return all((f.segment == 'apoapse' for f in self.filenames))
+
+    def all_periapse(self) -> bool:
+        """Determine if all files in the collection are periapse data files.
+
+        """
+        return all((f.segment == 'periapse' for f in self.filenames))
+
+    def all_ech(self) -> bool:
+        """Determine if all files in the collection are echelle data files..
+
+        """
+        return all((f.channel == 'ech' for f in self.filenames))
+
+    def all_fuv(self) -> bool:
+        """Determine if all files in the collection are far-ultraviolet data
+        files.
+
+        """
+        return all((f.channel == 'fuv' for f in self.filenames))
+
+    def all_muv(self) -> bool:
+        """Determine if all files in the collection are mid-ultraviolet data
+        files.
+
+        """
+        return all((f.channel == 'muv' for f in self.filenames))
 
 
 class DataPath:
-    """A DataPath object creates absolute paths to where data products reside.
+    """Create absolute paths to where data products reside.
 
     DataPath contains methods to create strings of absolute paths to where data
     products reside, given a set of assumptions.
 
     """
-
     def __init__(self, path: str) -> None:
         """
         Parameters
         ----------
-        path: str
+        path
             Absolute path of the IUVS data root location.
 
         Raises
@@ -558,21 +587,12 @@ class DataPath:
             Raised if path does not point to a valid directory.
 
         """
-        self.__path = path
+        self.__path = self.__make_path(path)
 
-        self.__raise_error_if_input_is_bad()
-        self.__warn_if_path_does_not_exist()
-
-    def __raise_error_if_input_is_bad(self) -> None:
-        self.__raise_type_error_if_input_is_not_string()
-
-    def __raise_type_error_if_input_is_not_string(self) -> None:
-        if not isinstance(self.__path, str):
-            raise TypeError('path must be a str.')
-
-    def __warn_if_path_does_not_exist(self) -> None:
-        if not os.path.exists(self.__path):
-            warn('path must point to a valid directory.')
+    @staticmethod
+    def __make_path(path: str) -> Path:
+        _DataPathChecker(path)
+        return Path(path)
 
     def block(self, orbit: int) -> str:
         """Make the path to an orbit, assuming orbits are organized in blocks
@@ -580,14 +600,8 @@ class DataPath:
 
         Parameters
         ----------
-        orbit: int
+        orbit
             The orbit number.
-
-        Returns
-        -------
-        str
-            The path with orbit block appended corresponding to the input
-            orbit.
 
         Raises
         ------
@@ -601,8 +615,8 @@ class DataPath:
         '/foo/bar/orbit07700'
 
         """
-        self.__raise_type_error_if_input_is_not_int(orbit, 'orbit')
-        return os.path.join(self.__path, self.__block_folder_name(orbit))
+        orbit = Orbit(orbit)
+        return str(Path.joinpath(self.__path, orbit.block_folder()))
 
     def block_paths(self, orbits: list[int]) -> list[str]:
         """Make paths to a series of orbits, assuming orbits are organized in
@@ -610,14 +624,8 @@ class DataPath:
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits
             The orbit numbers.
-
-        Returns
-        -------
-        list[str]
-            The path with orbit block appended corresponding to the input
-            orbits.
 
         Raises
         ------
@@ -633,41 +641,19 @@ class DataPath:
         ['/foo/bar/orbit03400', '/foo/bar/orbit03500', '/foo/bar/orbit03500']
 
         """
-        self.__raise_type_error_if_input_is_not_list(orbits, 'orbits')
         try:
             return [self.block(f) for f in orbits]
         except TypeError:
             raise ValueError('Each value in orbits must be an int.') from None
 
-    @staticmethod
-    def __raise_type_error_if_input_is_not_int(quantity: Any, name: str) \
-            -> None:
-        if not isinstance(quantity, int):
-            raise TypeError(f'{name} must be an int.')
-
-    def __block_folder_name(self, orbit: int) -> str:
-        orbit_block = self.__orbit_block(orbit)
-        return f'orbit{orbit_code(orbit_block)}'
-
-    @staticmethod
-    def __orbit_block(orbit: int) -> int:
-        return int(np.floor(orbit / 100) * 100)
-
-    @staticmethod
-    def __raise_type_error_if_input_is_not_list(quantity: Any, name: str) \
-            -> None:
-        if not isinstance(quantity, list):
-            raise TypeError(f'{name} must be a list.')
-
 
 class DataPattern:
-    """A DataPattern object creates glob search patterns for IUVS data.
+    """Create glob search patterns for IUVS data.
 
     DataPattern contains methods to create strings of glob search patterns,
     tailored to IUVS data.
 
     """
-
     def data_pattern(self, level: str = '*', segment: str = '*',
                      orbit: str = '*', channel: str = '*',
                      timestamp: str = '*', version: str = '*',
@@ -676,25 +662,20 @@ class DataPattern:
 
         Parameters
         ----------
-        level: str, optional
-            The level pattern to get data from. Default is '*'.
-        segment: str, optional
-            The segment pattern to get data from. Default is '*'.
-        orbit: str, optional
-            The orbit pattern to get data from. Default is '*'.
-        channel: str, optional
-            The channel pattern to get data from. Default is '*'.
-        timestamp: str, optional
-            The timestamp pattern to get data from. Default is '*'.
-        version: str, optional
-            The version pattern to get data from. Default is '*'.
-        extension: str, optional
-            The extension pattern to get data from. Default is 'fits'.
-
-        Returns
-        -------
-        str
-            The pattern with the input sub-patterns.
+        level
+            The level pattern to get data from.
+        segment
+            The segment pattern to get data from.
+        orbit
+            The orbit pattern to get data from.
+        channel
+            The channel pattern to get data from.
+        timestamp
+            The timestamp pattern to get data from.
+        version
+            The version pattern to get data from.
+        extension
+            The extension pattern to get data from.
 
         Examples
         --------
@@ -722,17 +703,12 @@ class DataPattern:
 
         Parameters
         ----------
-        orbit: int
+        orbit
             The orbit number to get data from.
-        segment: str
+        segment
             The segment pattern to get data from.
-        channel: str
+        channel
             The channel pattern to get data from.
-
-        Returns
-        -------
-        pattern: str
-            The glob pattern that matches the input patterns.
 
         Raises
         ------
@@ -751,7 +727,8 @@ class DataPattern:
         """
 
         try:
-            return self.data_pattern(orbit=orbit_code(orbit), segment=segment,
+            o = Orbit(orbit)
+            return self.data_pattern(orbit=o.code(), segment=segment,
                                      channel=channel)
         except TypeError as te:
             raise TypeError('orbit must be an int.') from te
@@ -762,17 +739,12 @@ class DataPattern:
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits
             Orbits to make patterns for.
-        segment: str
+        segment
             The segment pattern to get data from.
-        channel: str
+        channel
             The channel pattern to get data from.
-
-        Returns
-        -------
-        list[str]
-            Patterns for each input orbit.
 
         Raises
         ------
@@ -798,13 +770,8 @@ class DataPattern:
 
         Parameters
         ----------
-        patterns: list[str]
+        patterns
             Patterns to search for.
-
-        Returns
-        -------
-        str
-            The glob search pattern that accounts for the input patterns.
 
         Raises
         ------
@@ -836,11 +803,6 @@ class DataPattern:
         pattern: str
             Generic glob pattern.
 
-        Returns
-        -------
-        str
-            Input pattern with `**/` prepended.
-
         Examples
         --------
         >>> dp = DataPattern()
@@ -855,115 +817,18 @@ class DataPattern:
         return pattern.replace('**', '*')
 
 
-class FileClassifier:
-    """FileClassifier determines if IUVS data filenames meet a condition.
-
-    A FileClassifier object contains methods to determine if a
-    DataFilenameCollection fits a given condition.
-
-    """
-
-    def __init__(self, collection: DataFilenameCollection) -> None:
-        self.__dfc = collection
-        self.__raise_type_error_if_input_is_not_data_filename_collection()
-
-    def __raise_type_error_if_input_is_not_data_filename_collection(self) \
-            -> None:
-        if not isinstance(self.__dfc, DataFilenameCollection):
-            raise TypeError('collection must be a DataFilenameCollection.')
-
-    def all_l1b(self) -> bool:
-        """Determine if all files in the collection are level 1b data files.
-
-        Returns
-        -------
-        bool
-            True if all files are level 1b; False otherwise.
-
-        """
-        return all((f.level == 'l1b' for f in self.__dfc.filenames))
-
-    def all_l1c(self) -> bool:
-        """Determine if all files in the collection are level 1c data files.
-
-        Returns
-        -------
-        bool
-            True if all files are level 1c; False otherwise.
-        """
-        return all((f.level == 'l1c' for f in self.__dfc.filenames))
-
-    def all_apoapse(self) -> bool:
-        """Determine if all files in the collection are apoapse data files.
-
-        Returns
-        -------
-        bool
-            True if all files are from the apoapse segment; False otherwise.
-
-        """
-        return all((f.segment == 'apoapse' for f in self.__dfc.filenames))
-
-    def all_periapse(self) -> bool:
-        """Determine if all files in the collection are periapse data files.
-
-        Returns
-        -------
-        bool
-            True if all files are from the periapse segment; False otherwise.
-
-        """
-        return all((f.segment == 'periapse' for f in self.__dfc.filenames))
-
-    def all_ech(self) -> bool:
-        """Determine if all files in the collection are echelle data files..
-
-        Returns
-        -------
-        bool
-            True if all files are from the ech channel; False otherwise.
-
-        """
-        return all((f.channel == 'ech' for f in self.__dfc.filenames))
-
-    def all_fuv(self) -> bool:
-        """Determine if all files in the collection are far-ultraviolet data
-        files.
-
-        Returns
-        -------
-        bool
-            True if all files are from the fuv channel; False otherwise.
-
-        """
-        return all((f.channel == 'fuv' for f in self.__dfc.filenames))
-
-    def all_muv(self) -> bool:
-        """Determine if all files in the collection are mid-ultraviolet data
-        files.
-
-        Returns
-        -------
-        bool
-            True if all files are from the muv segment; False otherwise.
-
-        """
-        return all((f.channel == 'muv' for f in self.__dfc.filenames))
-
-
 class FileFinder:
-    """FileFinder helps users find IUVS data files on their computer.
+    """Find IUVS data files on their computer.
 
     FileFinder holds methods that help the user find files on their computer
     given a set of assumptions.
 
     """
-
     def __init__(self, path: str) -> None:
         """
         Parameters
         ----------
-        path: str
+        path
             The absolute path where to begin looking for IUVS data files.
 
         Raises
@@ -980,36 +845,25 @@ class FileFinder:
 
     def __raise_error_if_input_path_is_bad(self) -> None:
         self.__raise_type_error_if_path_is_not_str()
-        self.__raise_os_error_if_path_does_not_exist()
 
     def __raise_type_error_if_path_is_not_str(self) -> None:
         if not isinstance(self.__path, str):
             raise TypeError('path must be a str.')
 
-    def __raise_os_error_if_path_does_not_exist(self) -> None:
-        if not os.path.exists(self.__path):
-            raise OSError(f'The path "{self.__path}" does not exist on this '
-                          'computer.')
-
-    def soschob(self, orbit: int, segment: str = 'apoapse',
-                channel: str = 'muv') -> DataFilenameCollection:
+    def soschob(self, orbit: int, segment: str, channel: str) \
+            -> DataFilenameCollection:
         """Make a DataFilenameCollection for files matching an input orbit,
         segment pattern, and channel pattern, assuming orbits are organized in
         blocks of 100.
 
         Parameters
         ----------
-        orbit: int
+        orbit
             The orbit to get files from.
-        segment: str
-            The observing segment to get files from. Default is 'apoapse'.
-        channel: str
-            The observing mode to get files from. Default is 'muv'.
-
-        Returns
-        -------
-        DataFilenameCollection:
-            Matching files from the input orbit, segment, and channel.
+        segment
+            The observing segment to get files from.
+        channel
+            The observing mode to get files from.
 
         """
         p = DataPath(self.__path).block(orbit)
@@ -1017,25 +871,20 @@ class FileFinder:
         abs_paths = self.__glob_files(p, pat)
         return DataFilenameCollection(abs_paths)
 
-    def multi_orbit_files(self, orbits: list[int], segment: str = 'apoapse',
-                          channel: str = 'muv') -> DataFilenameCollection:
+    def multi_orbit_files(self, orbits: list[int], segment: str, channel: str) \
+            -> DataFilenameCollection:
         """Make a DataFilenameCollection for an input list of orbits,
         segment pattern, and channel pattern, assuming orbits are organized in
         blocks of 100.
 
         Parameters
         ----------
-        orbits: list[int]
+        orbits
             Orbits to get files from.
-        segment: str
-            The observing segment to get files from. Default is 'apoapse'.
-        channel: str
-            The observing channel to get files from. Default is 'muv'.
-
-        Returns
-        -------
-        DataFilenameCollection
-            Matching files from the input orbits, segment, and channel.
+        segment
+            The observing segment to get files from.
+        channel
+            The observing channel to get files from.
 
         """
         p = DataPath(self.__path).block_paths(orbits)
@@ -1044,28 +893,22 @@ class FileFinder:
         abs_paths = [k for f in path_list for k in f]
         return DataFilenameCollection(abs_paths)
 
-    def orbit_range_files(self, orbit_start: int, orbit_end: int,
-                          segment: str = 'apoapse', channel: str = 'muv') \
-            -> DataFilenameCollection:
+    def orbit_range_files(self, orbit_start: int, orbit_end: int, segment: str,
+                          channel: str) -> DataFilenameCollection:
         """ Make a DataFilenameCollection for all orbits in a range of orbits
         with a segment pattern and channel pattern, assuming orbits are
         organized in blocks of 100.
 
         Parameters
         ----------
-        orbit_start: int
+        orbit_start
             The starting orbit to get files from.
-        orbit_end: int
+        orbit_end
             The ending orbit to get files from.
-        segment: str
-            The observing segment to get files from. Default is 'apoapse'.
-        channel: str
-            The observing channel to get files from. Default is 'muv'.
-
-        Returns
-        -------
-        DataFilenameCollection
-            Matching files from the input orbit range, segment, and channel.
+        segment
+            The observing segment to get files from.
+        channel
+            The observing channel to get files from.
 
         """
         orbits = list(range(orbit_start, orbit_end))
@@ -1076,9 +919,16 @@ class FileFinder:
         return self.__get_absolute_paths_of_glob(g)
 
     @staticmethod
-    def __perform_glob(path: str, pattern: str) -> Generator:
+    def __perform_glob(path: str, pattern: str):
         return Path(path).glob(pattern)
 
     @staticmethod
-    def __get_absolute_paths_of_glob(inp_glob: Generator) -> list[str]:
+    def __get_absolute_paths_of_glob(inp_glob) -> list[str]:
         return sorted([str(f) for f in inp_glob if f.is_file()])
+
+
+
+if __name__ == '__main__':
+    f = FileFinder('/media/kyle/Samsung_T5/IUVS_data')
+    a = f.soschob(3453, 'apoapse', 'muv')
+    print(a.all_l1b(), a.all_periapse())

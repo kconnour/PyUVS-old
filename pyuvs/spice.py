@@ -19,8 +19,8 @@ class Spice:
 
         Notes
         -----
-        The kernels can be found online at the
-        `NAIF <https://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/>_`.
+        The kernels can be found online at the `NAIF
+        <https://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/>`_.
 
         """
         pass
@@ -76,7 +76,7 @@ class Spice:
         self.__furnish_array(clock_kernels)
 
     def load_spice(self, spice_directory: str) -> None:
-        """Load all of the kernels typically required by IUVS observations.
+        r"""Load all of the kernels typically required by IUVS observations.
 
         Parameters
         ----------
@@ -86,21 +86,21 @@ class Spice:
         Notes
         -----
         The SPICE kernels are assumed to have a directory structure consistent
-        with the IUVS standard, outlined below.
-
-        spice_directory
-        |---mvn
-        |   |---ck
-        |   |---spk
-        |   |---sclk
-        |---generic_kernels
-        |   |---spk
-        |   |   |mar097.bsp
+        with the IUVS standard. I have attempted to outline it below but am
+        thwarted by Sphinx.
 
         This method will clear all currently existing kernels before loading in
         IUVS kernels.
 
         """
+        #         spice_directory
+        #         |---mvn
+        #         |   |---ck
+        #         |   |---spk
+        #         |   |---sclk
+        #         |---generic_kernels
+        #         |   |---spk
+        #         |   |   |mar097.bsp
         mvn_kernel_path = os.path.join(spice_directory, 'mvn')
         generic_kernel_path = os.path.join(spice_directory, 'generic_kernels')
         ck_path = os.path.join(mvn_kernel_path, 'ck')
