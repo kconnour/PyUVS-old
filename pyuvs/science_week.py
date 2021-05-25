@@ -18,7 +18,7 @@ import warnings
 science_start_date: datetime.date = datetime.date(2014, 11, 11)
 """Date MAVEN began performing nominal science."""
 
-pre_wizard_end_date = datetime.date(2021, 6, 8)
+pre_wizard_end_date = datetime.date(2021, 6, 7)
 """Last date of nominal science before wizard-ops."""
 
 post_wizard_start_date = datetime.date(2021, 6, 10)
@@ -55,7 +55,7 @@ def week_from_date(date: datetime.date) -> int:
 
     """
     _DateValidator(date)
-    if date < pre_wizard_end_date:
+    if date <= pre_wizard_end_date:
         return (date - science_start_date).days // 7
     elif date >= post_wizard_start_date:
         return 343 + (date - post_wizard_start_date).days // 7
