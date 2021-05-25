@@ -13,7 +13,7 @@ import sphinx_rtd_theme
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../pyuvs/'))
+sys.path.insert(0, os.path.abspath('../'))
 
 
 # -- Project information -----------------------------------------------------
@@ -31,7 +31,7 @@ author = 'kconnour'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx_autodoc_typehints'
+    #'sphinx_autodoc_typehints'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,3 +55,12 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
+
+# This allows me to write docstrings in __init__
+autoclass_content = 'both'
+
+# This makes autoclass, auto<whatever>, output documentation in the order it's
+# in the file.
+# autodoc_member_order = 'groupwise'
+
+autodoc_typehints = 'description'

@@ -1,11 +1,228 @@
-"""The time module contains classes for converting Earth times into Martian
-times.
+"""Collection of tools for converting between Earth and Martian times.
 """
-# TODO: consider making an ET class to go to Earth times
-from datetime import date, datetime, timedelta
+import datetime
 import warnings
 import julian
 import numpy as np
+
+
+class ScienceWeek:
+    """Convert between dates and MAVEN science weeks.
+
+    This class contains a variety of methods that can either convert a science
+    week number into an Earth date, or convert an Earth date into a MAVEN
+    science weeks.
+
+    Notes
+    -----
+    MAVEN's science weeks initially ran Tuesday--Monday, but in June of 2021
+    they switched to a Thursday--Wednesday schedule.
+
+    """
+    def __init__(self):
+        self.__science_start_date = datetime.date(2014, 11, 11)
+        self.__normal_end_date = datetime.date(2021, 6, 8)
+        self.__new_start_date = datetime.date(2021, 6, 10)
+
+    @property
+    def start_date(self) -> datetime.date:
+        """Get the date that MAVEN begin performing science.
+
+        """
+        return self.__science_start_date
+
+    def week_from_date(self, date: datetime.date) -> int:
+        """Compute the MAVEN science week number corresponding to an input date.
+
+        Parameters
+        ----------
+        date
+            The date to get the science week from.
+
+        Raises
+        ------
+        TypeError
+            Raised if date is not a datetime.date.
+        ValueError
+            Raised if date is before the start of IUVS science.
+
+        Warnings
+        --------
+        UserWarning
+            Raised if the input date was during the bridge phase.
+
+        Examples
+        --------
+        >>> import datetime
+        >>> sw = ScienceWeek()
+        >>> sw.week_from_date(sw.start_date)
+        0
+        >>> sw.week_from_date(datetime.date(2020, 1, 1))
+        268
+
+        """
+        self._DateValidator(date, self.start_date)
+        if date < self.__normal_end_date:
+            return (date - self.start_date).days // 7
+        elif date >= self.__new_start_date:
+            return 343 + (date - self.__new_start_date).days // 7
+        else:
+            message = 'The requested date was during the bridge phase.'
+            warnings.warn(message)
+            return np.nan
+
+    def current_science_week(self) -> int:
+        """Compute today's MAVEN science week number.
+
+        """
+        return self.week_from_date(datetime.date.today())
+
+    def week_start_date(self, week: int) -> datetime.date:
+        """Compute the date when the requested science week began or will begin.
+
+        Parameters
+        ----------
+        week
+            The science week number.
+
+        Raises
+        ------
+        TypeError
+            Raised if week is not an int.
+        ValueError
+            Raised if week is negative.
+
+        Examples
+        --------
+        >>> ScienceWeek().week_start_date(0)
+        datetime.date(2014, 11, 11)
+        >>> ScienceWeek().week_start_date(300)
+        datetime.date(2020, 8, 11)
+
+        """
+        self._WeekValidator(week)
+        if week < 343:
+            return self.__science_start_date + datetime.timedelta(days=week*7)
+        else:
+            return self.__new_start_date + datetime.timedelta(days=(week-343)*7)
+
+    def week_end_date(self, week: int) -> datetime.date:
+        """Compute the date when the requested science week ended or will end.
+
+        Parameters
+        ----------
+        week
+            The science week number.
+
+        Raises
+        ------
+        TypeError
+            Raised if week is not an int.
+        ValueError
+            Raised if week is negative.
+
+        Examples
+        --------
+        >>> ScienceWeek().week_end_date(300)
+        datetime.date(2020, 8, 17)
+
+        """
+        return self.week_start_date(week) + datetime.timedelta(days=6)
+
+    def week_date_range(self, week: int or float) -> \
+            tuple[datetime.date, datetime.date]:
+        """Compute the date range corresponding to the input science week.
+
+        Parameters
+        ----------
+        week
+            The science week number.
+
+        Raises
+        ------
+        TypeError
+            Raised if week is not an int.
+        ValueError
+            Raised if week is negative.
+
+        Examples
+        --------
+        >>> ScienceWeek().week_date_range(300)
+        (datetime.date(2020, 8, 11), datetime.date(2020, 8, 17))
+
+        """
+        return self.week_start_date(week), self.week_end_date(week)
+
+    class _DateValidator:
+        """Ensure an input date is a valid IUVS science date.
+
+        """
+        def __init__(self, date: datetime.date, start: datetime.date):
+            """
+            Parameters
+            ----------
+            date
+                Any date.
+            start
+                The date IUVS began performing science.
+
+            Raises
+            ------
+            TypeError
+                Raised if date is not a datetime.date.
+            ValueError
+                Raised if date is before the start of IUVS science.
+
+            """
+            self.date = date
+            self.start = start
+
+            self.__raise_type_error_if_not_datetime_date()
+            self.__raise_value_error_if_before_science_start()
+
+        def __raise_type_error_if_not_datetime_date(self):
+            if not isinstance(self.date, datetime.date):
+                message = 'date must be a datetime.date'
+                raise TypeError(message)
+
+        def __raise_value_error_if_before_science_start(self):
+            if (self.date - self.start).days < 0:
+                message = 'date is before the start of IUVS science.'
+                raise ValueError(message)
+
+    class _WeekValidator:
+        """Ensure an input week is a valid IUVS science week.
+
+        """
+        def __init__(self, week: int):
+            """
+            Parameters
+            ----------
+            week
+                Any plausible science week.
+
+            Raises
+            ------
+            TypeError
+                Raised if week is not an int.
+            ValueError
+                Raised if week is negative.
+
+            """
+            self.week = week
+
+            self.__raise_type_error_if_not_int()
+            self.__raise_value_error_if_before_mission_start()
+
+        def __raise_type_error_if_not_int(self):
+            if not isinstance(self.week, int):
+                message = 'week must be an int.'
+                raise TypeError(message)
+
+        def __raise_value_error_if_before_mission_start(self) -> None:
+            if self.week < 0:
+                message = 'week must be non-negative.'
+                raise ValueError(message)
 
 
 class UTC:
@@ -81,170 +298,3 @@ class UTC:
         ls = a + (10.691 + 3.7*10**-7 * dt_j2000) * np.sin(m) + \
             0.623*np.sin(2*m) + 0.05*np.sin(3*m) + 0.005*np.sin(4*m)
         return ls % 360
-
-
-class ScienceWeek:
-    """Convert between dates and MAVEN science weeks.
-
-    This class contains a variety of methods that can either convert a week
-    number into a datetime.date object representing the corresponding Earth
-    date, or convert a datetime.date object into MAVEN science weeks.
-
-    """
-    def __init__(self):
-        self.__science_start_date = date(2014, 11, 11)
-        self.__normal_end_date = date(2021, 6, 8)
-        self.__new_start_date = date(2021, 6, 10)
-
-    def week_from_date(self, some_date: date) -> int:
-        """Compute the MAVEN science week number at an input date.
-
-        Parameters
-        ----------
-        some_date: datetime.date
-            The date to get the science week from.
-
-        Returns
-        -------
-        int
-            The science week at the input date.
-
-        Raises
-        ------
-        TypeError
-            Raised if the input is not an instance of datetime.date.
-
-        Examples
-        --------
-        >>> from datetime import date
-        >>> ScienceWeek().week_from_date(date(2020, 1, 1))
-        268
-
-        """
-        try:
-            self.__warn_if_date_is_before_mission_start(some_date)
-            if some_date < self.__normal_end_date:
-                return (some_date - self.__science_start_date).days // 7
-            elif self.__normal_end_date < some_date < self.__new_start_date:
-                print('This was the bridge phase.')
-                return None
-            else:
-                return (self.__normal_end_date - self.__science_start_date).days // 7 + (some_date - self.__new_start_date).days // 7
-        except TypeError:
-            message = 'some_date should be an instance of datetime.date.'
-            raise TypeError(message) from None
-
-    def current_science_week(self) -> int:
-        """Compute today's MAVEN science week number.
-
-        Returns
-        -------
-        int
-            The current science week number.
-
-        """
-        return self.week_from_date(date.today())
-
-    def week_start_date(self, week: int or float) -> date:
-        """Compute the date when the requested science week began or will begin.
-
-        Parameters
-        ----------
-        week: int or float
-            The science week number.
-
-        Returns
-        -------
-        datetime.date
-            The date when the science week began or will begin.
-
-        Raises
-        ------
-        TypeError
-            Raised if the input type is incompatible with timedelta.
-        ValueError
-            Raised if the input has an error.
-
-        Examples
-        --------
-        >>> ScienceWeek().week_start_date(0)
-        datetime.date(2014, 11, 11)
-        >>> ScienceWeek().week_start_date(300)
-        datetime.date(2020, 8, 11)
-
-        """
-        try:
-            self.__warn_if_week_is_negative(week)
-            rounded_week = int(np.floor(week))
-            return self.__science_start_date + timedelta(days=rounded_week * 7)
-        except TypeError:
-            raise TypeError(f'week should be an int, not a {type(week)}.') \
-                from None
-        except ValueError:
-            raise ValueError('There is an issue with the value of week.') \
-                from None
-
-    def week_end_date(self, week: int or float) -> date:
-        """Compute the date when the requested science week ended or will end.
-
-        Parameters
-        ----------
-        week: int or float
-            The science week number.
-
-        Returns
-        -------
-        datetime.date
-            The date when the science week ended or will end.
-
-        Raises
-        ------
-        TypeError
-            Raised if the input type is incompatible with timedelta.
-        ValueError
-            Raised if the input has an error.
-
-        Examples
-        --------
-        >>> ScienceWeek().week_end_date(300)
-        datetime.date(2020, 8, 17)
-
-        """
-        return self.week_start_date(week) + timedelta(days=6)
-
-    def week_date_range(self, week: int or float) -> tuple[date, date]:
-        """Compute the date range corresponding to the input science week.
-
-        Parameters
-        ----------
-        week: int
-            The science week.
-
-        Returns
-        -------
-        tuple
-            The start and end dates of the science week.
-
-        Raises
-        ------
-        TypeError
-            Raised if the input type is incompatible with timedelta.
-        ValueError
-            Raised if the input has an error.
-
-        Examples
-        --------
-        >>> ScienceWeek().week_date_range(300)
-        (datetime.date(2020, 8, 11), datetime.date(2020, 8, 17))
-
-        """
-        return self.week_start_date(week), self.week_end_date(week)
-
-    def __warn_if_date_is_before_mission_start(self, some_date: date) -> None:
-        if (some_date - self.__science_start_date).days < 0:
-            warnings.warn('The input date is before the science start date.')
-
-    @staticmethod
-    def __warn_if_week_is_negative(week: int) -> None:
-        if week < 0:
-            warnings.warn('The input week should not be negative.')

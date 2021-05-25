@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Installation &mdash; PyUVS  documentation</title>
@@ -13,6 +14,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -89,6 +93,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pypi-installation">PYPI installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#github-installation">Github installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-dependencies">Optional dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api-reference.html">API reference</a></li>
@@ -159,16 +164,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation">
+  <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>There are (or will be) several ways to install PyUVS. Regardless of how you
 choose to install the package, we highly recommend you use virtual environments
 during the process. All that follows will assume you are using them.</p>
-<div class="section" id="pypi-installation">
+<section id="pypi-installation">
 <h2>PYPI installation<a class="headerlink" href="#pypi-installation" title="Permalink to this headline">¶</a></h2>
 <p>The package is coming to the PyPI soon!</p>
-</div>
-<div class="section" id="github-installation">
+</section>
+<section id="github-installation">
 <h2>Github installation<a class="headerlink" href="#github-installation" title="Permalink to this headline">¶</a></h2>
 <p>To install the latest version of PyUVS simply clone the repository from Github
 (using <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/kconnour/PyUVS.git</span></code> from Terminal,
@@ -176,15 +181,37 @@ or clone using your favorite GUI). You can then install it with
 <code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;</span></code>. This
 command will install PyUVS along with all of its dependencies.</p>
 <p>You can now import PyUVS with <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyuvs</span></code>!</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For users wishing to generate the latest documentation, the installation
-comes with a <code class="code docutils literal notranslate"><span class="pre">docs</span></code> option to install all documentation dependencies.
-Simply use <code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span>
-<span class="pre">pyuvs&gt;[docs]</span></code> to install these.</p>
+</section>
+<section id="optional-dependencies">
+<h2>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>PyUVS will only install the minimum libraries needed to work with IUVS data.
+For more advanced usage, some additional libraries are needed. The following
+lists the options available.</p>
+<ul>
+<li><dl class="simple">
+<dt><strong>all</strong></dt><dd><p>Install all optional libraries.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>docs</strong></dt><dd><p>Install all libraries needed to build the documentation.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><strong>graphics</strong></dt><dd><p>Install all libraries needed to create standard graphical products.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This requires GEOS and PROJ to already be installed.</p>
 </div>
-</div>
-</div>
+</dd>
+</dl>
+</li>
+</ul>
+<p>For example, to install the docs dependencies simply use
+<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[docs]</span></code>.</p>
+</section>
+</section>
 
 
            </div>

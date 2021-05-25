@@ -1,28 +1,21 @@
-#########
 constants
-#########
-.. automodule:: constants
+=========
+.. automodule:: pyuvs.constants
 
-**********************
 Instrumental constants
-**********************
-.. autodata:: constants.angular_slit_width
-.. autodata:: constants.cmos_pixel_well_depth
-.. autodata:: constants.focal_length
-.. autodata:: constants.pixel_omega
-.. autodata:: constants.pixel_size
-.. autodata:: constants.spatial_slit_width
+----------------------
+.. autodata:: pyuvs.constants.angular_slit_width
+.. autodata:: pyuvs.constants.cmos_pixel_well_depth
+.. autodata:: pyuvs.constants.telescope_focal_length
+.. autodata:: pyuvs.constants.pixel_omega
+.. autodata:: pyuvs.constants.pixel_size
+.. autodata:: pyuvs.constants.spatial_slit_width
 
-*****************
 Martian constants
-*****************
-These values come from the `Mars fact sheet
-<https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html>`_.
+-----------------
+.. autodata:: pyuvs.constants.mars_mass
+.. autodata:: pyuvs.constants.mars_mean_radius
 
-.. autodata:: constants.mars_mass
-.. autodata:: constants.mars_mean_radius
-
-******************
 Physical constants
-******************
-.. autodata:: constants.kR
+------------------
+.. autodata:: pyuvs.constants.kR
