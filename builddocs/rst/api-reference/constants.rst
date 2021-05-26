@@ -11,10 +11,23 @@ Instrumental constants
 .. autodata:: pyuvs.constants.pixel_size
 .. autodata:: pyuvs.constants.spatial_slit_width
 
-Martian constants
------------------
+Operational constants
+---------------------
+.. autodata:: pyuvs.constants.science_start_date
+.. autodata:: pyuvs.constants.pre_wizard_end_date
+.. autodata:: pyuvs.constants.post_wizard_start_date
+
+Martian physical constants
+--------------------------
 .. autodata:: pyuvs.constants.mars_mass
 .. autodata:: pyuvs.constants.mars_mean_radius
+
+Martian temporal constants
+--------------------------
+.. autodata:: pyuvs.constants.martian_sol_length
+.. autodata:: pyuvs.constants.seconds_per_sol
+.. autodata:: pyuvs.constants.sols_per_martian_year
+.. autodata:: pyuvs.constants.date_of_start_of_mars_year_0
 
 Physical constants
 ------------------

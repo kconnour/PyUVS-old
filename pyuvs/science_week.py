@@ -14,15 +14,8 @@ afterwards.
 """
 import datetime
 import warnings
-
-science_start_date: datetime.date = datetime.date(2014, 11, 11)
-"""Date MAVEN began performing nominal science."""
-
-pre_wizard_end_date = datetime.date(2021, 6, 7)
-"""Last date of nominal science before wizard-ops."""
-
-post_wizard_start_date = datetime.date(2021, 6, 10)
-"""First date of nominal science after wizard-ops."""
+from pyuvs.constants import science_start_date, pre_wizard_end_date, \
+    post_wizard_start_date
 
 
 def week_from_date(date: datetime.date) -> int:
@@ -72,7 +65,7 @@ def current_week() -> int:
 
 
 def week_start_date(week: int) -> datetime.date:
-    """Compute the date when the requested science week began or will begin.
+    """Compute the date when the requested science week begins.
 
     Parameters
     ----------
@@ -102,7 +95,7 @@ def week_start_date(week: int) -> datetime.date:
 
 
 def week_end_date(week: int) -> datetime.date:
-    """Compute the date when the requested science week ended or will end.
+    """Compute the date when the requested science week ends.
 
     Parameters
     ----------
@@ -175,7 +168,7 @@ class _DateValidator:
 
     def __raise_type_error_if_not_datetime_date(self):
         if not isinstance(self.date, datetime.date):
-            message = 'date must be a datetime.date'
+            message = 'date must be a datetime.date.'
             raise TypeError(message)
 
     def __raise_value_error_if_before_science_start(self):
