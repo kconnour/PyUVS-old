@@ -13,7 +13,6 @@ class Geography:
         """
 
         """
-        self.__r_mars = 3390.0
         self.__locations = self.__make_locations()
 
     @staticmethod
@@ -25,12 +24,6 @@ class Geography:
                      'pavonis_mons': (1.48, 247.04)}
         return locations
 
-    @property
-    def r_mars(self) -> float:
-        """Get the radius of Mars.
-
-        """
-        return self.__r_mars
 
     @property
     def locations(self) -> dict[str, tuple[float, float]]:

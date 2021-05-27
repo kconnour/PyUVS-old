@@ -67,6 +67,22 @@ date_of_start_of_mars_year_0: datetime.datetime = \
 """Time of the start of Mars year 0. This value comes from `this article
 <https://doi.org/10.1016/j.icarus.2014.12.014>`_."""
 
+# Martian locations
+arsia_mons_coordinates: tuple[float, float] = (-8.35, 239.91)
+"""Location of the center of Arsia Mons (degrees N, degrees E)."""
+
+ascraeus_mons_coordinates: tuple[float, float] = (11.92, 255.92)
+"""Location of the center of Ascraeus Mons (degrees N, degrees E)."""
+
+gale_crater_coordinates: tuple[float, float] = (-5.24, 127.48)
+"""Location of the center of Gale crater (degrees N, degrees E)."""
+
+olympus_mons_coordinates: tuple[float, float] = (18.39, 226.12)
+"""Location of the center of Olympus Mons (degrees N, degrees E)."""
+
+pavonis_mons_coordinates: tuple[float, float] = (1.48, 247.04)
+"""Location of the center of Pavonis Mons (degrees N, degrees E)."""
+
 # Physical constants
 # TODO: check this one
 kR: float = 10**9 / (4 * np.pi)

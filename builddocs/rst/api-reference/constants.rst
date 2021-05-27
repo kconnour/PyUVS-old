@@ -29,6 +29,14 @@ Martian temporal constants
 .. autodata:: pyuvs.constants.sols_per_martian_year
 .. autodata:: pyuvs.constants.date_of_start_of_mars_year_0
 
+Martian coordinates
+-------------------
+.. autodata:: pyuvs.constants.arsia_mons_coordinates
+.. autodata:: pyuvs.constants.ascraeus_mons_coordinates
+.. autodata:: pyuvs.constants.gale_crater_coordinates
+.. autodata:: pyuvs.constants.olympus_mons_coordinates
+.. autodata:: pyuvs.constants.pavonis_mons_coordinates
+
 Physical constants
 ------------------
 .. autodata:: pyuvs.constants.kR
