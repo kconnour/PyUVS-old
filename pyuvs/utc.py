@@ -1,7 +1,7 @@
 """Convert UTC times into Martian times.
 
 This module provides functions to convert coordinated universal time (UTC) into
-Martian sols, Martian years, and solar longitude. 
+Martian sols, Martian years, and solar longitude.
 
 """
 import datetime
