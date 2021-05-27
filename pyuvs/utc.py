@@ -12,7 +12,7 @@ from pyuvs.constants import seconds_per_sol, sols_per_martian_year, \
 
 
 def convert_to_solar_longitude(date: datetime.datetime) -> float:
-    """Compute the Martian solar longitude of an input datetime.
+    r"""Compute the Martian solar longitude of an input datetime.
 
     Parameters
     ----------
@@ -24,9 +24,18 @@ def convert_to_solar_longitude(date: datetime.datetime) -> float:
     TypeError
         Raised if :code:`date` is not a datetime.datetime.
 
+    Examples
+    --------
+    Convert a date to solar longitude.
+
+    >>> import datetime
+    >>> date = datetime.datetime(2020, 1, 1, 0, 0, 0)
+    >>> convert_to_solar_longitude(date)
+    128.8354595387973
+
     References
     ----------
-    The equation used to convert to Ls can be found in `this paper
+    The equation used to convert to L\ :sub:`s` can be found in `this paper
     <https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/97GL01950>`_."""
     _DateValidator(date)
     j2000 = datetime.datetime(2000, 1, 1, 12, 0, 0)
@@ -51,6 +60,15 @@ def convert_to_fractional_mars_year(date: datetime.datetime) -> float:
     TypeError
         Raised if :code:`date` is not a datetime.datetime.
 
+    Examples
+    --------
+    Convert a date to a fractional Mars year.
+
+    >>> import datetime
+    >>> date = datetime.datetime(2020, 1, 1, 0, 0, 0)
+    >>> convert_to_fractional_mars_year(date)
+    35.41260282764361
+
     """
     return sols_after_mars_year_0(date) / sols_per_martian_year
 
@@ -67,6 +85,15 @@ def convert_to_whole_mars_year(date: datetime.datetime) -> int:
     ------
     TypeError
         Raised if :code:`date` is not a datetime.datetime.
+
+    Examples
+    --------
+    Convert a date to a "whole" Mars year.
+
+    >>> import datetime
+    >>> date = datetime.datetime(2020, 1, 1, 0, 0, 0)
+    >>> convert_to_whole_mars_year(date)
+    35
 
     """
     return math.floor(convert_to_fractional_mars_year(date))
@@ -90,6 +117,15 @@ def convert_to_sol_number(date: datetime.datetime) -> float:
     This function begins counting from 0. Beware that some places like LMD
     use the convention that the new year starts on sol 1.
 
+    Examples
+    --------
+    Convert a date to a sol number from that Mars year.
+
+    >>> import datetime
+    >>> date = datetime.datetime(2020, 1, 1, 0, 0, 0)
+    >>> convert_to_sol_number(date)
+    275.86418551545955
+
     """
     return sols_after_mars_year_0(date) % sols_per_martian_year
 
@@ -110,6 +146,17 @@ def sols_between_two_dates(early_date: datetime.datetime,
     TypeError
         Raised if either :code:`early_date` or :code:`later_date` are not a
         datetime.datetime.
+
+    Examples
+    --------
+    Compute the number of sols Opportunity was active. I don't know the hour,
+    minute, or second of the start or end of the mission so I set them to 0.
+
+    >>> import datetime
+    >>> opportunity_start = datetime.datetime(2004, 1, 25, 0, 0, 0)
+    >>> opportunity_end = datetime.datetime(2018, 6, 10, 0, 0, 0)
+    >>> sols_between_two_dates(opportunity_start, opportunity_end)
+    5109.551211085292
 
     """
     _DateValidator(early_date)
@@ -178,9 +225,3 @@ class _DateValidator:
         if not isinstance(self.date, datetime.datetime):
             message = 'date must be a datetime.datetime.'
             raise TypeError(message)
-
-
-if __name__ == '__main__':
-    d = datetime.datetime(2018, 10, 10, 0, 53, 30)
-    print(convert_to_solar_longitude(date_of_start_of_mars_year_0))
-    print(convert_to_sol_number(d))

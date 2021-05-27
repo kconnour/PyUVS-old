@@ -40,9 +40,14 @@ def week_from_date(date: datetime.date) -> int:
 
     Examples
     --------
+    Get the science week number when the mission started.
+
     >>> import datetime
     >>> week_from_date(science_start_date)
     0
+
+    Get the science week number from a date.
+
     >>> week_from_date(datetime.date(2020, 1, 1))
     268
 
@@ -81,8 +86,13 @@ def week_start_date(week: int) -> datetime.date:
 
     Examples
     --------
+    Get the date that the initial science week began.
+
     >>> week_start_date(0)
     datetime.date(2014, 11, 11)
+
+    Get the science week start date of an input week.
+
     >>> week_start_date(300)
     datetime.date(2020, 8, 11)
 
@@ -111,6 +121,8 @@ def week_end_date(week: int) -> datetime.date:
 
     Examples
     --------
+    Get the science week end date of an input week.
+
     >>> week_end_date(300)
     datetime.date(2020, 8, 17)
 
@@ -135,6 +147,8 @@ def week_date_range(week: int or float) -> tuple[datetime.date, datetime.date]:
 
     Examples
     --------
+    Get the start and end dates of a given science week.
+
     >>> week_date_range(300)
     (datetime.date(2020, 8, 11), datetime.date(2020, 8, 17))
 

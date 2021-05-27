@@ -212,10 +212,14 @@ afterwards.</p>
 </dl>
 </div>
 <p class="rubric">Examples</p>
+<p>Get the science week number when the mission started.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">week_from_date</span><span class="p">(</span><span class="n">science_start_date</span><span class="p">)</span>
 <span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">week_from_date</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Get the science week number from a date.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">week_from_date</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="go">268</span>
 </pre></div>
 </div>
@@ -257,9 +261,13 @@ afterwards.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
+<p>Get the date that the initial science week began.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">week_start_date</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">datetime.date(2014, 11, 11)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">week_start_date</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Get the science week start date of an input week.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">week_start_date</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 <span class="go">datetime.date(2020, 8, 11)</span>
 </pre></div>
 </div>
@@ -287,6 +295,7 @@ afterwards.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
+<p>Get the science week end date of an input week.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">week_end_date</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 <span class="go">datetime.date(2020, 8, 17)</span>
 </pre></div>
@@ -315,6 +324,7 @@ afterwards.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
+<p>Get the start and end dates of a given science week.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">week_date_range</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
 <span class="go">(datetime.date(2020, 8, 11), datetime.date(2020, 8, 17))</span>
 </pre></div>

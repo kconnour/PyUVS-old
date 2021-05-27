@@ -196,8 +196,16 @@ Martian sols, Martian years, and solar longitude.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Convert a date to solar longitude.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convert_to_solar_longitude</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="go">128.8354595387973</span>
+</pre></div>
+</div>
 <p class="rubric">References</p>
-<p>The equation used to convert to Ls can be found in <a class="reference external" href="https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/97GL01950">this paper</a>.</p>
+<p>The equation used to convert to L<sub>s</sub> can be found in <a class="reference external" href="https://agupubs.onlinelibrary.wiley.com/doi/pdf/10.1029/97GL01950">this paper</a>.</p>
 </dd></dl>
 
 </section>
@@ -218,6 +226,14 @@ Martian sols, Martian years, and solar longitude.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Convert a date to a fractional Mars year.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convert_to_fractional_mars_year</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="go">35.41260282764361</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -238,6 +254,14 @@ Martian sols, Martian years, and solar longitude.</p>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Convert a date to a “whole” Mars year.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convert_to_whole_mars_year</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="go">35</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -261,6 +285,14 @@ Martian sols, Martian years, and solar longitude.</p>
 <p class="rubric">Notes</p>
 <p>This function begins counting from 0. Beware that some places like LMD
 use the convention that the new year starts on sol 1.</p>
+<p class="rubric">Examples</p>
+<p>Convert a date to a sol number from that Mars year.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">convert_to_sol_number</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
+<span class="go">275.86418551545955</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -285,6 +317,16 @@ use the convention that the new year starts on sol 1.</p>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Compute the number of sols Opportunity was active. I don’t know the hour,
+minute, or second of the start or end of the mission so I set them to 0.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">opportunity_start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2004</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">opportunity_end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2018</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sols_between_two_dates</span><span class="p">(</span><span class="n">opportunity_start</span><span class="p">,</span> <span class="n">opportunity_end</span><span class="p">)</span>
+<span class="go">5109.551211085292</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
