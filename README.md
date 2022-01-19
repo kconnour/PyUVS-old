@@ -6,7 +6,7 @@ provides
 * generic functions to work with Martian times
 
 ### Getting started
-The best way to get started with pyRT_DISORT is to check out the documentation 
+The best way to get started with pyuvs is to check out the documentation 
 [here](https://kconnour.github.io/PyUVS/). It provides installation
 instructions, example use cases, and documentation on everything included in
 this project.

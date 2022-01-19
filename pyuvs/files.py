@@ -6,6 +6,9 @@ import fnmatch as fnm
 from pathlib import Path
 from warnings import warn
 import numpy as np
+import os
+import time
+import glob
 
 
 class DataFilename:
@@ -928,7 +931,71 @@ class FileFinder:
 
 
 
+class FileCollection:
+    def __init__(self, directory_path: str):
+        self.directory = Path(directory_path)
+        self._raise_not_a_directory_error_if_not_a_directory()
+        self.files = self._get_files_in_directory()
+
+    def _raise_not_a_directory_error_if_not_a_directory(self):
+        if not self.directory.is_dir():
+            raise NotADirectoryError('The input is not a directory.')
+
+    def _get_files_in_directory(self):
+        return sorted([str(f) for f in self.directory.iterdir() if f.is_file()])
+
+    def get_non_latest_files(self) -> list[str]:
+        all_files = sorted([f.replace('s0', 'a0') for f in self.files])
+        last_time_stamp = ''
+        old_files = []
+        for file in all_files:
+            if 'aurora' in file:
+                current_time_stamp = file[-34:-19]  # Ex. 20190428T115842
+            else:
+                current_time_stamp = file[-27:-12]  # Ex. 20190428T115842
+            if current_time_stamp == last_time_stamp:
+                # Remove s0 files
+                if 'a0' in last_file:
+                    old_files.append(last_file.replace('a0', 's0'))
+                # Remove r0 files
+                else:
+                    old_files.append(last_file)
+
+            # Update my variables
+            last_time_stamp = current_time_stamp
+            last_file = file
+
+        return old_files
+
+    def remove_non_latest_files(self) -> None:
+        non_latest_files = self.get_non_latest_files()
+        for f in non_latest_files:
+            os.remove(f)
+            self.files.remove(f)
+
+
+class QuicklookSwathGeometry(FileCollection):
+    def __init__(self, directory_path: str):
+        super().__init__(directory_path)
+
+    def get_empty_quicklooks(self) -> list[str]:
+        return [f for f in self.files if 'missing' in f]
+
+    def remove_empty_quicklooks(self) -> None:
+        empty_qls = self.get_empty_quicklooks()
+        for f in empty_qls:
+            os.remove(f)
+            self.files.remove(f)
+
+
+def remove_zac_old_quicklooks(directory_path: str):
+    ql = QuicklookSwathGeometry(directory_path)
+    ql.remove_empty_quicklooks()
+    ql.get_non_latest_files()
+
+
 if __name__ == '__main__':
-    f = FileFinder('/media/kyle/Samsung_T5/IUVS_data')
-    a = f.soschob(3453, 'apoapse', 'muv')
-    print(a.all_l1b(), a.all_periapse())
+    d = '/Volumes/MacBackup/milby_ql/ql_apoapse-swath-geometry-muv'
+    for i in range(156):
+        p = d + '/orbit' + str(i*100).zfill(5)
+        remove_zac_old_quicklooks(p)
