@@ -4,10 +4,6 @@ There are (or will be) several ways to install PyUVS. Regardless of how you
 choose to install the package, we highly recommend you use virtual environments
 during the process. All that follows will assume you are using them.
 
-PYPI installation
------------------
-The package is coming to the PyPI soon!
-
 Github installation
 -------------------
 To install the latest version of PyUVS simply clone the repository from Github

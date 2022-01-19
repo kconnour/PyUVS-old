@@ -1,4 +1,0 @@
-astropy==4.2.1
-julian==0.14
-numpy==1.20.3
-spiceypy==4.0.0

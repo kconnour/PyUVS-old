@@ -1,9 +1,0 @@
-time
-====
-.. automodule:: pyuvs.time
-
-UTC
----
-.. autoclass:: pyuvs.time.UTC
-   :members:
-   :member-order: bysource

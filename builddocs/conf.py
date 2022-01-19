@@ -3,7 +3,6 @@
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-import sphinx_rtd_theme
 
 # -- Path setup --------------------------------------------------------------
 
@@ -31,7 +30,9 @@ author = 'kconnour'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    #'sphinx_autodoc_typehints'
+    'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.mathmpl',
+    'matplotlib.sphinxext.plot_directive'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -48,8 +49,11 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme = 'pydata_sphinx_theme'
+html_theme_options = {
+    "github_url": "https://github.com/kconnour/PyUVS",
+    "collapse_navigation": True,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -58,9 +62,10 @@ html_static_path = []
 
 # This allows me to write docstrings in __init__
 autoclass_content = 'both'
+autodoc_typehints = 'description'  # Only show typehints in the description,
+# not the signature
 
-# This makes autoclass, auto<whatever>, output documentation in the order it's
-# in the file.
-# autodoc_member_order = 'groupwise'
-
-autodoc_typehints = 'description'
+# This displays "ArrayLike" instead of "numpy.typing.ArrayLike"
+autodoc_type_aliases = {
+    'ArrayLike': 'ArrayLike'
+}
