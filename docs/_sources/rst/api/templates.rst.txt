@@ -1,0 +1,11 @@
+templates
+=========
+.. automodule:: pyuvs.graphics.templates
+
+.. toctree::
+   :maxdepth: 1
+   :caption: tempalte
+
+   .. autoclass:: pyuvs.graphics.templates.StandardApoapseQuicklook
+      :members:
+

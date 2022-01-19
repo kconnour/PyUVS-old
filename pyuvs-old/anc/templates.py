@@ -1,4 +1,4 @@
-"""The templates module loads ancillary spectral templates.
+"""The graphics module loads ancillary spectral graphics.
 """
 from pyuvs.anc._arrays import _AncillaryArray, _AncillaryFileLoader
 

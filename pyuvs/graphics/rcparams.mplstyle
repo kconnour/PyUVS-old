@@ -1,0 +1,33 @@
+# Set the font properties
+font.family: STIXGeneral
+font.size: 8
+mathtext.fontset: stix
+text.usetex: False
+#text.latex.preamble: \usepackage{siunitx,stix2}\DeclareSIUnit\photon{photon}
+
+# Set the line properties
+lines.linewidth: 0.5
+lines.markeredgecolor: none
+lines.markeredgewidth: 0
+lines.markersize: 4
+
+# Set the axes properties
+axes.linewidth: 0.5
+axes.titlesize: 8
+axes.labelsize: 8
+xtick.labelsize: 8
+ytick.labelsize: 8
+xtick.major.width: 0.5
+xtick.minor.width: 0.5
+ytick.major.width: 0.5
+ytick.minor.width: 0.5
+
+# Set the figure properties
+legend.fontsize: 8
+figure.titlesize: 8
+
+# Set the save graphics properties
+pdf.fonttype: 42
+ps.fonttype: 42
+savefig.dpi: 300
+figure.dpi: 150

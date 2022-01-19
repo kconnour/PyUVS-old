@@ -4,9 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Notes on Sphinx &#8212; PyUVS  documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Module Index &#8212; PyUVS  documentation</title>
     
     <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,12 +34,15 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
     
+
+
   </head>
   <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
     
@@ -128,40 +130,6 @@
           
           <div class="d-none d-xl-block col-xl-2 bd-toc">
             
-              
-              <div class="toc-item">
-                
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
-
-<nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#requirements">
-   Requirements
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#quickstart">
-   Quickstart
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#building-docs">
-   Building docs
-  </a>
- </li>
-</ul>
-
-</nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
           </div>
           
 
@@ -173,44 +141,29 @@
               
               <div>
                 
-  <section id="notes-on-sphinx">
-<h1>Notes on Sphinx<a class="headerlink" href="#notes-on-sphinx" title="Permalink to this headline">¶</a></h1>
-<p>This is info I could only find after much StackExchange digging… It could
-be a result of me just not knowing things though. If you install Sphinx, it
-gets associated with the Python version that you installed it with. This means
-that if you installed it with python3.8 and then write code in python3.9,
-Sphinx will be unable (as far as I know…) to make documentation for the new
-code. Plus, it’s difficult for me to ensure I’m using the most recent version
-of Sphinx.</p>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p>In order for Sphinx to run, all dependencies must be installed in the venv in
-which you’re building the project (they’re in requirements.txt). The optional
-requirements (in optional-requirements.txt) allow for building of the
-documentation.</p>
-</section>
-<section id="quickstart">
-<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
-<p>To get started with a project you’d usually run <code class="code docutils literal notranslate"><span class="pre">sphinx-quickstart</span></code> from
-Terminal. In code form, <code class="code docutils literal notranslate"><span class="pre">sphinx-quickstart</span></code> is equivalent to
-<code class="code docutils literal notranslate"><span class="pre">&lt;python&gt;</span> <span class="pre">-m</span> <span class="pre">sphinx.cmd.quickstart</span></code> where &lt;python&gt; is the absolute path
-to your interpreter.</p>
-</section>
-<section id="building-docs">
-<h2>Building docs<a class="headerlink" href="#building-docs" title="Permalink to this headline">¶</a></h2>
-<p>When you’re ready to build docs you’d usually run <code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> from
-Terminal. In code form, <code class="code docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> =
-<code class="code docutils literal notranslate"><span class="pre">&lt;python&gt;</span> <span class="pre">-m</span> <span class="pre">sphinx.cmd.build</span> <span class="pre">-b</span> <span class="pre">html</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">conf.py&gt;</span>
-<span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">where</span> <span class="pre">to</span> <span class="pre">put</span> <span class="pre">the</span> <span class="pre">html</span> <span class="pre">files&gt;</span></code>. You can also add a <code class="code docutils literal notranslate"><span class="pre">-E</span></code> flag
-to tell Sphinx to overwrite the old docs and rebuild them all each time. I
-prefer this, since sometimes changes to the header of one file aren’t
-registered in other files.</p>
-<p>Suppose pyuvs is in the repos directory in your home folder. The command
-will look like:
-<code class="code docutils literal notranslate"><span class="pre">~/repos/pyuvs/venv-doc/bin/python</span> <span class="pre">-m</span> <span class="pre">sphinx.cmd.build</span> <span class="pre">-b</span> <span class="pre">html</span>
-<span class="pre">~/repos/pyuvs/builddocs</span> <span class="pre">~/repos/pyuvs/docs</span> <span class="pre">-E</span></code></p>
-</section>
-</section>
+
+   <h1>Python Module Index</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-p"><strong>p</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-p"><td></td><td>
+       <strong>p</strong></td><td></td></tr>
+     <tr>
+       <td><img src="_static/minus.png" class="toggler"
+              id="toggle-1" style="display: none" alt="-" /></td>
+       <td>
+       <code class="xref">pyuvs</code></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="rst/api/graphics/templates.html#module-pyuvs.graphics.templates"><code class="xref">pyuvs.graphics.templates</code></a></td><td>
+       <em></em></td></tr>
+   </table>
 
 
               </div>

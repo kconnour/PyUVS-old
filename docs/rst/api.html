@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; PyUVS  documentation</title>
+    <title>API reference &#8212; PyUVS  documentation</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,8 +35,8 @@
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="API reference" href="api.html" />
-    <link rel="prev" title="Welcome to PyUVS’s documentation!" href="../index.html" />
+    <link rel="next" title="pyuvs.graphics" href="api/graphics.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -71,14 +71,14 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="installation.html">
   Installation
  </a>
 </li>
 
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="api.html">
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
   API reference
  </a>
 </li>
@@ -117,7 +117,19 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  subpackages:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/graphics.html">
+   pyuvs.graphics
+  </a>
+ </li>
+</ul>
+
   </div>
 </nav>
               </div>
@@ -133,24 +145,9 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
 
 <nav id="bd-toc-nav">
-    <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#github-installation">
-   Github installation
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#optional-dependencies">
-   Optional dependencies
-  </a>
- </li>
-</ul>
-
+    
 </nav>
               </div>
               
@@ -170,49 +167,15 @@
               
               <div>
                 
-  <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>There are (or will be) several ways to install PyUVS. Regardless of how you
-choose to install the package, we highly recommend you use virtual environments
-during the process. All that follows will assume you are using them.</p>
-<section id="github-installation">
-<h2>Github installation<a class="headerlink" href="#github-installation" title="Permalink to this headline">¶</a></h2>
-<p>To install the latest version of PyUVS simply clone the repository from Github
-(using <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/kconnour/PyUVS.git</span></code> from Terminal,
-or clone using your favorite GUI). You can then install it with
-<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;</span></code>. This
-command will install PyUVS along with all of its dependencies.</p>
-<p>You can now import PyUVS with <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyuvs</span></code>!</p>
-</section>
-<section id="optional-dependencies">
-<h2>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>PyUVS will only install the minimum libraries needed to work with IUVS data.
-For more advanced usage, some additional libraries are needed. The following
-lists the options available.</p>
+  <section id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<p>Here you can find documentation about using pyuvs.</p>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">subpackages:</span></p>
 <ul>
-<li><dl class="simple">
-<dt><strong>all</strong></dt><dd><p>Install all optional libraries.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong>docs</strong></dt><dd><p>Install all libraries needed to build the documentation.</p>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt><strong>graphics</strong></dt><dd><p>Install all libraries needed to create standard graphical products.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This requires GEOS and PROJ to already be installed.</p>
-</div>
-</dd>
-</dl>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="api/graphics.html">pyuvs.graphics</a></li>
 </ul>
-<p>For example, to install the docs dependencies simply use
-<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[docs]</span></code>.</p>
-</section>
+</div>
 </section>
 
 
@@ -221,17 +184,17 @@ lists the options available.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="installation.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Welcome to PyUVS’s documentation!</p>
+            <p class="prev-next-title">Installation</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="api.html" title="next page">
+    <a class='right-next' id="next-link" href="api/graphics.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API reference</p>
+        <p class="prev-next-title">pyuvs.graphics</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
