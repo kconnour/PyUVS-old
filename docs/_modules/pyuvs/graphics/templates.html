@@ -76,7 +76,7 @@
 
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../../../rst/api.html">
-  API reference
+  API Reference
  </a>
 </li>
 
@@ -139,8 +139,7 @@
               <div>
                 
   <h1>Source code for pyuvs.graphics.templates</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;The graphics module provides graphics for graphics.&quot;&quot;&quot;</span>
-
+<span></span><span class="sd">&quot;&quot;&quot;The :code:`templates` module provides templates for creating graphics.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -154,10 +153,15 @@
     <span class="k">pass</span>
 
 
-<span class="c1"># Add colorbars</span>
-<span class="c1"># Add fig outline</span>
-<div class="viewcode-block" id="StandardApoapseQuicklook"><a class="viewcode-back" href="../../../rst/api/graphics/templates/StandardApoapseQuicklook.html#pyuvs.graphics.templates.StandardApoapseQuicklook">[docs]</a><span class="k">class</span> <span class="nc">StandardApoapseQuicklook</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Create a template of the standard apoapse quicklook.</span>
+<span class="c1"># Reposition sub axes</span>
+<span class="c1"># Add blank colorbars</span>
+<div class="viewcode-block" id="StandardApoapseQuicklook"><a class="viewcode-back" href="../../../rst/api/subpackages/graphics/templates/StandardApoapseQuicklook.html#pyuvs.graphics.templates.StandardApoapseQuicklook">[docs]</a><span class="k">class</span> <span class="nc">StandardApoapseQuicklook</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create the template of a standard apoapse quicklook.</span>
+
+<span class="sd">    This template has a 2.5% boarder around the image and thus the axes span</span>
+<span class="sd">    95% of the width. There is also a 2.5% spacing between axes. The &quot;banner&quot;</span>
+<span class="sd">    spans 12.5% of the height. The large axes span 30% of the height each</span>
+<span class="sd">    whereas the smaller axes span 15% of the height.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -168,7 +172,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The template can be seen below.</span>
+<span class="sd">    The template can be seen below (click the png to see borders).</span>
 
 <span class="sd">    .. plot::</span>
 
@@ -179,48 +183,47 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">9</span><span class="p">):</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_figure</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">banner_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_banner_axis</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_data_axis</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometry_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_geometry_axis</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solar_zenith_angle_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_solar_zenith_angle_axis</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">local_time_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_local_time_axis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_large_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_top_large_axis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bottom_large_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_bottom_large_axis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_small_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_left_small_axis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_small_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_right_small_axis</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_axes_ticks</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;rcparams.mplstyle&#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_add_banner_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_add_data_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_top_large_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.525</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_add_geometry_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_bottom_large_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_add_solar_zenith_angle_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_left_small_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_add_local_time_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_right_small_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.525</span><span class="p">,</span> <span class="mf">0.025</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_turn_off_axes_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">banner_axis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_axis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry_axis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solar_zenith_angle_axis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_time_axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_large_axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bottom_large_axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_small_axis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_turn_off_ticks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_small_axis</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_turn_off_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_turn_off_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span></div>
 

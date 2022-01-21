@@ -4,7 +4,6 @@ templates
 
 .. toctree::
    :maxdepth: 1
-   :caption: template classes
+   :caption: Classes:
 
    templates/StandardApoapseQuicklook
-
