@@ -7,7 +7,7 @@ text.usetex: False
 
 # Set the line properties
 lines.linewidth: 0.5
-lines.markeredgecolor: none
+lines.markeredgecolor: None
 lines.markeredgewidth: 0
 lines.markersize: 4
 

@@ -2,6 +2,7 @@ import numpy as np
 from astropy.io import fits
 from skimage.exposure import equalize_hist
 import matplotlib.pyplot as plt
+from pyuvs.files import get_apoapse_muv_filenames, L1bFile
 
 
 '''import glob
@@ -123,7 +124,7 @@ def histogram_equalize_rgb_image(image: np.ndarray, mask: np.ndarray = None) -> 
 
 
 if __name__ == '__main__':
-    primary3453 = np.load('/home/kyle/primary3453.npy')  # (2914, 133, 19)  387562
+    '''primary3453 = np.load('/home/kyle/primary3453.npy')  # (2914, 133, 19)  387562
     alt3453 = np.load('/home/kyle/alt3453.npy')[:, :, -1]  # (2914, 133)
     altmask = np.where(alt3453 == 0, True, False)
 
@@ -135,4 +136,22 @@ if __name__ == '__main__':
     rgb = histogram_equalize_rgb_image(rgb, altmask)
 
     plt.imshow(rgb/255)
+    plt.savefig('/home/kyle/rgb.png', dpi=300)'''
+    import time
+    t0 = time.time()
+    files = get_apoapse_muv_filenames(
+        '/media/kyle/Samsung_T5/IUVS_data/orbit03400', 3453)
+    l1b_files = [L1bFile(f) for f in files]
+    p = [f.primary for f in l1b_files]
+    primary3453 = np.vstack(p)
+    r = np.sum(primary3453[:, :, 13:], axis=-1)
+    g = np.sum(primary3453[:, :, 6:13], axis=-1)
+    b = np.sum(primary3453[:, :, :6], axis=-1)
+    rgb = np.dstack([r, g, b])
+
+    rgb = histogram_equalize_rgb_image(rgb)
+    plt.imshow(rgb / 255)
     plt.savefig('/home/kyle/rgb.png', dpi=300)
+
+    t1 = time.time()
+    print(t1-t0)

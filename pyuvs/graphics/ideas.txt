@@ -77,3 +77,53 @@ class ApoapseMUVQuicklook:
 # whether I have database or data files, I want to put several fields into 1 array (primary, alt, ...)
 # FalseColorDetectorImage takes these and thus abstracts the data. It has all the methods to go from primary --> rgb
 # add functions to call common groupings of methods
+
+
+
+~~~~~DATA~~~~~~
+From files
+----------
+* glob to get the abs paths
+* open fits files
+* determine beta angle flip of each file
+* determine swath number of each file
+* determine relay swath of each file
+* determine dayside/nightside of each file
+* store relevant data (primary, alt, sza, mirror angle)
+* flatfield correct the primary
+
+x colorize primary "stack"
+* split stack into swath numbers
+
+def remove_non_latest_filenames():
+    ...
+
+class L1bFile()
+    def __init__(self, path: str):
+        self.hdul = fits.open(path)
+
+    def get_latitude():
+        return latitude array
+
+    def get_longitude():
+        return longitude array
+
+    def beta_angle_flip():
+        return True or False
+
+    def relay_swath():
+        ...
+
+    def dayside():
+        ...
+
+
+class SegementIntegrationStack:
+    def __init__(self, data_stack, swath_number_stack):
+        self.
+
+
+PYUVS
+files.py - find all files on computer + only most recent + delete old
+data.py - transform hdul into class
+

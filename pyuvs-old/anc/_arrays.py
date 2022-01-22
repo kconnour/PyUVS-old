@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 
 
-class _AncillaryArray(np.ndarray):
+class AncillaryArray(np.ndarray):
     """Create a numpy.ndarray of an ancillary array. It also stores the path.
 
     Attributes
