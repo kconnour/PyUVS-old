@@ -1,9 +1,10 @@
 from pathlib import Path
 from astropy.io import fits
 import numpy as np
+from pyuvs.constants import day_night_voltage_boundary, minimum_mirror_angle, \
+    maximum_mirror_angle
 
 
-# TODO: methods should mimic hdul naming, @property should be good naming
 # TODO: this is incomplete
 class L1bFile:
     """A data structure representing a level 1b data file.
@@ -43,34 +44,23 @@ class L1bFile:
 
         del self.hdul
 
-        self._minimum_mirror_angle = 30.2508544921875
-        self._maximum_mirror_angle = 59.6502685546875
-
     def _get_structures(self, name: str) -> fits.fitsrec.FITS_rec:
         # or it returns np.ndarray
         return self.hdul[name].data
 
-    @property
-    def minimum_mirror_angle(self) -> float:
-        return self._minimum_mirror_angle
-
-    @property
-    def maximum_mirror_angle(self) -> float:
-        return self._maximum_mirror_angle
-
-    def relay_file(self) -> bool:
-        """Determine if the input file is a relay file.
+    def app_flip(self) -> bool:
+        """Determine if the APP was flipped.
 
         Returns
         -------
         bool
-            True if the file is a relay file; False otherwise.
+            True if the APP was flipped; False otherwise.
 
         """
-        return np.amin(self.integration.mirror_angle) == \
-            self.minimum_mirror_angle and \
-            np.amax(self.integration.mirror_angle) == \
-            self.maximum_mirror_angle
+        dot_product = np.dot(
+            self.spacecraft_geometry.inertial_frame_instrument_x_unit_vector,
+            self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector)
+        return np.sign(dot_product) > 0
 
     def dayside_file(self) -> bool:
         """Determine if the input file is a file taken with dayside settings.
@@ -81,7 +71,31 @@ class L1bFile:
             True if the file is a dayside file; False otherwise.
 
         """
-        return self.observation.mcp_voltage < 790
+        return self.observation.mcp_voltage < day_night_voltage_boundary
+
+    def positive_mirror_scan_direction(self) -> bool:
+        """Determine if the mirror is scanning in a positive direction.
+
+        Returns
+        -------
+        True if the mirror angle is increasing each integration; False
+        otherwise.
+
+        """
+        return self.integration.mirror_angle[-1] - \
+            self.integration.mirror_angle[0] > 0
+
+    def relay_file(self) -> bool:
+        """Determine if the input file is a relay file.
+
+        Returns
+        -------
+        bool
+            True if the file is a relay file; False otherwise.
+
+        """
+        return np.amin(self.integration.mirror_angle) == minimum_mirror_angle \
+            and np.amax(self.integration.mirror_angle) == maximum_mirror_angle
 
 
 class _FitsRecord:
@@ -396,7 +410,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     def latitude(self) -> np.ndarray:
-        """Get the corner latitude [degrees] of each spatial pixel corner.
+        """Get the latitude [degrees] of each spatial pixel corner.
 
         Returns
         -------
@@ -408,7 +422,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     def longitude(self) -> np.ndarray:
-        """Get the corner longitude [degrees] of each spatial pixel corner.
+        """Get the longitude [degrees] of each spatial pixel corner.
 
         Returns
         -------
@@ -545,19 +559,3 @@ class Observation(_FitsRecord):
 
         """
         return self._mcp_volt
-
-
-if __name__ == '__main__':
-    from pathlib import Path
-    from pyuvs.data_files import find_latest_apoapse_muv_file_paths_from_block
-    import time
-    p = Path('/media/kyle/Samsung_T5/IUVS_data')
-    files = find_latest_apoapse_muv_file_paths_from_block(p, 3453)
-    t0 = time.time()
-    hdul = fits.open(files[0])
-    t1 = time.time()
-    print(hdul['spacecraftgeometry'].data.columns)
-    l1b = L1bFile(files[0])
-    #t2 = time.time()
-    #print(t2-t1, t1-t0)
-    #print(l1b.spacecraft_geometry.inertial_frame_spacecraft_velocity[0, :])

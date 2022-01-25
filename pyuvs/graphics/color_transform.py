@@ -1,48 +1,4 @@
 import numpy as np
-from astropy.io import fits
-from skimage.exposure import equalize_hist
-import matplotlib.pyplot as plt
-from pyuvs.files import get_apoapse_muv_filenames, L1bFile
-
-
-'''import glob
-files = sorted(glob.glob('/media/kyle/Samsung_T5/IUVS_data/orbit03400/*apoapse*3453*muv*'))
-
-primary = []
-alt = []
-for f in files:
-    hdul = fits.open(f)
-    pr = hdul['primary'].data
-    al = hdul['pixelgeometry'].data['pixel_corner_mrh_alt']
-    primary.append(pr)
-    alt.append(al)
-
-foo = np.vstack(primary)
-bar = np.vstack(alt)
-np.save('/home/kyle/primary3453.npy', foo)
-np.save('/home/kyle/alt3453.npy', bar)'''
-
-
-class FalseColorDetectorImage:
-    def __init__(self, primary: np.ndarray):
-        self.primary = primary
-        self.rgb = None
-
-    def split_primary_into_rgb_channels(self):
-        n_spectral_bins = self.primary.shape[-1]
-        blue_green_cutoff = int(n_spectral_bins / 3)
-        green_red_cutoff = int(n_spectral_bins * 2 / 3)
-        red = np.sum(self.primary[:, :, green_red_cutoff:], axis=-1)
-        green = np.sum(self.primary[:, :, blue_green_cutoff: green_red_cutoff], axis=-1)
-        blue = np.sum(self.primary[:, :, :blue_green_cutoff], axis=-1)
-        return np.dstack([red, green, blue])
-
-    def histogram_equalize(self, mask=None):
-        coadded_primary = self.split_primary_into_rgb_channels()
-        red = equalize_hist(coadded_primary[:, :, 0], mask=mask)
-        green = equalize_hist(coadded_primary[:, :, 1], mask=mask)
-        blue = equalize_hist(coadded_primary[:, :, 2], mask=mask)
-        self.rgb = np.dstack([red, green, blue])
 
 
 def histogram_equalize_grayscale_image(image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
@@ -114,7 +70,7 @@ def histogram_equalize_rgb_image(image: np.ndarray, mask: np.ndarray = None) -> 
     See Also
     --------
     histogram_equalize_grayscale_image: Histogram equalize a 1-color channel
-    image.
+                                        image.
 
     """
     red = histogram_equalize_grayscale_image(image[..., 0], mask=mask)
@@ -123,35 +79,16 @@ def histogram_equalize_rgb_image(image: np.ndarray, mask: np.ndarray = None) -> 
     return np.dstack([red, green, blue])
 
 
-if __name__ == '__main__':
-    '''primary3453 = np.load('/home/kyle/primary3453.npy')  # (2914, 133, 19)  387562
-    alt3453 = np.load('/home/kyle/alt3453.npy')[:, :, -1]  # (2914, 133)
-    altmask = np.where(alt3453 == 0, True, False)
+def make_cutoff_indices(n_wavelengths: int) -> tuple[int, int]:
+    blue_green_cutoff = int(n_wavelengths / 3)
+    green_red_cutoff = int(n_wavelengths * 2 / 3)
+    return blue_green_cutoff, green_red_cutoff
 
-    r = np.sum(primary3453[:, :, 13:], axis=-1)
-    g = np.sum(primary3453[:, :, 6:13], axis=-1)
-    b = np.sum(primary3453[:, :, :6], axis=-1)
-    rgb = np.dstack([r, g, b])
 
-    rgb = histogram_equalize_rgb_image(rgb, altmask)
-
-    plt.imshow(rgb/255)
-    plt.savefig('/home/kyle/rgb.png', dpi=300)'''
-    import time
-    t0 = time.time()
-    files = get_apoapse_muv_filenames(
-        '/media/kyle/Samsung_T5/IUVS_data/orbit03400', 3453)
-    l1b_files = [L1bFile(f) for f in files]
-    p = [f.primary for f in l1b_files]
-    primary3453 = np.vstack(p)
-    r = np.sum(primary3453[:, :, 13:], axis=-1)
-    g = np.sum(primary3453[:, :, 6:13], axis=-1)
-    b = np.sum(primary3453[:, :, :6], axis=-1)
-    rgb = np.dstack([r, g, b])
-
-    rgb = histogram_equalize_rgb_image(rgb)
-    plt.imshow(rgb / 255)
-    plt.savefig('/home/kyle/rgb.png', dpi=300)
-
-    t1 = time.time()
-    print(t1-t0)
+def turn_primary_to_3_channels(image: np.ndarray) -> np.ndarray:
+    n_wavelengths = image.shape[2]
+    blue_green_cutoff, green_red_cutoff = make_cutoff_indices(n_wavelengths)
+    red = np.sum(image[..., green_red_cutoff:], axis=-1)
+    green = np.sum(image[..., blue_green_cutoff:green_red_cutoff], axis=-1)
+    blue = np.sum(image[..., :blue_green_cutoff], axis=-1)
+    return np.dstack([red, green, blue])
