@@ -19,7 +19,7 @@ class L1bFile:
         self.hdul = fits.open(filepath)
 
         self.primary = \
-            self._get_structures('primary')
+            cast_array_to_3d(self._get_structures('primary'))
         # TODO: random_dn_unc
         # TODO: random_phy_unc
         # TODO: systematic_phy_unc
@@ -48,7 +48,7 @@ class L1bFile:
         # or it returns np.ndarray
         return self.hdul[name].data
 
-    def app_flip(self) -> bool:
+    def is_app_flip(self) -> bool:
         """Determine if the APP was flipped.
 
         Returns
@@ -62,7 +62,7 @@ class L1bFile:
             self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector)
         return np.sign(dot_product) > 0
 
-    def dayside_file(self) -> bool:
+    def is_dayside_file(self) -> bool:
         """Determine if the input file is a file taken with dayside settings.
 
         Returns
@@ -85,7 +85,7 @@ class L1bFile:
         return self.integration.mirror_angle[-1] - \
             self.integration.mirror_angle[0] > 0
 
-    def relay_file(self) -> bool:
+    def is_relay_file(self) -> bool:
         """Determine if the input file is a relay file.
 
         Returns
@@ -559,3 +559,36 @@ class Observation(_FitsRecord):
 
         """
         return self._mcp_volt
+
+
+def add_additional_axis(array: np.ndarray) -> np.ndarray:
+    return array[None, :]
+
+
+def cast_array_to_3d(array: np.ndarray) -> np.ndarray:
+    return add_additional_axis(array) if np.ndim(array) == 2 else array
+
+
+def stack_dayside_primaries(files: list[L1bFile]):
+    return np.vstack([f.primary for f in files if f.is_dayside_file()])
+
+
+def stack_nightside_primaries(files: list[L1bFile]):
+    return np.vstack([f.primary for f in files if not f.is_dayside_file()])
+
+
+def stack_dayside_altitude_center(files: list[L1bFile]):
+    return np.vstack([f.pixel_geometry.tangent_altitude[..., 4] for f in files if f.is_dayside_file()])
+
+
+def make_dayside_altitude_mask(files: list[L1bFile]):
+    altitudes = stack_dayside_altitude_center(files)
+    return np.where(altitudes == 0, True, False)
+
+
+def stack_mirror_angles(files: list[L1bFile]):
+    return np.concatenate([f.integration.mirror_angle for f in files])
+
+
+def make_dayside_integration_mask(files: list[L1bFile]):
+    return np.concatenate([np.repeat(f.is_dayside_file(), f.primary.shape[0]) for f in files])

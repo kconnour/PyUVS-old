@@ -25,9 +25,20 @@ def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
 
     """
     mirror_diff = np.diff(mirror_angles)
-    threshhold = mirror_diff[0] * 2
+    threshhold = np.abs(mirror_diff[0] * 2)
     mirror_discontinuities = np.where(np.abs(mirror_diff) > threshhold)[0] + 1
     n_swaths = len(mirror_discontinuities) + 1
     interp_swaths = np.interp(range(len(mirror_angles)), mirror_discontinuities,
                               range(1, n_swaths), left=0)
-    return np.floor(interp_swaths)
+    return np.floor(interp_swaths).astype('int')
+
+
+def count_integrations_in_swath(swath_numbers: np.ndarray, mask: np.ndarray):
+    edges = np.concatenate([[-1], np.unique(swath_numbers)]) + 0.5
+    return np.histogram(swath_numbers[mask], bins=edges)[0]
+
+
+def select_info_from_swath(array: np.ndarray, swath_number: int, swath_numbers: np.ndarray, mask: np.ndarray):
+    integrations_in_swath = count_integrations_in_swath(swath_numbers, mask)
+    edge_inds = np.concatenate([[0], np.cumsum(integrations_in_swath)])
+    return array[edge_inds[swath_number]: edge_inds[swath_number + 1], ...]
