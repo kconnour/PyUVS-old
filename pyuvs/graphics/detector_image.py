@@ -90,31 +90,45 @@ if __name__ == '__main__':
     import time
     from pyuvs.swath import select_integrations_in_swath
     from scipy.io import readsav
+    from pyuvs.graphics.templates import SegmentDetectorImage
 
     # Flatfields
     flatfields = ['MIDRESAPO_FLATFIELD_19X50_ORBIT03733_3739.sav', 'MIDRESAPO_FLATFIELD_19X50_ORBIT03744_3750.sav']
 
     # Read in data
     p = Path('/media/kyle/Samsung_T5/IUVS_data')
+    a = np.load(
+        '/home/kyle/repos/PyUVS/pyuvs-old/anc/files/mvn_iuv_flatfield.npy',
+        allow_pickle=True).item()['flatfield']
     orbits = [3734, 3741, 3744, 3748]
+    #orbits = [3734]
+    t0 = time.time()
     for o in orbits:
         print(o)
         files = find_latest_apoapse_muv_file_paths_from_block(p, o)
         files = [L1bFile(f) for f in files]
+
+        # REscale FF
+        newff = np.zeros((50, 19))
+        for i in range(19):
+            foo = np.linspace(0, 132, num=50)
+            bar = np.linspace(0, 132, num=133)
+            newff[:, i] = np.interp(foo, bar, a[:, i])
+
         #t0 = time.time()
 
         if o in [3744, 3748]:
             flip = True
-            ff = readsav(f'/Users/kyco2464/Downloads/{flatfields[1]}')
+            ff = readsav(f'/home/kyle/ql_testing/{flatfields[1]}')
             ff = ff['midresapo_flatfield_19x50_orbit03744_3750']
         else:
             flip = False
-            ff = readsav(f'/Users/kyco2464/Downloads/{flatfields[0]}')
+            ff = readsav(f'/home/kyle/ql_testing/{flatfields[0]}')
             ff = ff['midresapo_flatfield_19x50_orbit03733_3739']
-
+        ff = newff
         # Make data that I need
         dayside_primary = stack_dayside_primaries(files)
-        nightside_primary = stack_nightside_primaries(files)
+        #nightside_primary = stack_nightside_primaries(files)
         dayside_altitude_mask = make_dayside_altitude_mask(files)
         mirror_angles = stack_mirror_angles(files)
         swath_numbers = swath_number(mirror_angles)
@@ -125,15 +139,25 @@ if __name__ == '__main__':
         ff = np.broadcast_to(ff, dayside_primary.shape)
         dayside_primary = dayside_primary / ff
 
+        if flip:
+            dayside_primary = np.fliplr(dayside_primary)
+            dayside_altitude_mask = np.fliplr(dayside_altitude_mask)
+
         # Color transform
         coadded_primary = turn_primary_to_3_channels(dayside_primary)
         heq_primary = histogram_equalize_rgb_image(coadded_primary, mask=dayside_altitude_mask) / 255
         #t1 = time.time()
 
         # Try out the graphics
-        fig, ax = plt.subplots()
-        ax.set_xlim(0, 6 * angular_slit_width)
-        ax.set_ylim(minimum_mirror_angle, maximum_mirror_angle)
+        template = SegmentDetectorImage(6, 5)
+        template.data_axis.set_xlim(0, 6*angular_slit_width)
+        template.data_axis.set_ylim(minimum_mirror_angle, maximum_mirror_angle)
+        #template.data_axis.set_facecolor('k')
+        template.data_axis.set_xticks([])
+        template.data_axis.set_yticks([])
+        #fig, ax = plt.subplots()
+        #ax.set_xlim(0, 6 * angular_slit_width)
+        #ax.set_ylim(minimum_mirror_angle, maximum_mirror_angle)
 
         for i in np.unique(swath_numbers):
             # Get the colorized array + angles of this swath
@@ -143,10 +167,12 @@ if __name__ == '__main__':
             fill = make_plot_fill(swath_altitude_mask)
             x, y = make_swath_grid(swath_mirror_angles, i, swath_rgb.shape[1], swath_rgb.shape[0])   # mirror angles, swath number, n_pos, n_int
             swath_rgb = reshape_data_for_pcolormesh(swath_rgb)
-            plot_detector_image(ax, x, y, fill, swath_rgb)
+            plot_detector_image(template.data_axis, x, y, fill, swath_rgb)
             #plot_custom_primary(ax, x, y, fill, foo)
-        plt.savefig(f'/Users/kyco2464/ql_testing/testql{o}.png')
+        plt.savefig(f'/home/kyle/ql_testing/testql{o}_oldFF.png')
         #t2 = time.time()
+        t1 = time.time()
+        print(t1-t0)
 
         #print(t2-t1, t1-t0)
 
