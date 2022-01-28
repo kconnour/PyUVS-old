@@ -48,7 +48,7 @@ class L1bFile:
         # or it returns np.ndarray
         return self.hdul[name].data
 
-    def is_app_flip(self) -> bool:
+    def is_app_flipped(self) -> bool:
         """Determine if the APP was flipped.
 
         Returns
@@ -469,7 +469,7 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_los
 
     @property
-    def get_solar_zenith_angle(self) -> np.ndarray:
+    def solar_zenith_angle(self) -> np.ndarray:
         """Get the solar zenith angle [degrees] of each spatial pixel.
 
         Returns
@@ -569,26 +569,42 @@ def cast_array_to_3d(array: np.ndarray) -> np.ndarray:
     return add_additional_axis(array) if np.ndim(array) == 2 else array
 
 
-def stack_dayside_primaries(files: list[L1bFile]):
-    return np.vstack([f.primary for f in files if f.is_dayside_file()])
+def stack_daynight_primary(files: list[L1bFile], dayside: bool = True):
+    return np.vstack([f.primary for f in files if f.is_dayside_file() == dayside])
 
 
-def stack_nightside_primaries(files: list[L1bFile]):
-    return np.vstack([f.primary for f in files if not f.is_dayside_file()])
+def stack_daynight_solar_zenith_angle(files: list[L1bFile], dayside: bool = True):
+    return np.vstack([f.pixel_geometry.solar_zenith_angle for f in files
+                      if f.is_dayside_file() == dayside])
 
 
-def stack_dayside_altitude_center(files: list[L1bFile]):
-    return np.vstack([f.pixel_geometry.tangent_altitude[..., 4] for f in files if f.is_dayside_file()])
+def stack_daynight_emission_angle(files: list[L1bFile], dayside: bool = True):
+    return np.vstack([f.pixel_geometry.emission_angle for f in files
+                      if f.is_dayside_file() == dayside])
 
 
-def make_dayside_altitude_mask(files: list[L1bFile]):
-    altitudes = stack_dayside_altitude_center(files)
-    return np.where(altitudes == 0, True, False)
+def stack_daynight_phase_angle(files: list[L1bFile], dayside: bool = True):
+    return np.vstack([f.pixel_geometry.phase_angle for f in files
+                      if f.is_dayside_file() == dayside])
+
+
+def stack_daynight_local_time(files: list[L1bFile], dayside: bool = True):
+    return np.vstack([f.pixel_geometry.local_time for f in files
+                      if f.is_dayside_file() == dayside])
 
 
 def stack_mirror_angles(files: list[L1bFile]):
     return np.concatenate([f.integration.mirror_angle for f in files])
 
 
-def make_dayside_integration_mask(files: list[L1bFile]):
-    return np.concatenate([np.repeat(f.is_dayside_file(), f.primary.shape[0]) for f in files])
+def stack_daynight_altitude_center(files: list[L1bFile], dayside: bool = True):
+    return np.vstack([f.pixel_geometry.tangent_altitude[..., 4] for f in files if f.is_dayside_file() == dayside])
+
+
+def make_daynight_on_disk_mask(files: list[L1bFile], dayside: bool = True):
+    altitudes = stack_daynight_altitude_center(files, dayside=dayside)
+    return np.where(altitudes == 0, True, False)
+
+
+def make_daynight_integration_mask(files: list[L1bFile], dayside: bool = True):
+    return np.concatenate([np.repeat(f.is_dayside_file() == dayside, f.primary.shape[0]) for f in files])

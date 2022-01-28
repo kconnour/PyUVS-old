@@ -1,0 +1,25 @@
+#text.usetex: True
+#text.latex.preamble: \usepackage{siunitx,stix2}
+font.family: serif
+font.size: 8
+axes.titlesize: 8
+axes.labelsize: 8
+xtick.labelsize: 8
+ytick.labelsize: 8
+legend.fontsize: 8
+figure.titlesize: 8
+lines.linewidth: 1
+lines.markeredgecolor: none
+lines.markeredgewidth: 0
+lines.markersize: 4
+scatter.edgecolors: none
+axes.linewidth: 0.5
+xtick.major.width: 0.5
+xtick.minor.width: 0.5
+xtick.minor.visible: True
+ytick.major.width: 0.5
+ytick.minor.width: 0.5
+ytick.minor.visible: True
+# axes.autolimit_mode: round_numbers
+savefig.dpi: 1200
+figure.dpi: 150

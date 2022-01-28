@@ -1,70 +1,9 @@
-"""The :code:`templates` module provides templates for creating graphics."""
-
 from pathlib import Path
 import matplotlib.colors as colors
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib.gridspec import GridSpecFromSubplotSpec
-from pyuvs.constants import angular_slit_width, minimum_mirror_angle, \
-    maximum_mirror_angle
-
-
-class SegmentDetectorImage:
-    def __init__(self, n_swaths: int, height: float):
-        """Make a template of a detector image containing all data from a
-        segment. This is broadcast into angular space so that the pixels are
-        not warped. The data axis spans the figure.
-
-        Parameters
-        ----------
-        n_swaths
-            The number of swaths present in the data.
-        height
-            The desired figure height [inches].
-
-        """
-        self._n_swaths = n_swaths
-        self._height = height
-        self._width = self._compute_width()
-
-        self._figure = self._setup_figure()
-
-        self._data_axis = self._add_data_axis()
-
-    def _compute_width(self) -> float:
-        aspect_ratio = self._n_swaths * angular_slit_width / \
-                       (2 * (maximum_mirror_angle - minimum_mirror_angle))
-        return aspect_ratio * self._height
-
-    def _setup_figure(self) -> plt.Figure:
-        return plt.figure(figsize=(self._width, self._height))
-
-    def _add_data_axis(self) -> plt.Axes:
-        return self._figure.add_axes([0, 0, 1, 1])
-
-    @property
-    def figure(self) -> plt.Figure:
-        """Get the figure.
-
-        Returns
-        -------
-        plt.Figure
-            The figure.
-
-        """
-        return self._figure
-
-    @property
-    def data_axis(self) -> plt.Axes:
-        """Get the data axis, which spans the entire figure.
-
-        Returns
-        -------
-        plt.Axes
-            The data axis.
-        """
-        return self._data_axis
 
 
 class ApoapseMUVQuicklook:
