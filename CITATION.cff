@@ -1,0 +1,17 @@
+cff-version: "1.1.0"
+message: "If you use this software, please cite it using these metadata."
+authors:
+  -
+    affiliation: "Laboratory for Atmospheric and Space Physics"
+    family-names: Connour
+    given-names: Kyle
+    orcid: "https://orcid.org/0000-0003-0858-2511"
+  -
+    affiliation: "Space Science Institute"
+    family-names: Milby
+    given-names: Zachariah
+    orcid: "https://orcid.org/0000-0001-5683-0095"
+title: "PyUVS: A package that makes working with MAVEN/IUVS data suck less."
+version: "0.1.1"
+license: "BSD-3-Clause"
+repository-code: "https://github.com/kconnour/PyUVS"

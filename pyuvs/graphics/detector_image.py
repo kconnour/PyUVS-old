@@ -75,4 +75,4 @@ def plot_detector_image(axis: plt.Axes, x: np.ndarray, y: np.ndarray,
 
     """
     axis.pcolormesh(x, y, fill, color=colors, linewidth=0,
-                    edgecolors='none').set_array(None)
+                    edgecolors='none', rasterized=True).set_array(None)

@@ -71,30 +71,19 @@ class ApoapseMUVQuicklook:
     def __init__(self, figure_width: float = 14):
         self._figure = self._make_figure(figure_width)
 
-        text_gridspec, data_gridspec, angle_gridspec = self._make_gridspecs()
+        self._gridspec = self._make_gridspecs()
 
-        self.left_text_axis, self.center_text_axis, self.right_text_axis = \
-            self._add_text_axes_to_figure(text_gridspec)
-        self.no_swath_axis, self.no_globe_axis, self.aurora_swath_axis, \
-            self.aurora_globe_axis = \
-            self._add_data_axes_to_figure(data_gridspec)
-        self.surface_map_swath_axis, self.surface_map_globe_axis, \
-            self.magnetic_field_map_swath_axis, \
-            self.magnetic_field_map_globe_axis = \
-            self._add_map_axes_to_figure(data_gridspec)
-        self.solar_zenith_angle_axis, self.emission_angle_axis, \
-            self.phase_angle_axis, self.local_time_axis = \
-            self._add_angle_axes_to_figure(angle_gridspec)
+        self._text_axes = self._make_text_axes()
+        self._data_axes = self._make_data_axes()
+        self._map_axes = self._make_map_axes()
+        self._angle_axes = self._make_angle_axes()
 
-        self._add_no_data_colorbar(data_gridspec)
-        self._add_aurora_data_colorbar(data_gridspec)
-        self._add_magnetic_field_map_colorbar(data_gridspec)
-        self._add_solar_zenith_angle_colorbar(angle_gridspec)
-        self._add_emission_angle_colorbar(angle_gridspec)
-        self._add_phase_angle_colorbar(angle_gridspec)
-        self._add_local_time_colorbar(angle_gridspec)
+        self._color_maps = {}
+        self._norms = {}
 
-        del text_gridspec, data_gridspec, angle_gridspec
+        self._add_colorbars()
+
+        del self._gridspec
 
     def _make_figure(self, figure_width: float) -> plt.Figure:
         self._set_rc_params()
@@ -107,9 +96,7 @@ class ApoapseMUVQuicklook:
         rc = Path(__file__).parent.resolve() / 'apoapse_muv_quicklook.mplstyle'
         plt.style.use(rc)
 
-    def _make_gridspecs(self) -> tuple[GridSpecFromSubplotSpec,
-                                       GridSpecFromSubplotSpec,
-                                       GridSpecFromSubplotSpec]:
+    def _make_gridspecs(self) -> dict:
         row_gridspec = gridspec.GridSpec(7, 1, figure=self._figure)
         text_gridspec = gridspec.GridSpecFromSubplotSpec(
             1, 3, subplot_spec=row_gridspec[0])
@@ -121,15 +108,21 @@ class ApoapseMUVQuicklook:
             2, 4,
             subplot_spec=row_gridspec[5:],
             height_ratios=[12, 1])
-        return text_gridspec, data_gridspec, angle_gridspec
+        return {'text': text_gridspec,
+                'data': data_gridspec,
+                'angle': angle_gridspec}
 
-    def _add_text_axes_to_figure(self, text_gridspec) -> tuple:
+    def _make_text_axes(self) -> dict:
+        text_gridspec = self._gridspec['text']
         left_text_axis = self._figure.add_subplot(text_gridspec[0])
         center_text_axis = self._figure.add_subplot(text_gridspec[1])
         right_text_axis = self._figure.add_subplot(text_gridspec[2])
-        return left_text_axis, center_text_axis, right_text_axis
+        return {'left': left_text_axis,
+                'center': center_text_axis,
+                'right': right_text_axis}
 
-    def _add_data_axes_to_figure(self, data_gridspec) -> tuple:
+    def _make_data_axes(self) -> dict:
+        data_gridspec = self._gridspec['data']
         no_swath_axis = self._figure.add_subplot(data_gridspec[0, 0])
         no_globe_axis = self._figure.add_subplot(data_gridspec[0, 1])
         aurora_swath_axis = self._figure.add_subplot(data_gridspec[0, 3])
@@ -138,10 +131,13 @@ class ApoapseMUVQuicklook:
         no_globe_axis.set_aspect('equal')
         aurora_globe_axis.set_aspect('equal')
 
-        return no_swath_axis, no_globe_axis, aurora_swath_axis, \
-            aurora_globe_axis
+        return {'no_swath': no_swath_axis,
+                'no_globe': no_globe_axis,
+                'aurora_swath': aurora_swath_axis,
+                'aurora_globe': aurora_globe_axis}
 
-    def _add_map_axes_to_figure(self, data_gridspec):
+    def _make_map_axes(self) -> dict:
+        data_gridspec = self._gridspec['data']
         surface_map_swath_axis = self._figure.add_subplot(data_gridspec[1, 0])
         surface_map_globe_axis = self._figure.add_subplot(data_gridspec[1, 1])
         magnetic_field_map_swath_axis = \
@@ -152,20 +148,35 @@ class ApoapseMUVQuicklook:
         surface_map_globe_axis.set_aspect('equal')
         magnetic_field_map_globe_axis.set_aspect('equal')
 
-        return surface_map_swath_axis, surface_map_globe_axis, \
-            magnetic_field_map_swath_axis, magnetic_field_map_globe_axis
+        return {'surface_swath': surface_map_swath_axis,
+                'surface_globe': surface_map_globe_axis,
+                'magnetic_field_swath': magnetic_field_map_swath_axis,
+                'magnetic_field_globe': magnetic_field_map_globe_axis}
 
-    def _add_angle_axes_to_figure(self, angle_gridspec):
+    def _make_angle_axes(self) -> dict:
+        angle_gridspec = self._gridspec['angle']
         solar_zenith_angle_axis = \
             self._figure.add_subplot(angle_gridspec[0, 0])
         emission_angle_axis = self._figure.add_subplot(angle_gridspec[0, 1])
         phase_angle_axis = self._figure.add_subplot(angle_gridspec[0, 2])
         local_time_axis = self._figure.add_subplot(angle_gridspec[0, 3])
 
-        return solar_zenith_angle_axis, emission_angle_axis, \
-            phase_angle_axis, local_time_axis
+        return {'solar_zenith_angle': solar_zenith_angle_axis,
+                'emission_angle': emission_angle_axis,
+                'phase_angle': phase_angle_axis,
+                'local_time': local_time_axis}
 
-    def _add_no_data_colorbar(self, data_gridspec) -> None:
+    def _add_colorbars(self) -> None:
+        self._add_no_data_colorbar()
+        self._add_aurora_data_colorbar()
+        self._add_magnetic_field_map_colorbar()
+        self._add_solar_zenith_angle_colorbar()
+        self._add_emission_angle_colorbar()
+        self._add_phase_angle_colorbar()
+        self._add_local_time_colorbar()
+
+    def _add_no_data_colorbar(self) -> None:
+        data_gridspec = self._gridspec['data']
         cmap = plt.get_cmap('viridis')
         cax = self._figure.add_subplot(data_gridspec[0, 2])
         sm, norm = self._make_scalar_mappable(cmap, vmin=0, vmax=4)
@@ -176,7 +187,12 @@ class ApoapseMUVQuicklook:
             major_tick_spacing=1,
             minor_tick_spacing=0.25)
 
-    def _add_aurora_data_colorbar(self, data_gridspec) -> None:
+        key = 'no'
+        self._color_maps[key] = cmap
+        self._norms[key] = norm
+
+    def _add_aurora_data_colorbar(self) -> None:
+        data_gridspec = self._gridspec['data']
         cmap = plt.get_cmap('magma')
         cax = self._figure.add_subplot(data_gridspec[0, 5])
         sm, norm = self._make_scalar_mappable(cmap, vmin=0, vmax=2)
@@ -187,7 +203,12 @@ class ApoapseMUVQuicklook:
             major_tick_spacing=0.5,
             minor_tick_spacing=0.125)
 
-    def _add_magnetic_field_map_colorbar(self, data_gridspec) -> None:
+        key = 'aurora'
+        self._color_maps[key] = cmap
+        self._norms[key] = norm
+
+    def _add_magnetic_field_map_colorbar(self) -> None:
+        data_gridspec = self._gridspec['data']
         cmap = plt.get_cmap('Blues_r')
         cax = self._figure.add_subplot(data_gridspec[1, 5])
         sm, norm = self._make_scalar_mappable(cmap, vmin=0, vmax=1)
@@ -198,7 +219,12 @@ class ApoapseMUVQuicklook:
             major_tick_spacing=0.2,
             minor_tick_spacing=0.05)
 
-    def _add_solar_zenith_angle_colorbar(self, angle_gridspec) -> None:
+        key = 'magnetic_field'
+        self._color_maps[key] = cmap
+        self._norms[key] = norm
+
+    def _add_solar_zenith_angle_colorbar(self) -> None:
+        angle_gridspec = self._gridspec['angle']
         cmap = plt.get_cmap('cividis_r')
         cax = self._figure.add_subplot(angle_gridspec[1, 0])
         sm, norm = self._make_scalar_mappable(cmap, vmin=0, vmax=180)
@@ -209,10 +235,15 @@ class ApoapseMUVQuicklook:
             major_tick_spacing=30,
             minor_tick_spacing=5)
 
-    def _add_emission_angle_colorbar(self, angle_gridspec) -> None:
+        key = 'angle'
+        self._color_maps[key] = cmap
+        self._norms[key] = norm
+
+    def _add_emission_angle_colorbar(self) -> None:
+        angle_gridspec = self._gridspec['angle']
         cmap = plt.get_cmap('cividis_r')
         cax = self._figure.add_subplot(angle_gridspec[1, 1])
-        sm, _ = self._make_scalar_mappable(cmap, vmin=0, vmax=180)
+        sm, norm = self._make_scalar_mappable(cmap, vmin=0, vmax=180)
         self._place_horizontal_colorbar(
             sm,
             cax=cax,
@@ -221,10 +252,11 @@ class ApoapseMUVQuicklook:
             minor_tick_spacing=5)
         cax.set_xlim(0, 90)
 
-    def _add_phase_angle_colorbar(self, angle_gridspec) -> None:
+    def _add_phase_angle_colorbar(self) -> None:
+        angle_gridspec = self._gridspec['angle']
         cmap = plt.get_cmap('cividis_r')
         cax = self._figure.add_subplot(angle_gridspec[1, 2])
-        sm, _ = self._make_scalar_mappable(cmap, vmin=0, vmax=180)
+        sm, norm = self._make_scalar_mappable(cmap, vmin=0, vmax=180)
         self._place_horizontal_colorbar(
             sm,
             cax=cax,
@@ -232,7 +264,8 @@ class ApoapseMUVQuicklook:
             major_tick_spacing=30,
             minor_tick_spacing=5)
 
-    def _add_local_time_colorbar(self, angle_gridspec) -> None:
+    def _add_local_time_colorbar(self) -> None:
+        angle_gridspec = self._gridspec['angle']
         cmap = plt.get_cmap('twilight_shifted')
         cax = self._figure.add_subplot(angle_gridspec[1, 3])
         sm, norm = self._make_scalar_mappable(cmap, vmin=6, vmax=18)
@@ -242,6 +275,10 @@ class ApoapseMUVQuicklook:
             label='Dayside Local Time [hours]',
             major_tick_spacing=3,
             minor_tick_spacing=1)
+
+        key = 'local_time'
+        self._color_maps[key] = cmap
+        self._norms[key] = norm
 
     @staticmethod
     def _make_scalar_mappable(cmap, vmin, vmax):
@@ -278,3 +315,112 @@ class ApoapseMUVQuicklook:
             cbar.ax.xaxis.set_minor_locator(
                 ticker.MultipleLocator(minor_tick_spacing))
         return cbar
+
+    @property
+    def figure(self):
+        return self._figure
+
+    @property
+    def left_text(self):
+        return self._text_axes['left']
+
+    @property
+    def center_text(self):
+        return self._text_axes['center']
+
+    @property
+    def right_text(self):
+        return self._text_axes['right']
+
+    @property
+    def no_data_swath(self) -> plt.Axes:
+        return self._data_axes['no_swath']
+
+    @property
+    def no_data_globe(self) -> plt.Axes:
+        return self._data_axes['no_globe']
+
+    @property
+    def aurora_data_swath(self) -> plt.Axes:
+        return self._data_axes['aurora_swath']
+
+    @property
+    def aurora_data_globe(self) -> plt.Axes:
+        return self._data_axes['aurora_globe']
+
+    @property
+    def surface_map_swath(self) -> plt.Axes:
+        return self._map_axes['surface_swath']
+
+    @property
+    def surface_map_globe(self) -> plt.Axes:
+        return self._map_axes['surface_globe']
+
+    @property
+    def magnetic_field_map_swath(self) -> plt.Axes:
+        return self._map_axes['magnetic_field_swath']
+
+    @property
+    def magnetic_field_map_globe(self) -> plt.Axes:
+        return self._map_axes['magnetic_field_globe']
+
+    @property
+    def solar_zenith_angle_swath(self) -> plt.Axes:
+        return self._angle_axes['solar_zenith_angle']
+
+    @property
+    def emission_angle_swath(self) -> plt.Axes:
+        return self._angle_axes['emission_angle']
+
+    @property
+    def phase_angle_swath(self) -> plt.Axes:
+        return self._angle_axes['phase_angle']
+
+    @property
+    def local_time_swath(self) -> plt.Axes:
+        return self._angle_axes['local_time']
+
+    @property
+    def angle_colormap(self):
+        return self._color_maps['angle']
+
+    @property
+    def angle_norm(self):
+        return self._norms['angle']
+
+    @property
+    def local_time_colormap(self):
+        return self._color_maps['local_time']
+
+    @property
+    def local_time_norm(self):
+        return self._norms['local_time']
+
+    @property
+    def no_colormap(self):
+        return self._color_maps['no']
+
+    @property
+    def no_norm(self):
+        return self._norms['no']
+
+    @property
+    def aurora_colormap(self):
+        return self._color_maps['aurora']
+
+    @property
+    def aurora_norm(self):
+        return self._norms['aurora']
+
+    @property
+    def magnetic_field_colormap(self):
+        return self._color_maps['magnetic_field']
+
+    @property
+    def magnetic_field_norm(self):
+        return self._norms['magnetic_field']
+
+
+if __name__ == '__main__':
+    ApoapseMUVQuicklook()
+    plt.savefig('/home/kyle/apoapse_template.pdf')

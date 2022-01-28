@@ -19,23 +19,22 @@ from pyuvs.graphics.colorize import turn_primary_to_3_channels, \
     histogram_equalize_rgb_image
 from pyuvs.graphics.detector_image import make_plot_fill, make_swath_grid, \
     reshape_data_for_pcolormesh, plot_detector_image
+from pyuvs.graphics.templates import ApoapseMUVQuicklook
 
 
 def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_filename: str) -> None:
-    # Load in the data
     t0 = time.time()
+    template = ApoapseMUVQuicklook()
+    t1 = time.time()
+
+    # Load in the data
     data_paths = find_latest_apoapse_muv_file_paths_from_block(data_location, orbit)
     files = [L1bFile(f) for f in data_paths]
-    t1 = time.time()
+    t2 = time.time()
 
     # Make data that's independent of day/night
     mirror_angles = stack_mirror_angles(files)
     swath_numbers = swath_number(mirror_angles)
-
-    fig, ax = plt.subplots(1, 5, figsize=(10, 2))
-    for i in range(5):
-        ax[i].set_xlim(0, angular_slit_width * (swath_numbers[-1] + 1))
-        ax[i].set_ylim(60, 120)
 
     # Do the day/night stuff
     # TODO: this will break if no dayside or no nightside data are present
@@ -79,8 +78,8 @@ def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_fi
 
             # Plot the SZA, EA, PA, and LT
             x, y = make_swath_grid(swath_mirror_angles, swath, swath_sza.shape[1], swath_sza.shape[0])  # mirror angles, swath number, n_pos, n_int
-            ax[1].pcolormesh(x, y, swath_sza, cmap='cividis_r', vmin=0, vmax=180)
-            ax[4].pcolormesh(x, y, swath_lt, cmap='twilight_shifted', vmin=6, vmax=18)
+            template.solar_zenith_angle_swath.pcolormesh(x, y, swath_sza, cmap=template.angle_colormap, norm=template.angle_norm)
+            template.local_time_swath.pcolormesh(x, y, swath_lt, cmap = template.local_time_colormap, norm=template.local_time_norm)
 
             # Plot the primary
             if daynight:
@@ -89,11 +88,19 @@ def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_fi
                 fill = make_plot_fill(swath_altitude_mask)
                 x, y = make_swath_grid(swath_mirror_angles, swath, swath_rgb.shape[1], swath_rgb.shape[0])   # mirror angles, swath number, n_pos, n_int
                 swath_rgb = reshape_data_for_pcolormesh(swath_rgb)
-                plot_detector_image(ax[0], x, y, fill, swath_rgb)
+                plot_detector_image(template.no_data_swath, x, y, fill, swath_rgb)
 
-    plt.savefig(f'/home/kyle/ql_testing/{save_filename}-orbit{orbit}.png', dpi=200)
-    t2 = time.time()
-    print(t2-t1, t1-t0)
+    for ax in [template.no_data_swath, template.solar_zenith_angle_swath,
+               template.emission_angle_swath, template.phase_angle_swath,
+               template.local_time_swath]:
+        ax.set_xlim(0, angular_slit_width * (swath_numbers[-1] + 1))
+        ax.set_ylim(60, 120)
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    plt.savefig(f'/home/kyle/ql_testing/{save_filename}-orbit{orbit}.pdf')
+    t3 = time.time()
+    print(t3-t2, t2-t1, t1-t0)
 
 
 if __name__ == '__main__':

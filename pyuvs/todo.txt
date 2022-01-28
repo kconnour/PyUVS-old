@@ -1,0 +1,21 @@
+* left text
+* center text
+* right text
+* NO data
+* NO globe
+* aurora data
+* aurora globe
+* NO map
+* NO map globe
+* aurora map
+* aurora globe
+* SZA
+* EA
+* PA
+* LT
+
+Broad features
+* MLR
+* globe
+* hires maps
+* flatfield
