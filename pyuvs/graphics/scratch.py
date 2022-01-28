@@ -48,14 +48,6 @@ def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_fi
         pa = stack_daynight_phase_angle(files, dayside=daynight)
         lt = stack_daynight_local_time(files, dayside=daynight)
 
-        # Flip if APP flip (or do I do this elsewhere?)
-        '''primary = np.fliplr(primary)
-        altitude_mask = np.fliplr(altitude_mask)
-        sza = np.fliplr(sza)
-        ea = np.fliplr(ea)
-        pa = np.fliplr(pa)
-        lt = np.fliplr(lt)'''
-
         # FF correct
 
         # Do dayside specific things
@@ -189,6 +181,21 @@ if __name__ == '__main__':
         print(t1-t0)
 
         #print(t2-t1, t1-t0)'''
-
+    from astropy.io import fits
     p = Path('/media/kyle/Samsung_T5/IUVS_Data')
-    make_pipeline_apoapse_muv_quicklook(4703, p, 'quicklooktest')
+    #make_pipeline_apoapse_muv_quicklook(4703, p, 'quicklooktest')
+    files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
+    hdul = fits.open(files[0])
+    print(hdul['pixelgeometry'].data.columns)
+    print(hdul['pixelgeometry'].data['PIXEL_CORNER_RA'].shape)
+
+    '''files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
+    files = [L1bFile(f) for f in files]
+    primary = stack_daynight_primary(files, dayside=True)
+    altitude_mask = make_daynight_on_disk_mask(files, dayside=True)
+    coadded_primary = turn_primary_to_3_channels(primary)
+    rgb_primary = histogram_equalize_rgb_image(coadded_primary,
+                                               mask=altitude_mask) / 255
+    fig, ax = plt.subplots()
+    ax.imshow(rgb_primary)
+    plt.savefig('/home/kyle/ql_testing/flipstack.pdf')'''

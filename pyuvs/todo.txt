@@ -19,3 +19,6 @@ Broad features
 * globe
 * hires maps
 * flatfield
+
+Details
+* If I pcolormesh the SZA array (for example) I need all the options: rasterized=True, linewidth=none, etc.

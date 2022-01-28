@@ -5,6 +5,21 @@ from pyuvs.constants import day_night_voltage_boundary, minimum_mirror_angle, \
     maximum_mirror_angle
 
 
+def add_integration_dimension(func):
+    def wrapper(*args):
+        f = func(*args)
+        return f[None, :] if np.ndim(f) == 2 else f
+    return wrapper
+
+
+def app_flip(func):
+    def wrapper(*args):
+        f = func(*args)
+        flip = args[0].flip
+        return np.fliplr(f) if flip else f
+    return wrapper
+
+
 # TODO: this is incomplete
 class L1bFile:
     """A data structure representing a level 1b data file.
@@ -18,8 +33,8 @@ class L1bFile:
     def __init__(self, filepath: Path):
         self.hdul = fits.open(filepath)
 
-        self.primary = \
-            cast_array_to_3d(self._get_structures('primary'))
+        self._primary = \
+            self._get_structures('primary')
         # TODO: random_dn_unc
         # TODO: random_phy_unc
         # TODO: systematic_phy_unc
@@ -42,7 +57,19 @@ class L1bFile:
         self.observation = \
             Observation(self._get_structures('observation'))
 
+        self._flip = self.is_app_flipped()
+
         del self.hdul
+
+    @property
+    def flip(self):
+        return self._flip
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def primary(self):
+        return self._primary
 
     def _get_structures(self, name: str) -> fits.fitsrec.FITS_rec:
         # or it returns np.ndarray
@@ -58,8 +85,8 @@ class L1bFile:
 
         """
         dot_product = np.dot(
-            self.spacecraft_geometry.inertial_frame_instrument_x_unit_vector,
-            self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector)
+            self.spacecraft_geometry.inertial_frame_instrument_x_unit_vector[-1],
+            self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector[-1])
         return np.sign(dot_product) > 0
 
     def is_dayside_file(self) -> bool:
@@ -373,6 +400,8 @@ class PixelGeometry(_FitsRecord):
         self.delete_structure()
 
     @property
+    @app_flip
+    @add_integration_dimension
     def vector(self) -> np.ndarray:
         """Get the unit vector of each spatial pixel corner.
 
@@ -381,10 +410,21 @@ class PixelGeometry(_FitsRecord):
         np.ndarray
             Unit vector of each spatial pixel corner.
 
+        Notes
+        -----
+        For whatever reason, this has shape in the data of
+        (number of integrations, 3, number of positions, 5). I rearranged the
+        axes so that this has shape
+        (number of integrations, number of positions, 5, 3) so it now matches
+        the same shapes as all the other arrays.
+
         """
-        return self._pixel_vec
+        pixel_vec = self._pixel_vec
+        return np.moveaxis(pixel_vec, 1, -1)
 
     @property
+    @app_flip
+    @add_integration_dimension
     def right_ascension(self) -> np.ndarray:
         """Get the right ascension [degrees] of each spatial pixel corner.
 
@@ -397,6 +437,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_ra
 
     @property
+    @app_flip
+    @add_integration_dimension
     def declination(self) -> np.ndarray:
         """Get the declination [degrees] of each spatial pixel corner.
 
@@ -409,6 +451,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_dec
 
     @property
+    @app_flip
+    @add_integration_dimension
     def latitude(self) -> np.ndarray:
         """Get the latitude [degrees] of each spatial pixel corner.
 
@@ -421,6 +465,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_lat
 
     @property
+    @app_flip
+    @add_integration_dimension
     def longitude(self) -> np.ndarray:
         """Get the longitude [degrees] of each spatial pixel corner.
 
@@ -433,6 +479,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_lon
 
     @property
+    @app_flip
+    @add_integration_dimension
     def tangent_altitude(self) -> np.ndarray:
         """Get the altitude [km] of each spatial pixel corner.
 
@@ -445,6 +493,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_mrh_alt
 
     @property
+    @app_flip
+    @add_integration_dimension
     def altitude_rate(self) -> np.ndarray:
         """Get the altitude rate [km/s] of each spatial pixel corner.
 
@@ -457,6 +507,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_mrh_alt_rate
 
     @property
+    @app_flip
+    @add_integration_dimension
     def line_of_sight(self) -> np.ndarray:
         """Get the line of sight [km] of each spatial pixel corner.
 
@@ -469,6 +521,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_corner_los
 
     @property
+    @app_flip
+    @add_integration_dimension
     def solar_zenith_angle(self) -> np.ndarray:
         """Get the solar zenith angle [degrees] of each spatial pixel.
 
@@ -481,6 +535,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_solar_zenith_angle
 
     @property
+    @app_flip
+    @add_integration_dimension
     def emission_angle(self) -> np.ndarray:
         """Get the emission angle [degrees] of each spatial pixel.
 
@@ -493,6 +549,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_emission_angle
 
     @property
+    @app_flip
+    @add_integration_dimension
     def zenith_angle(self) -> np.ndarray:
         """Get the zenith angle [degrees] of each spatial pixel.
 
@@ -505,6 +563,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_zenith_angle
 
     @property
+    @app_flip
+    @add_integration_dimension
     def phase_angle(self) -> np.ndarray:
         """Get the phase angle [degrees] of each spatial pixel.
 
@@ -517,6 +577,8 @@ class PixelGeometry(_FitsRecord):
         return self._pixel_phase_angle
 
     @property
+    @app_flip
+    @add_integration_dimension
     def local_time(self) -> np.ndarray:
         """Get the local time [hours] of each spatial pixel.
 
