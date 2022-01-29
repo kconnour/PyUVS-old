@@ -68,32 +68,3 @@ def count_integrations_in_swath(
     """
     edges = np.concatenate([[-1], np.unique(swath_numbers)]) + 0.5
     return np.histogram(swath_numbers[mask], bins=edges)[0]
-
-
-def select_integrations_in_swath(
-        array: np.ndarray, swath_number: int, swath_numbers: np.ndarray,
-        integrations_per_swath: np.ndarray) -> np.ndarray:
-    """Select only the data from some array given a desired swath number.
-
-    Parameters
-    ----------
-    array: np.ndarray
-        Any array. The 0th axis is assumed to be the integration axis.
-    swath_number
-        The swath number to select data from.
-    swath_numbers
-        1D array of swath numbers.
-    integrations_per_swath
-        1D array of the number of integrations corresponding to
-        :code:`swath_numbers`.
-
-    Returns
-    -------
-    np.ndarray
-        :code:`array`, but trimmed.
-
-    """
-    integrations_in_swath = \
-        count_integrations_in_swath(swath_numbers, integrations_per_swath)
-    edge_inds = np.concatenate([[0], np.cumsum(integrations_in_swath)])
-    return array[edge_inds[swath_number]: edge_inds[swath_number + 1], ...]

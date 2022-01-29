@@ -16,9 +16,12 @@
 
 Broad features
 * MLR
+* text
 * globe
 * hires maps
 * flatfield
+* Documentation
 
 Details
 * If I pcolormesh the SZA array (for example) I need all the options: rasterized=True, linewidth=none, etc.
+* should I use mirror angles of fov? It'd be better to not have a *2 dangling around

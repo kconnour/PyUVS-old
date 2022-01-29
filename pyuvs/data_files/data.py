@@ -59,6 +59,8 @@ class L1bFile:
 
         self._flip = self.is_app_flipped()
 
+        self.pixel_geometry.set_flip(self._flip)
+
         del self.hdul
 
     @property
@@ -127,6 +129,7 @@ class L1bFile:
 
 class _FitsRecord:
     def __init__(self, structure: fits.fitsrec.FITS_rec):
+        self._flip = None
         self.structure = structure
 
     def get_substructure(self, name: str):
@@ -134,6 +137,13 @@ class _FitsRecord:
 
     def delete_structure(self):
         del self.structure
+
+    def set_flip(self, flip: bool):
+        self._flip = flip
+
+    @property
+    def flip(self):
+        return self._flip
 
 
 class Integration(_FitsRecord):
@@ -401,7 +411,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def vector(self) -> np.ndarray:
         """Get the unit vector of each spatial pixel corner.
 
@@ -424,7 +434,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def right_ascension(self) -> np.ndarray:
         """Get the right ascension [degrees] of each spatial pixel corner.
 
@@ -438,7 +448,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def declination(self) -> np.ndarray:
         """Get the declination [degrees] of each spatial pixel corner.
 
@@ -452,7 +462,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def latitude(self) -> np.ndarray:
         """Get the latitude [degrees] of each spatial pixel corner.
 
@@ -466,7 +476,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def longitude(self) -> np.ndarray:
         """Get the longitude [degrees] of each spatial pixel corner.
 
@@ -480,7 +490,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def tangent_altitude(self) -> np.ndarray:
         """Get the altitude [km] of each spatial pixel corner.
 
@@ -494,7 +504,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def altitude_rate(self) -> np.ndarray:
         """Get the altitude rate [km/s] of each spatial pixel corner.
 
@@ -508,7 +518,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def line_of_sight(self) -> np.ndarray:
         """Get the line of sight [km] of each spatial pixel corner.
 
@@ -522,7 +532,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def solar_zenith_angle(self) -> np.ndarray:
         """Get the solar zenith angle [degrees] of each spatial pixel.
 
@@ -536,7 +546,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def emission_angle(self) -> np.ndarray:
         """Get the emission angle [degrees] of each spatial pixel.
 
@@ -550,7 +560,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def zenith_angle(self) -> np.ndarray:
         """Get the zenith angle [degrees] of each spatial pixel.
 
@@ -564,7 +574,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def phase_angle(self) -> np.ndarray:
         """Get the phase angle [degrees] of each spatial pixel.
 
@@ -578,7 +588,7 @@ class PixelGeometry(_FitsRecord):
 
     @property
     @app_flip
-    @add_integration_dimension
+    #@add_integration_dimension
     def local_time(self) -> np.ndarray:
         """Get the local time [hours] of each spatial pixel.
 
@@ -668,5 +678,9 @@ def make_daynight_on_disk_mask(files: list[L1bFile], dayside: bool = True):
     return np.where(altitudes == 0, True, False)
 
 
-def make_daynight_integration_mask(files: list[L1bFile], dayside: bool = True):
-    return np.concatenate([np.repeat(f.is_dayside_file() == dayside, f.primary.shape[0]) for f in files])
+def make_dayside_integration_mask(files: list[L1bFile]):
+    return np.concatenate([np.repeat(f.is_dayside_file(), f.primary.shape[0]) for f in files])
+
+
+def set_off_disk_pixels_to_nan(array: np.ndarray, on_disk_mask: np.ndarray):
+    return np.where(on_disk_mask, array, np.nan)

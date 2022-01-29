@@ -8,17 +8,17 @@ from scipy.io import readsav
 from pyuvs.anc import load_midhires_flatfield
 from pyuvs.constants import angular_slit_width, minimum_mirror_angle, \
     maximum_mirror_angle
-from pyuvs.swath import select_integrations_in_swath, swath_number
+from pyuvs.swath import swath_number
 from pyuvs.data_files import L1bFile, \
     find_latest_apoapse_muv_file_paths_from_block, stack_daynight_primary, \
     stack_daynight_solar_zenith_angle, stack_daynight_emission_angle, \
     stack_daynight_phase_angle, stack_daynight_local_time, \
     make_daynight_on_disk_mask, stack_mirror_angles, \
-    make_daynight_integration_mask
+    make_dayside_integration_mask, set_off_disk_pixels_to_nan
 from pyuvs.graphics.colorize import turn_primary_to_3_channels, \
     histogram_equalize_rgb_image
-from pyuvs.graphics.detector_image import make_plot_fill, make_swath_grid, \
-    reshape_data_for_pcolormesh, plot_detector_image
+from pyuvs.graphics.detector_image import pcolormesh_detector_image, \
+    pcolormesh_rgb_detector_image, make_swath_grid
 from pyuvs.graphics.templates import ApoapseMUVQuicklook
 
 
@@ -35,58 +35,70 @@ def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_fi
     # Make data that's independent of day/night
     mirror_angles = stack_mirror_angles(files)
     swath_numbers = swath_number(mirror_angles)
+    dayside_integration_mask = make_dayside_integration_mask(files)
 
     # Do the day/night stuff
-    # TODO: this will break if no dayside or no nightside data are present
     for daynight in [True, False]:
-        primary = stack_daynight_primary(files, dayside=daynight)
-        altitude_mask = make_daynight_on_disk_mask(files, dayside=daynight)
-        integration_mask = make_daynight_integration_mask(files, dayside=daynight)
-        daynight_mirror_angles = mirror_angles[integration_mask]
-        sza = stack_daynight_solar_zenith_angle(files, dayside=daynight)
-        ea = stack_daynight_emission_angle(files, dayside=daynight)
-        pa = stack_daynight_phase_angle(files, dayside=daynight)
-        lt = stack_daynight_local_time(files, dayside=daynight)
+        if daynight not in dayside_integration_mask:
+            continue
 
-        # FF correct
+        primary = stack_daynight_primary(files, dayside=daynight)
+        on_disk_mask = make_daynight_on_disk_mask(files, dayside=daynight)
+        daynight_mirror_angles = mirror_angles[dayside_integration_mask == daynight]
+        daynight_swath_number = swath_numbers[dayside_integration_mask == daynight]
+        sza = set_off_disk_pixels_to_nan(
+            stack_daynight_solar_zenith_angle(files, dayside=daynight),
+            on_disk_mask)
+        ea = set_off_disk_pixels_to_nan(
+            stack_daynight_emission_angle(files, dayside=daynight),
+            on_disk_mask)
+        pa = set_off_disk_pixels_to_nan(
+            stack_daynight_phase_angle(files, dayside=daynight),
+            on_disk_mask)
+        lt = set_off_disk_pixels_to_nan(
+            stack_daynight_local_time(files, dayside=daynight),
+            on_disk_mask)
+        n_spatial_bins = primary.shape[1]
 
         # Do dayside specific things
         if daynight:
+            # TODO: FF correct here
             coadded_primary = turn_primary_to_3_channels(primary)
-            rgb_primary = histogram_equalize_rgb_image(coadded_primary, mask=altitude_mask) / 255
+            rgb_primary = histogram_equalize_rgb_image(coadded_primary, mask=on_disk_mask) / 255
         # Do nightside specific things
         else:
             pass
 
         for swath in np.unique(swath_numbers):
             # Do this no matter if I'm plotting primary or angles
-            swath_mirror_angles = select_integrations_in_swath(daynight_mirror_angles, swath, swath_numbers, integration_mask)
-            swath_altitude_mask = select_integrations_in_swath(altitude_mask, swath, swath_numbers, integration_mask)
+            swath_inds = daynight_swath_number == swath
+            n_integrations = np.sum(swath_inds)
+            x, y = make_swath_grid(daynight_mirror_angles[swath_inds], swath, n_spatial_bins, n_integrations)
+            pcolormesh_detector_image(template.solar_zenith_angle_swath, sza[swath_inds], x, y, template.angle_colormap, template.angle_norm)
+            pcolormesh_detector_image(template.emission_angle_swath,
+                                      ea[swath_inds], x, y,
+                                      template.angle_colormap,
+                                      template.angle_norm)
+            pcolormesh_detector_image(template.phase_angle_swath,
+                                      pa[swath_inds], x, y,
+                                      template.angle_colormap,
+                                      template.angle_norm)
+            pcolormesh_detector_image(template.local_time_swath,
+                                      lt[swath_inds], x, y,
+                                      template.local_time_colormap,
+                                      template.local_time_norm)
 
-            swath_sza = select_integrations_in_swath(sza, swath, swath_numbers, integration_mask)
-            swath_sza = np.where(swath_altitude_mask, swath_sza, np.nan)
-            swath_lt = select_integrations_in_swath(lt, swath, swath_numbers, integration_mask)
-            swath_lt = np.where(swath_altitude_mask, swath_lt, np.nan)
-
-            # Plot the SZA, EA, PA, and LT
-            x, y = make_swath_grid(swath_mirror_angles, swath, swath_sza.shape[1], swath_sza.shape[0])  # mirror angles, swath number, n_pos, n_int
-            template.solar_zenith_angle_swath.pcolormesh(x, y, swath_sza, cmap=template.angle_colormap, norm=template.angle_norm)
-            template.local_time_swath.pcolormesh(x, y, swath_lt, cmap = template.local_time_colormap, norm=template.local_time_norm)
-
-            # Plot the primary
+            # Plot the primary for dayside data
             if daynight:
-                # Get the colorized array + angles of this swath
-                swath_rgb = select_integrations_in_swath(rgb_primary, swath, swath_numbers, integration_mask)
-                fill = make_plot_fill(swath_altitude_mask)
-                x, y = make_swath_grid(swath_mirror_angles, swath, swath_rgb.shape[1], swath_rgb.shape[0])   # mirror angles, swath number, n_pos, n_int
-                swath_rgb = reshape_data_for_pcolormesh(swath_rgb)
-                plot_detector_image(template.no_data_swath, x, y, fill, swath_rgb)
+                pcolormesh_rgb_detector_image(template.no_data_swath, rgb_primary[swath_inds], x, y)
+                pcolormesh_rgb_detector_image(template.aurora_data_swath, rgb_primary[swath_inds], x, y)
 
-    for ax in [template.no_data_swath, template.solar_zenith_angle_swath,
+    for ax in [template.no_data_swath, template.aurora_data_swath,
+               template.solar_zenith_angle_swath,
                template.emission_angle_swath, template.phase_angle_swath,
                template.local_time_swath]:
         ax.set_xlim(0, angular_slit_width * (swath_numbers[-1] + 1))
-        ax.set_ylim(60, 120)
+        ax.set_ylim(minimum_mirror_angle * 2, maximum_mirror_angle * 2)
         ax.set_xticks([])
         ax.set_yticks([])
 
@@ -181,13 +193,8 @@ if __name__ == '__main__':
         print(t1-t0)
 
         #print(t2-t1, t1-t0)'''
-    from astropy.io import fits
     p = Path('/media/kyle/Samsung_T5/IUVS_Data')
-    #make_pipeline_apoapse_muv_quicklook(4703, p, 'quicklooktest')
-    files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
-    hdul = fits.open(files[0])
-    print(hdul['pixelgeometry'].data.columns)
-    print(hdul['pixelgeometry'].data['PIXEL_CORNER_RA'].shape)
+    make_pipeline_apoapse_muv_quicklook(5675, p, 'quicklooktest')
 
     '''files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
     files = [L1bFile(f) for f in files]
