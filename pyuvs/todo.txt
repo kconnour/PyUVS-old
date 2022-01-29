@@ -9,19 +9,33 @@
 * NO map globe
 * aurora map
 * aurora globe
-* SZA
-* EA
-* PA
-* LT
 
 Broad features
+* linear scaling of dayside data
 * MLR
 * text
 * globe
 * hires maps
 * flatfield
-* Documentation
+
+Banner
+* Orbit number
+* Earth UTC
+* Mars Year
+* Solar longitude
+* Sol
+
+* Apoapsis altitude
+* Apoapsis latitude
+* Apoapsis longitude
+* Subsolar latitude
+* Subsolar longitude
+
+* Integrations X (day); Y (night)
+* Spatial bins X (day); Y (night)
+* Spectral bins X (day); Y (night)
+* APP flip: bool
+*
 
 Details
-* If I pcolormesh the SZA array (for example) I need all the options: rasterized=True, linewidth=none, etc.
 * should I use mirror angles of fov? It'd be better to not have a *2 dangling around

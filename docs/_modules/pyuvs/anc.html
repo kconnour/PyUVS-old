@@ -1,0 +1,467 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyuvs.anc &#8212; PyUVS  documentation</title>
+    
+    <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    
+    <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../index.html">
+<p class="title">PyUVS</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/graphics.html">
+  Graphics
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/tools.html">
+  Tools
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/tutorials.html">
+  Tutorials
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/kconnour/PyUVS" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for pyuvs.anc</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides functions to load in standard dictionaries and arrays</span>
+<span class="sd">for working with IUVS data.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">def</span> <span class="nf">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_package_path"><a class="viewcode-back" href="../../rst/api/anc/get_package_path.html#pyuvs.anc.get_package_path">[docs]</a><span class="k">def</span> <span class="nf">get_package_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the path of the PyUVS package.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Path</span>
+<span class="sd">        Path of the package.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; pu.anc.get_package_path()</span>
+<span class="sd">    PosixPath(&#39;/home/kyle/repos/PyUVS/pyuvs&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="load_magnetic_field_closed_probability"><a class="viewcode-back" href="../../rst/api/anc/load_magnetic_field_closed_probability.html#pyuvs.anc.load_magnetic_field_closed_probability">[docs]</a><span class="k">def</span> <span class="nf">load_magnetic_field_closed_probability</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the map denoting the probability of a closed magnetic field line.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the image.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (180, 360).</span>
+
+<span class="sd">    * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.</span>
+<span class="sd">    * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360</span>
+<span class="sd">      degrees.</span>
+
+<span class="sd">    This map comes from MGS data.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       b_field = pu.anc.load_magnetic_field_closed_probability()</span>
+<span class="sd">       plt.imshow(b_field, cmap=&#39;Blues_r&#39;, origin=&#39;lower&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> \
+                <span class="s1">&#39;magnetic_field_closed_probability.npy&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_magnetic_field_open_probability"><a class="viewcode-back" href="../../rst/api/anc/load_magnetic_field_open_probability.html#pyuvs.anc.load_magnetic_field_open_probability">[docs]</a><span class="k">def</span> <span class="nf">load_magnetic_field_open_probability</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the map denoting the probability of an open magnetic field line.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the image.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (180, 360).</span>
+
+<span class="sd">    * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.</span>
+<span class="sd">    * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360</span>
+<span class="sd">      degrees.</span>
+
+<span class="sd">    This map comes from MGS data.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       b_field = pu.anc.load_magnetic_field_open_probability()</span>
+<span class="sd">       plt.imshow(b_field, cmap=&#39;Blues_r&#39;, origin=&#39;lower&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> \
+                <span class="s1">&#39;magnetic_field_open_probability.npy&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_mars_surface_map"><a class="viewcode-back" href="../../rst/api/anc/load_mars_surface_map.html#pyuvs.anc.load_mars_surface_map">[docs]</a><span class="k">def</span> <span class="nf">load_mars_surface_map</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the Mars surface map.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the image.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1800, 3600, 4).</span>
+
+<span class="sd">    * The 0 :sup:`th` axis corresponds to latitude and spans 90 to -90 degrees.</span>
+<span class="sd">    * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360</span>
+<span class="sd">      degrees.</span>
+<span class="sd">    * The 2 :sup:`nd` axis is the RGBA channel.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       surface_map = pu.anc.load_mars_surface_map()</span>
+<span class="sd">       plt.imshow(surface_map)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> <span class="s1">&#39;mars_surface_map.npy&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_muv_templates"><a class="viewcode-back" href="../../rst/api/anc/load_muv_templates.html#pyuvs.anc.load_muv_templates">[docs]</a><span class="k">def</span> <span class="nf">load_muv_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load all the MUV spectral templates.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        All the included MUV templates.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Get the dictionary keys:</span>
+
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; pu.anc.load_muv_templates().keys()</span>
+<span class="sd">    dict_keys([&#39;co2p_fdb&#39;, &#39;co2p_uvd&#39;, &#39;co_cameron_bands&#39;, &#39;cop_1ng&#39;, &#39;n2_vk&#39;, &#39;no_nightglow&#39;, &#39;o2972&#39;, &#39;solar_continuum&#39;])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> <span class="s1">&#39;muv_templates.npy&#39;</span>
+    <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_no_nightglow_template"><a class="viewcode-back" href="../../rst/api/anc/load_no_nightglow_template.html#pyuvs.anc.load_no_nightglow_template">[docs]</a><span class="k">def</span> <span class="nf">load_no_nightglow_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV NO nightglow template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_no_nightglow_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;no_nightglow&#39;</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">load_solar_continuum_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;solar_continuum&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">load_muv_wavelengths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> <span class="s1">&#39;muv_wavelengths.npy&#39;</span>
+    <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">load_midhires_flatfield_data</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> <span class="s1">&#39;mvn_iuv_flatfield.npy&#39;</span>
+    <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">load_muv_wavelength_center</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_centers&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">load_muv_wavelength_edge</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_edges&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">load_muv_wavelength_width</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_width&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">load_midhires_flatfield</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load_midhires_flatfield_data</span><span class="p">()[</span><span class="s1">&#39;flatfield&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">load_midhires_flatfield_wavelengths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">load_midhires_flatfield_data</span><span class="p">()[</span><span class="s1">&#39;wavelengths&#39;</span><span class="p">]</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;import matplotlib.pyplot as plt</span>
+<span class="sd">    from scipy.io import readsav</span>
+<span class="sd">    #from pyuvs</span>
+
+<span class="sd">    fig, ax = plt.subplots(2, 3)</span>
+<span class="sd">    a = load_midhires_flatfield()</span>
+
+<span class="sd">    # REscale FF</span>
+<span class="sd">    master = np.zeros((50, 19))</span>
+<span class="sd">    for i in range(19):</span>
+<span class="sd">        foo = np.linspace(0, 132, num=50)</span>
+<span class="sd">        bar = np.linspace(0, 132, num=133)</span>
+<span class="sd">        master[:, i] = np.interp(foo, bar, a[:, i])</span>
+
+<span class="sd">    flatfields = [&#39;MIDRESAPO_FLATFIELD_19X50_ORBIT03733_3739.sav&#39;,</span>
+<span class="sd">                  &#39;MIDRESAPO_FLATFIELD_19X50_ORBIT03744_3750.sav&#39;]</span>
+
+<span class="sd">    before = readsav(f&#39;/home/kyle/ql_testing/{flatfields[0]}&#39;)[&#39;midresapo_flatfield_19x50_orbit03733_3739&#39;]</span>
+<span class="sd">    after = readsav(f&#39;/home/kyle/ql_testing/{flatfields[1]}&#39;)[&#39;midresapo_flatfield_19x50_orbit03744_3750&#39;]</span>
+
+<span class="sd">    cmap = &#39;inferno&#39;</span>
+
+<span class="sd">    ax[0, 0].imshow(np.flipud(after/before), cmap=cmap, vmin=0.9, vmax=1.1)</span>
+<span class="sd">    ax[0, 0].set_title(&#39;after/before&#39;)</span>
+<span class="sd">    ax[0, 1].imshow(np.flipud(before/master), cmap=cmap, vmin=0.9, vmax=1.1)</span>
+<span class="sd">    ax[0, 1].set_title(&#39;before/master&#39;)</span>
+<span class="sd">    ax[0, 2].imshow(np.flipud(after/master), cmap=cmap, vmin=0.9, vmax=1.1)</span>
+<span class="sd">    ax[0, 2].set_title(&#39;after/master&#39;)</span>
+
+<span class="sd">    ax[1, 0].imshow(np.flipud(after - before), cmap=cmap, vmin=-0.08, vmax=0.08)</span>
+<span class="sd">    ax[1, 0].set_title(&#39;after - before&#39;)</span>
+<span class="sd">    ax[1, 1].imshow(np.flipud(before - master), cmap=cmap, vmin=-0.08, vmax=0.08)</span>
+<span class="sd">    ax[1, 1].set_title(&#39;before - master&#39;)</span>
+<span class="sd">    ax[1, 2].imshow(np.flipud(after - master), cmap=cmap, vmin=-0.08, vmax=0.08)</span>
+<span class="sd">    ax[1, 2].set_title(&#39;after - master&#39;)</span>
+
+<span class="sd">    print(after-before)</span>
+
+<span class="sd">    plt.savefig(&#39;/home/kyle/ql_testing/ff_ratio.png&#39;, dpi=300)&#39;&#39;&#39;</span>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, kconnour.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

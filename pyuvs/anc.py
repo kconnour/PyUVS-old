@@ -1,31 +1,238 @@
+"""This module provides functions to load in standard dictionaries and arrays
+for working with IUVS data."""
 from pathlib import Path
 import numpy as np
 
 
-def get_package_path() -> Path:
-    return Path(__file__).parent.resolve()
-
-
-def get_muv_template_filepath() -> Path:
-    return get_package_path() / 'anc' / 'muv_templates.npy'
-
-
-def load_muv_templates() -> dict:
-    file_path = get_muv_template_filepath()
+def _load_numpy_dict(file_path: Path) -> dict:
     return np.load(file_path, allow_pickle=True).item()
 
 
+def get_package_path() -> Path:
+    """Get the path of the PyUVS package.
+
+    Returns
+    -------
+    Path
+        Path of the package.
+
+    Examples
+    --------
+    >>> import pyuvs as pu
+    >>> pu.anc.get_package_path()
+    PosixPath('/home/kyle/repos/PyUVS/pyuvs')
+
+    """
+    return Path(__file__).parent.resolve()
+
+
+def load_magnetic_field_closed_probability() -> np.ndarray:
+    """Load the map denoting the probability of a closed magnetic field line.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the image.
+
+    Notes
+    -----
+    The shape of this array is (180, 360).
+
+    * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.
+    * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
+      degrees.
+
+    This map comes from MGS data.
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       b_field = pu.anc.load_magnetic_field_closed_probability()
+       plt.imshow(b_field, cmap='Blues_r', origin='lower')
+       plt.show()
+
+    """
+    file_path = get_package_path() / 'anc' / \
+                'magnetic_field_closed_probability.npy'
+    return np.load(file_path)
+
+
+def load_magnetic_field_open_probability() -> np.ndarray:
+    """Load the map denoting the probability of an open magnetic field line.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the image.
+
+    Notes
+    -----
+    The shape of this array is (180, 360).
+
+    * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.
+    * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
+      degrees.
+
+    This map comes from MGS data.
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       b_field = pu.anc.load_magnetic_field_open_probability()
+       plt.imshow(b_field, cmap='Blues_r', origin='lower')
+       plt.show()
+
+    """
+    file_path = get_package_path() / 'anc' / \
+                'magnetic_field_open_probability.npy'
+    return np.load(file_path)
+
+
+def load_mars_surface_map() -> np.ndarray:
+    """Load the Mars surface map.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the image.
+
+    Notes
+    -----
+    The shape of this array is (1800, 3600, 4).
+
+    * The 0 :sup:`th` axis corresponds to latitude and spans 90 to -90 degrees.
+    * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
+      degrees.
+    * The 2 :sup:`nd` axis is the RGBA channel.
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       surface_map = pu.anc.load_mars_surface_map()
+       plt.imshow(surface_map)
+       plt.show()
+
+    """
+    file_path = get_package_path() / 'anc' / 'mars_surface_map.npy'
+    return np.load(file_path)
+
+
+def load_muv_templates() -> dict:
+    """Load all the MUV spectral templates.
+
+    Returns
+    -------
+    dict
+        All the included MUV templates.
+
+    Examples
+    --------
+    Get the dictionary keys:
+
+    >>> import pyuvs as pu
+    >>> pu.anc.load_muv_templates().keys()
+    dict_keys(['co2p_fdb', 'co2p_uvd', 'co_cameron_bands', 'cop_1ng', 'n2_vk', 'no_nightglow', 'o2972', 'solar_continuum'])
+
+    """
+    file_path = get_package_path() / 'anc' / 'muv_templates.npy'
+    return _load_numpy_dict(file_path)
+
+
 def load_no_nightglow_template() -> np.ndarray:
+    """Load the MUV NO nightglow template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,)
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_no_nightglow_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
     return load_muv_templates()['no_nightglow']
 
 
-def load_midhires_flatfield() -> np.ndarray:
+def load_solar_continuum_template() -> np.ndarray:
+    return load_muv_templates()['solar_continuum']
+
+
+def load_muv_wavelengths() -> dict:
+    file_path = get_package_path() / 'anc' / 'muv_wavelengths.npy'
+    return _load_numpy_dict(file_path)
+
+
+def load_midhires_flatfield_data() -> dict:
     file_path = get_package_path() / 'anc' / 'mvn_iuv_flatfield.npy'
-    return np.load(file_path, allow_pickle=True).item()['flatfield']
+    return _load_numpy_dict(file_path)
+
+
+def load_muv_wavelength_center() -> np.ndarray:
+    return load_muv_wavelengths()['wavelength_centers']
+
+
+def load_muv_wavelength_edge() -> np.ndarray:
+    return load_muv_wavelengths()['wavelength_edges']
+
+
+def load_muv_wavelength_width() -> np.ndarray:
+    return load_muv_wavelengths()['wavelength_width']
+
+
+def load_midhires_flatfield() -> np.ndarray:
+    return load_midhires_flatfield_data()['flatfield']
+
+
+def load_midhires_flatfield_wavelengths() -> np.ndarray:
+    return load_midhires_flatfield_data()['wavelengths']
 
 
 if __name__ == '__main__':
-    import matplotlib.pyplot as plt
+    a = load_muv_wavelength_center()
+    print(a.shape)
+    '''import matplotlib.pyplot as plt
     from scipy.io import readsav
     #from pyuvs
 
@@ -63,4 +270,4 @@ if __name__ == '__main__':
 
     print(after-before)
 
-    plt.savefig('/home/kyle/ql_testing/ff_ratio.png', dpi=300)
+    plt.savefig('/home/kyle/ql_testing/ff_ratio.png', dpi=300)'''
