@@ -60,7 +60,7 @@ def load_magnetic_field_closed_probability() -> np.ndarray:
 
     """
     file_path = get_package_path() / 'anc' / \
-                'magnetic_field_closed_probability.npy'
+                'magnetic_field_closed_probability_map.npy'
     return np.load(file_path)
 
 
@@ -98,7 +98,7 @@ def load_magnetic_field_open_probability() -> np.ndarray:
 
     """
     file_path = get_package_path() / 'anc' / \
-                'magnetic_field_open_probability.npy'
+                'magnetic_field_open_probability_map.npy'
     return np.load(file_path)
 
 
@@ -159,6 +159,186 @@ def load_muv_templates() -> dict:
     return _load_numpy_dict(file_path)
 
 
+def load_co2p_fdb_template() -> np.ndarray:
+    """Load the MUV CO :sub:`2` :sup:`+` FDB (Fox-Duffendack-Barker) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_co2p_fdb_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return load_muv_templates()['co2p_fdb']
+
+
+def load_co2p_uvd_template() -> np.ndarray:
+    """Load the MUV CO :sub:`2` :sup:`+` UVD (ultraviolet doublet) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_co2p_uvd_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return load_muv_templates()['co2p_uvd']
+
+
+def load_co_cameron_band_template() -> np.ndarray:
+    """Load the MUV CO Cameron band template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_co_cameron_band_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return load_muv_templates()['co_cameron_bands']
+
+
+def load_cop_1ng_template() -> np.ndarray:
+    """Load the MUV CO :sup:`+` 1NG (?) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_cop_1ng_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return load_muv_templates()['cop_1ng']
+
+
+def load_n2_vk_template() -> np.ndarray:
+    """Load the MUV N :sub:`2` VK (Vegard-Kaplan) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_n2_vk_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return load_muv_templates()['n2_vk']
+
+
 def load_no_nightglow_template() -> np.ndarray:
     """Load the MUV NO nightglow template.
 
@@ -169,7 +349,7 @@ def load_no_nightglow_template() -> np.ndarray:
 
     Notes
     -----
-    The shape of this array is (1024,)
+    The shape of this array is (1024,).
 
     Examples
     --------
@@ -195,30 +375,139 @@ def load_no_nightglow_template() -> np.ndarray:
     return load_muv_templates()['no_nightglow']
 
 
+def load_oxygen_2972_template() -> np.ndarray:
+    """Load the MUV oxygen 297.2 nm template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_oxygen_2972_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return load_muv_templates()['o2972']
+
+
 def load_solar_continuum_template() -> np.ndarray:
+    """Load the MUV solar continuum template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_solar_continuum_template()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
     return load_muv_templates()['solar_continuum']
 
 
 def load_muv_wavelengths() -> dict:
+    """Load all the MUV wavlengths.
+
+    Returns
+    -------
+    dict
+        All the included MUV wavelengths.
+
+    Examples
+    --------
+    Get the dictionary keys:
+
+    >>> import pyuvs as pu
+    >>> pu.anc.load_muv_wavelengths().keys()
+    dict_keys(['wavelength_centers', 'wavelength_edges'])
+
+    """
     file_path = get_package_path() / 'anc' / 'muv_wavelengths.npy'
     return _load_numpy_dict(file_path)
+
+
+def load_muv_wavelength_center() -> np.ndarray:
+    """Load the MUV wavelength center.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the center MUV wavelengths.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    """
+    return load_muv_wavelengths()['wavelength_centers']
+
+
+def load_muv_wavelength_edge() -> np.ndarray:
+    """Load the MUV wavelength edge.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the edge MUV wavelengths.
+
+    Notes
+    -----
+    The shape of this array is (1025,).
+
+    """
+    return load_muv_wavelengths()['wavelength_edges']
+
+
+
+
+
 
 
 def load_midhires_flatfield_data() -> dict:
     file_path = get_package_path() / 'anc' / 'mvn_iuv_flatfield.npy'
     return _load_numpy_dict(file_path)
-
-
-def load_muv_wavelength_center() -> np.ndarray:
-    return load_muv_wavelengths()['wavelength_centers']
-
-
-def load_muv_wavelength_edge() -> np.ndarray:
-    return load_muv_wavelengths()['wavelength_edges']
-
-
-def load_muv_wavelength_width() -> np.ndarray:
-    return load_muv_wavelengths()['wavelength_width']
 
 
 def load_midhires_flatfield() -> np.ndarray:
@@ -230,8 +519,7 @@ def load_midhires_flatfield_wavelengths() -> np.ndarray:
 
 
 if __name__ == '__main__':
-    a = load_muv_wavelength_center()
-    print(a.shape)
+    pass
     '''import matplotlib.pyplot as plt
     from scipy.io import readsav
     #from pyuvs

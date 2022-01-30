@@ -358,7 +358,7 @@ class Quicklook:
                        rasterized=True).set_array(None)
 
     def magnetic_field_map(self, cmap, norm):
-        field = np.load('/pyuvs-old/anc/magnetic_field_closed_probability.npy')
+        field = np.load('/pyuvs-old/anc/magnetic_field_closed_probability_map.npy')
         field = np.flipud(self.__resize_map(field))
         return cmap(norm(field))
 

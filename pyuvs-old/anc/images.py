@@ -24,7 +24,7 @@ class ClosedMagneticFieldMap(_AncillaryArray):
 
     """
     def __new__(cls):
-        anc = _AncillaryFileLoader('magnetic_field_closed_probability.npy')
+        anc = _AncillaryFileLoader('magnetic_field_closed_probability_map.npy')
         array = anc.load_array()
         return super().__new__(cls, array, anc.path)
 
@@ -37,6 +37,6 @@ class OpenMagneticFieldMap(_AncillaryArray):
 
     """
     def __new__(cls):
-        anc = _AncillaryFileLoader('magnetic_field_open_probability.npy')
+        anc = _AncillaryFileLoader('magnetic_field_open_probability_map.npy')
         array = anc.load_array()
         return super().__new__(cls, array, anc.path)

@@ -29,3 +29,6 @@ pixel_size: float = 0.023438
 pixel_omega: float = pixel_size / telescope_focal_length * \
                      spatial_slit_width / telescope_focal_length
 """Detector pixel angular dispersion along the slit."""
+
+muv_wavelength_width: float = 0.16367098
+"""Docstring."""

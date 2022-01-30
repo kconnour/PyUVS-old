@@ -219,7 +219,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> \
-                <span class="s1">&#39;magnetic_field_closed_probability.npy&#39;</span>
+                <span class="s1">&#39;magnetic_field_closed_probability_map.npy&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
 
 
@@ -257,7 +257,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> \
-                <span class="s1">&#39;magnetic_field_open_probability.npy&#39;</span>
+                <span class="s1">&#39;magnetic_field_open_probability_map.npy&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
 
 
@@ -318,6 +318,186 @@
     <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="load_co2p_fdb_template"><a class="viewcode-back" href="../../rst/api/anc/load_co2p_fdb_template.html#pyuvs.anc.load_co2p_fdb_template">[docs]</a><span class="k">def</span> <span class="nf">load_co2p_fdb_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV CO :sub:`2` :sup:`+` FDB (Fox-Duffendack-Barker) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_co2p_fdb_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;co2p_fdb&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_co2p_uvd_template"><a class="viewcode-back" href="../../rst/api/anc/load_co2p_uvd_template.html#pyuvs.anc.load_co2p_uvd_template">[docs]</a><span class="k">def</span> <span class="nf">load_co2p_uvd_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV CO :sub:`2` :sup:`+` UVD (ultraviolet doublet) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_co2p_uvd_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;co2p_uvd&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_co_cameron_band_template"><a class="viewcode-back" href="../../rst/api/anc/load_co_cameron_band_template.html#pyuvs.anc.load_co_cameron_band_template">[docs]</a><span class="k">def</span> <span class="nf">load_co_cameron_band_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV CO Cameron band template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_co_cameron_band_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;co_cameron_bands&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_cop_1ng_template"><a class="viewcode-back" href="../../rst/api/anc/load_cop_1ng_template.html#pyuvs.anc.load_cop_1ng_template">[docs]</a><span class="k">def</span> <span class="nf">load_cop_1ng_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV CO :sup:`+` 1NG (?) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_cop_1ng_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;cop_1ng&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_n2_vk_template"><a class="viewcode-back" href="../../rst/api/anc/load_n2_vk_template.html#pyuvs.anc.load_n2_vk_template">[docs]</a><span class="k">def</span> <span class="nf">load_n2_vk_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV N :sub:`2` VK (Vegard-Kaplan) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_n2_vk_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;n2_vk&#39;</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="load_no_nightglow_template"><a class="viewcode-back" href="../../rst/api/anc/load_no_nightglow_template.html#pyuvs.anc.load_no_nightglow_template">[docs]</a><span class="k">def</span> <span class="nf">load_no_nightglow_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV NO nightglow template.</span>
 
@@ -328,7 +508,7 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    The shape of this array is (1024,)</span>
+<span class="sd">    The shape of this array is (1024,).</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -354,30 +534,139 @@
     <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;no_nightglow&#39;</span><span class="p">]</span></div>
 
 
-<span class="k">def</span> <span class="nf">load_solar_continuum_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;solar_continuum&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="load_oxygen_2972_template"><a class="viewcode-back" href="../../rst/api/anc/load_oxygen_2972_template.html#pyuvs.anc.load_oxygen_2972_template">[docs]</a><span class="k">def</span> <span class="nf">load_oxygen_2972_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV oxygen 297.2 nm template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_oxygen_2972_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;o2972&#39;</span><span class="p">]</span></div>
 
 
-<span class="k">def</span> <span class="nf">load_muv_wavelengths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="load_solar_continuum_template"><a class="viewcode-back" href="../../rst/api/anc/load_solar_continuum_template.html#pyuvs.anc.load_solar_continuum_template">[docs]</a><span class="k">def</span> <span class="nf">load_solar_continuum_template</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV solar continuum template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_solar_continuum_template()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_templates</span><span class="p">()[</span><span class="s1">&#39;solar_continuum&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_muv_wavelengths"><a class="viewcode-back" href="../../rst/api/anc/load_muv_wavelengths.html#pyuvs.anc.load_muv_wavelengths">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelengths</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load all the MUV wavlengths.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        All the included MUV wavelengths.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Get the dictionary keys:</span>
+
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; pu.anc.load_muv_wavelengths().keys()</span>
+<span class="sd">    dict_keys([&#39;wavelength_centers&#39;, &#39;wavelength_edges&#39;])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> <span class="s1">&#39;muv_wavelengths.npy&#39;</span>
-    <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_muv_wavelength_center"><a class="viewcode-back" href="../../rst/api/anc/load_muv_wavelength_center.html#pyuvs.anc.load_muv_wavelength_center">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelength_center</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV wavelength center.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the center MUV wavelengths.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_centers&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_muv_wavelength_edge"><a class="viewcode-back" href="../../rst/api/anc/load_muv_wavelength_edge.html#pyuvs.anc.load_muv_wavelength_edge">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelength_edge</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV wavelength edge.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the edge MUV wavelengths.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1025,).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_edges&#39;</span><span class="p">]</span></div>
+
+
+
+
+
 
 
 <span class="k">def</span> <span class="nf">load_midhires_flatfield_data</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_package_path</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;anc&#39;</span> <span class="o">/</span> <span class="s1">&#39;mvn_iuv_flatfield.npy&#39;</span>
     <span class="k">return</span> <span class="n">_load_numpy_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">load_muv_wavelength_center</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_centers&#39;</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">load_muv_wavelength_edge</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_edges&#39;</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">load_muv_wavelength_width</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">load_muv_wavelengths</span><span class="p">()[</span><span class="s1">&#39;wavelength_width&#39;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">load_midhires_flatfield</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -389,8 +678,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">load_muv_wavelength_center</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">pass</span>
     <span class="sd">&#39;&#39;&#39;import matplotlib.pyplot as plt</span>
 <span class="sd">    from scipy.io import readsav</span>
 <span class="sd">    #from pyuvs</span>
