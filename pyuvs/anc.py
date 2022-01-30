@@ -3,6 +3,11 @@ for working with IUVS data."""
 from pathlib import Path
 import numpy as np
 
+# delta bands: 1.7822 "detector"
+# gamma bands: 1.0698 (for v0) "detector"
+# epsilon bands: None
+# take DN template where highest value is 1, multiply by above values, add them together, then renormalize
+
 
 def _load_numpy_dict(file_path: Path) -> dict:
     return np.load(file_path, allow_pickle=True).item()
@@ -268,7 +273,7 @@ def load_co_cameron_band_template() -> np.ndarray:
 
 
 def load_cop_1ng_template() -> np.ndarray:
-    """Load the MUV CO :sup:`+` 1NG (?) template.
+    """Load the MUV CO :sup:`+` 1NG (first negative) template.
 
     Returns
     -------

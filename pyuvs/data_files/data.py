@@ -684,3 +684,8 @@ def make_dayside_integration_mask(files: list[L1bFile]):
 
 def set_off_disk_pixels_to_nan(array: np.ndarray, on_disk_mask: np.ndarray):
     return np.where(on_disk_mask, array, np.nan)
+
+
+if __name__ == '__main__':
+    f = L1bFile('foo')
+    print(f.pixel_geometry.latitude)

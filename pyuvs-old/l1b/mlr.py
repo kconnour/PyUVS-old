@@ -94,7 +94,7 @@ class MLRFitter:
 
     def __fit_templates(self):
         weights = 1 / (self.__spectrum_uncertainty ** 2)
-        model = sm.WLS(self.__spectrum, self.__templates.T, weights=weights)
+        model = sm.WLS(self.__spectrum, self.__templates.T, weights=weights, missing='drop')   # if saturated pixels are NaNs, this ignores them
         return model.fit()
 
     def save_fit_summary(self, filepath):
@@ -196,6 +196,7 @@ class PipelineMLR:
                 [templates[i] for i in list(templates.keys())])[:,
                                            pixel_start:pixel_start + l1b.n_wavelengths]
 
+    # Take 1024 template and rebin it to whatever binning scheme
     def __rebin_factor(self, array: np.ndarray):
         new_spectrum = np.array([np.sum(
             array[i:i + self.__instrument_settings['spectral_bin_width']]) for i

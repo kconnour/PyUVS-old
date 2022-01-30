@@ -92,7 +92,7 @@ def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_fi
             if daynight:
                 pcolormesh_rgb_detector_image(template.no_data_swath, rgb_primary[swath_inds], x, y)
                 pcolormesh_rgb_detector_image(template.aurora_data_swath, rgb_primary[swath_inds], x, y)
-
+    t3 = time.time()
     for ax in [template.no_data_swath, template.aurora_data_swath,
                template.solar_zenith_angle_swath,
                template.emission_angle_swath, template.phase_angle_swath,
@@ -103,8 +103,8 @@ def make_pipeline_apoapse_muv_quicklook(orbit: int, data_location: Path, save_fi
         ax.set_yticks([])
 
     plt.savefig(f'/home/kyle/ql_testing/{save_filename}-orbit{orbit}.pdf')
-    t3 = time.time()
-    print(t3-t2, t2-t1, t1-t0)
+    t4 = time.time()
+    print(t4-t3, t3-t2, t2-t1, t1-t0)
 
 
 if __name__ == '__main__':
@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
         #print(t2-t1, t1-t0)'''
     p = Path('/media/kyle/Samsung_T5/IUVS_Data')
-    make_pipeline_apoapse_muv_quicklook(5675, p, 'quicklooktest')
+    make_pipeline_apoapse_muv_quicklook(5738, p, 'quicklooktest')
 
     '''files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
     files = [L1bFile(f) for f in files]
