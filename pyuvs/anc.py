@@ -1,6 +1,7 @@
 """This module provides functions to load in standard dictionaries and arrays
 for working with IUVS data."""
 from pathlib import Path
+
 import numpy as np
 
 # delta bands: 1.7822 "detector"
@@ -9,31 +10,431 @@ import numpy as np
 # take DN template where highest value is 1, multiply by above values, add them together, then renormalize
 
 
-def _load_numpy_dict(file_path: Path) -> dict:
-    return np.load(file_path, allow_pickle=True).item()
-
-
-def get_package_path() -> Path:
-    """Get the path of the PyUVS package.
-
-    Returns
-    -------
-    Path
-        Path of the package.
-
-    Examples
-    --------
-    >>> import pyuvs as pu
-    >>> pu.anc.get_package_path()
-    PosixPath('/home/kyle/repos/PyUVS/pyuvs')
-
-    """
+def _get_package_path() -> Path:
     return Path(__file__).parent.resolve()
 
 
-def load_magnetic_field_closed_probability() -> np.ndarray:
+def _get_anc_directory() -> Path:
+    return _get_package_path() / 'anc'
+
+
+def _get_flatfield_directory() -> Path:
+    return _get_anc_directory() / 'flatfields'
+
+
+def _get_instrument_directory() -> Path:
+    return _get_anc_directory() / 'instrument'
+
+
+def _get_maps_directory() -> Path:
+    return _get_anc_directory() / 'maps'
+
+
+def _get_templates_directory() -> Path:
+    return _get_anc_directory() / 'templates'
+
+
+# Flatfields
+# TODO: fix the tight layout in the graphics of documentation
+def load_flatfield_mid_hi_res_pipeline() -> np.ndarray:
+    """Load mid-hi-resolution flatfield used in the pipeline.
+
+    This array has a shape of (133, 19).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the flatfield.
+
+    Notes
+    -----
+    This flatfield was made from orbits XXXX to YYYY.
+
+    Examples
+    --------
+    Visualize this flatfield.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots(figsize=(6, 2))
+
+       flatfield = pu.load_flatfield_mid_hi_res_pipeline()
+       ax.imshow(flatfield.T, cmap='inferno')
+       ax.set_xlabel('Spatial bin')
+       ax.set_ylabel('Spectral bin')
+       plt.show()
+
+    """
+    return np.load(str(_get_flatfield_directory() /
+                   'mid-hi-res-flatfield-pipeline.npy'))
+
+
+def load_flatfield_mid_hi_res_my34gds() -> np.ndarray:
+    """Load mid-hi-resolution flatfield created from data taken during the
+    Mars year 34 global dust storm.
+
+    This array has a shape of (133, 19).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the flatfield.
+
+    Notes
+    -----
+    This flatfield was made from orbits XXXX to YYYY.
+
+    Examples
+    --------
+    Visualize this flatfield.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots(figsize=(6, 2))
+
+       flatfield = pu.load_flatfield_mid_hi_res_my34gds()
+       ax.imshow(flatfield.T, cmap='inferno')
+       ax.set_xlabel('Spatial bin')
+       ax.set_ylabel('Spectral bin')
+       plt.show()
+
+    """
+    return np.load(str(_get_flatfield_directory() /
+                   'mid-hi-res-flatfield-my34gds.npy'))
+
+
+def load_flatfield_hi_res() -> np.ndarray:
+    """Load hi-resolution flatfield created from data taken during outdisk.
+
+    This array has a shape of (200, 19).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the flatfield.
+
+    Notes
+    -----
+    This flatfield was made from orbits XXXX to YYYY.
+
+    Examples
+    --------
+    Visualize this flatfield.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots(figsize=(6, 2))
+
+       flatfield = pu.load_flatfield_hi_res()
+       ax.imshow(flatfield.T, cmap='inferno')
+       ax.set_xlabel('Spatial bin')
+       ax.set_ylabel('Spectral bin')
+       plt.show()
+
+    """
+    return np.load(str(_get_flatfield_directory() /
+                   'hi-res-flatfield.npy'))
+
+
+def load_flatfield_mid_res_app_flip() -> np.ndarray:
+    """Load mid-resolution flatfield created from data taken when the APP was
+    flipped.
+
+    This array has a shape of (50, 19).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the flatfield.
+
+    Notes
+    -----
+    This flatfield was made from orbits 3744 to 3750.
+
+    Examples
+    --------
+    Visualize this flatfield.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots(figsize=(6, 2))
+
+       flatfield = pu.load_flatfield_mid_res_app_flip()
+       ax.imshow(flatfield.T, cmap='inferno')
+       ax.set_xlabel('Spatial bin')
+       ax.set_ylabel('Spectral bin')
+       plt.show()
+
+    """
+    return np.load(str(_get_flatfield_directory() /
+                   'mid-res-flatfield-APP-flip.npy'))
+
+
+def load_flatfield_mid_res_no_app_flip() -> np.ndarray:
+    """Load mid-resolution flatfield created from data taken when the APP was
+    not flipped.
+
+    This array has a shape of (50, 19).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the flatfield.
+
+    Notes
+    -----
+    This flatfield was made from orbits 3733 to 3739.
+
+    Examples
+    --------
+    Visualize this flatfield.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots(figsize=(6, 2))
+
+       flatfield = pu.load_flatfield_mid_res_no_app_flip()
+       ax.imshow(flatfield.T, cmap='inferno')
+       ax.set_xlabel('Spatial bin')
+       ax.set_ylabel('Spectral bin')
+       plt.show()
+
+    """
+    return np.load(str(_get_flatfield_directory() /
+                   'mid-res-flatfield-no-APP-flip.npy'))
+
+
+# Instrument
+def load_fuv_sensitivity_curve_manufacturer() -> np.ndarray:
+    """Load the FUV factory sensitivity curve as reported by manufacturer.
+
+    This array has a shape of (101, 2). Index 0 of the first axis is the
+    wavelength corresponding to the sensitivity curve; index 1 is the
+    sensitivity curve.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the FUV sensitivity curve.
+
+    Notes
+    -----
+    This is the detector sensitivity in DN / (photons / cm :sup:`2`) at
+    gain = 1. The manufacturer reported this curve June 9, 2014.
+
+    Examples
+    --------
+    Plot the sensitivity curve.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import numpy as np
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       curve = pu.load_fuv_sensitivity_curve_manufacturer()
+       ax.plot(curve[:, 0], curve[:, 1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Detector Sensitivity')
+       ax.set_xlim(100, 200)
+       ax.set_ylim(0, 0.1)
+       plt.show()
+
+    """
+    return np.load(str(_get_instrument_directory() /
+                       'fuv_sensitivity_curve_manufacturer.npy'))
+
+
+def load_muv_point_spread_function() -> np.ndarray:
+    """Load the MUV point spread function.
+
+    This array has a shape of (181,).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the point spread function.
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import numpy as np
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       psf = pu.load_muv_point_spread_function()
+       angles = np.linspace(0, 180, num=181)
+       ax.plot(angles, psf)
+       ax.set_xlabel('Angle [degrees]')
+       ax.set_ylabel('Point spread function')
+       plt.show()
+
+    """
+    return np.load(str(_get_instrument_directory() /
+                       'muv_point_spread_function.npy'))
+
+
+def load_muv_sensitivity_curve_manufacturer() -> np.ndarray:
+    """Load the MUV factory sensitivity curve as reported by manufacturer.
+
+    This array has a shape of (101, 2). Index 0 of the first axis is the
+    wavelength corresponding to the sensitivity curve; index 1 is the
+    sensitivity curve.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the MUV sensitivity curve.
+
+    Notes
+    -----
+    This is the detector sensitivity in DN / (photons / cm :sup:`2`) at
+    gain = 1. The manufacturer reported this curve June 9, 2014.
+
+    See Also
+    --------
+    load_muv_sensitivity_curve_observational: This curve created from
+                                              observational data.
+
+    Examples
+    --------
+    Plot the sensitivity curve.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import numpy as np
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       curve = pu.load_muv_sensitivity_curve_manufacturer()
+       ax.plot(curve[:, 0], curve[:, 1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Detector Sensitivity')
+       ax.set_xlim(170, 360)
+       ax.set_ylim(0, 0.06)
+       plt.show()
+
+    """
+    return np.load(str(_get_instrument_directory() /
+                       'muv_sensitivity_curve_manufacturer.npy'))
+
+
+def load_muv_sensitivity_curve_observational() -> np.ndarray:
+    """Load the MUV factory sensitivity curve derived from observations.
+
+    This array has a shape of (512, 2). Index 0 of the first axis is the
+    wavelength corresponding to the sensitivity curve; index 1 is the
+    sensitivity curve.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the MUV sensitivity curve.
+
+    Notes
+    -----
+    This is the detector sensitivity in DN / (photons / cm :sup:`2`) at
+    gain = 1. Justin Deighan reported this curve October 19, 2018.
+
+    See Also
+    --------
+    load_muv_sensitivity_curve_manufacturer: This curve reported by the
+                                             manufacturer.
+
+    Examples
+    --------
+    Plot the sensitivity curve.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import numpy as np
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       curve = pu.load_muv_sensitivity_curve_observational()
+       ax.plot(curve[:, 0], curve[:, 1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Detector Sensitivity')
+       ax.set_xlim(170, 360)
+       ax.set_ylim(0, 0.06)
+       plt.show()
+
+    """
+    return np.load(str(_get_instrument_directory() /
+                       'muv_sensitivity_curve_observational.npy'))
+
+
+def load_muv_wavelength_edge() -> np.ndarray:
+    """Load the MUV wavelength edge.
+
+    This array has a shape of (1025,).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the edge MUV wavelengths.
+
+    """
+    return np.load(str(_get_instrument_directory() /
+                       'muv_wavelength_edges.npy'))
+
+
+def load_muv_wavelength_center() -> np.ndarray:
+    """Load the MUV wavelength center.
+
+    This array has a shape of (1024,).
+
+    Returns
+    -------
+    np.ndarray
+        Array of the center MUV wavelengths.
+
+    """
+    return np.load(str(_get_instrument_directory() /
+                       'muv_wavelength_centers.npy'))
+
+
+# Maps
+def load_map_magnetic_field_closed_probability() -> np.ndarray:
     """Load the map denoting the probability of a closed magnetic field line.
 
+    This array has a shape of (180, 360).
+
     Returns
     -------
     np.ndarray
@@ -41,13 +442,11 @@ def load_magnetic_field_closed_probability() -> np.ndarray:
 
     Notes
     -----
-    The shape of this array is (180, 360).
+    This map comes from MGS data.
 
     * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.
     * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
       degrees.
-
-    This map comes from MGS data.
 
     Examples
     --------
@@ -59,19 +458,23 @@ def load_magnetic_field_closed_probability() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       b_field = pu.anc.load_magnetic_field_closed_probability()
-       plt.imshow(b_field, cmap='Blues_r', origin='lower')
+       fig, ax = plt.subplots()
+
+       b_field = pu.anc.load_map_magnetic_field_closed_probability()
+       ax.imshow(b_field, cmap='Blues_r', origin='lower')
        plt.show()
 
     """
-    file_path = get_package_path() / 'anc' / \
-                'magnetic_field_closed_probability_map.npy'
-    return np.load(file_path)
+    file_path = _get_maps_directory() / \
+        'magnetic_field_closed_probability_map.npy'
+    return np.load(str(file_path))
 
 
-def load_magnetic_field_open_probability() -> np.ndarray:
+def load_map_magnetic_field_open_probability() -> np.ndarray:
     """Load the map denoting the probability of an open magnetic field line.
 
+    This array has a shape of (180, 360).
+
     Returns
     -------
     np.ndarray
@@ -79,13 +482,11 @@ def load_magnetic_field_open_probability() -> np.ndarray:
 
     Notes
     -----
-    The shape of this array is (180, 360).
+    This map comes from MGS data.
 
     * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.
     * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
       degrees.
-
-    This map comes from MGS data.
 
     Examples
     --------
@@ -97,18 +498,22 @@ def load_magnetic_field_open_probability() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       b_field = pu.anc.load_magnetic_field_open_probability()
-       plt.imshow(b_field, cmap='Blues_r', origin='lower')
+       fig, ax = plt.subplots()
+
+       b_field = pu.anc.load_map_magnetic_field_open_probability()
+       ax.imshow(b_field, cmap='Blues_r', origin='lower')
        plt.show()
 
     """
-    file_path = get_package_path() / 'anc' / \
-                'magnetic_field_open_probability_map.npy'
-    return np.load(file_path)
+    file_path = _get_maps_directory() / \
+        'magnetic_field_open_probability_map.npy'
+    return np.load(str(file_path))
 
 
-def load_mars_surface_map() -> np.ndarray:
+def load_map_mars_surface() -> np.ndarray:
     """Load the Mars surface map.
+
+    The shape of this array is (1800, 3600, 4).
 
     Returns
     -------
@@ -117,7 +522,6 @@ def load_mars_surface_map() -> np.ndarray:
 
     Notes
     -----
-    The shape of this array is (1800, 3600, 4).
 
     * The 0 :sup:`th` axis corresponds to latitude and spans 90 to -90 degrees.
     * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
@@ -134,15 +538,72 @@ def load_mars_surface_map() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       surface_map = pu.anc.load_mars_surface_map()
-       plt.imshow(surface_map)
+       fig, ax = plt.subplots()
+
+       surface_map = pu.anc.load_map_mars_surface()
+       ax.imshow(surface_map)
        plt.show()
 
     """
-    file_path = get_package_path() / 'anc' / 'mars_surface_map.npy'
-    return np.load(file_path)
+    file_path = _get_maps_directory() / 'mars_surface_map.npy'
+    return np.load(str(file_path))
 
 
+# Templates
+def load_template_no_nightglow(detector: bool = True) -> np.ndarray:
+    """Load the MUV NO nightglow template.
+
+    This array has a shape of (5, 1024). The zeroth axis corresponds to the
+    band system. The indices are noted below:
+
+    0. gamma all
+    1. gamma v0
+    2. gamma v3
+    3. delta all
+    4. epsilon all
+
+    Parameters
+    ----------
+    detector: bool
+        Denote whether to get the template in detector units. True returns
+        the templates in detector units; False returns the templates in
+        calibrated units.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Examples
+    --------
+    Plot a composite template of all templates in detector space.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import numpy as np
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       templates = pu.anc.load_template_no_nightglow()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, np.sum(templates, axis=0))
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    if detector:
+        return np.load(str(_get_templates_directory() /
+                           'no_nightglow_template_detector.npy'))
+    else:
+        return np.load(str(_get_templates_directory() /
+                           'no_nightglow_template_calibrated.npy'))
+
+'''
 def load_muv_templates() -> dict:
     """Load all the MUV spectral templates.
 
@@ -160,7 +621,7 @@ def load_muv_templates() -> dict:
     dict_keys(['co2p_fdb', 'co2p_uvd', 'co_cameron_bands', 'cop_1ng', 'n2_vk', 'no_nightglow', 'o2972', 'solar_continuum'])
 
     """
-    file_path = get_package_path() / 'anc' / 'muv_templates.npy'
+    file_path = _get_package_path() / 'anc' / 'muv_templates.npy'
     return _load_numpy_dict(file_path)
 
 
@@ -451,8 +912,8 @@ def load_solar_continuum_template() -> np.ndarray:
     """
     return load_muv_templates()['solar_continuum']
 
-
-def load_muv_wavelengths() -> dict:
+'''
+'''def load_muv_wavelengths() -> dict:
     """Load all the MUV wavlengths.
 
     Returns
@@ -469,7 +930,7 @@ def load_muv_wavelengths() -> dict:
     dict_keys(['wavelength_centers', 'wavelength_edges'])
 
     """
-    file_path = get_package_path() / 'anc' / 'muv_wavelengths.npy'
+    file_path = _get_package_path() / 'anc' / 'muv_wavelengths.npy'
     return _load_numpy_dict(file_path)
 
 
@@ -502,65 +963,47 @@ def load_muv_wavelength_edge() -> np.ndarray:
     The shape of this array is (1025,).
 
     """
-    return load_muv_wavelengths()['wavelength_edges']
-
-
-
-
-
-
-
-def load_midhires_flatfield_data() -> dict:
-    file_path = get_package_path() / 'anc' / 'mvn_iuv_flatfield.npy'
-    return _load_numpy_dict(file_path)
-
-
-def load_midhires_flatfield() -> np.ndarray:
-    return load_midhires_flatfield_data()['flatfield']
-
-
-def load_midhires_flatfield_wavelengths() -> np.ndarray:
-    return load_midhires_flatfield_data()['wavelengths']
+    return load_muv_wavelengths()['wavelength_edges']'''
 
 
 if __name__ == '__main__':
     pass
-    '''import matplotlib.pyplot as plt
-    from scipy.io import readsav
-    #from pyuvs
 
-    fig, ax = plt.subplots(2, 3)
-    a = load_midhires_flatfield()
+    '''import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(2, 4)
+    master = load_flatfield_mid_hi_res_pipeline()
+    before = load_flatfield_mid_res_no_app_flip()
+    after = load_flatfield_mid_res_app_flip()
+    gds = load_flatfield_mid_hi_res_my34gds()
 
     # REscale FF
-    master = np.zeros((50, 19))
+    master50 = np.zeros((50, 19))
     for i in range(19):
         foo = np.linspace(0, 132, num=50)
         bar = np.linspace(0, 132, num=133)
-        master[:, i] = np.interp(foo, bar, a[:, i])
-
-    flatfields = ['MIDRESAPO_FLATFIELD_19X50_ORBIT03733_3739.sav',
-                  'MIDRESAPO_FLATFIELD_19X50_ORBIT03744_3750.sav']
-
-    before = readsav(f'/home/kyle/ql_testing/{flatfields[0]}')['midresapo_flatfield_19x50_orbit03733_3739']
-    after = readsav(f'/home/kyle/ql_testing/{flatfields[1]}')['midresapo_flatfield_19x50_orbit03744_3750']
+        master50[:, i] = np.interp(foo, bar, master[:, i])
 
     cmap = 'inferno'
+    font = {'size': 8}
+    plt.rc('font', **font)
 
-    ax[0, 0].imshow(np.flipud(after/before), cmap=cmap, vmin=0.9, vmax=1.1)
+    ax[0, 0].imshow(after/before, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
     ax[0, 0].set_title('after/before')
-    ax[0, 1].imshow(np.flipud(before/master), cmap=cmap, vmin=0.9, vmax=1.1)
-    ax[0, 1].set_title('before/master')
-    ax[0, 2].imshow(np.flipud(after/master), cmap=cmap, vmin=0.9, vmax=1.1)
-    ax[0, 2].set_title('after/master')
+    ax[0, 1].imshow(before/master50, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
+    ax[0, 1].set_title('before/master50')
+    ax[0, 2].imshow(after/master50, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
+    ax[0, 2].set_title('after/master50')
+    ax[0, 3].imshow(gds/master, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
+    ax[0, 3].set_title('MY34 GDS/master')
 
-    ax[1, 0].imshow(np.flipud(after - before), cmap=cmap, vmin=-0.08, vmax=0.08)
+    ax[1, 0].imshow(after - before, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
     ax[1, 0].set_title('after - before')
-    ax[1, 1].imshow(np.flipud(before - master), cmap=cmap, vmin=-0.08, vmax=0.08)
-    ax[1, 1].set_title('before - master')
-    ax[1, 2].imshow(np.flipud(after - master), cmap=cmap, vmin=-0.08, vmax=0.08)
-    ax[1, 2].set_title('after - master')
+    ax[1, 1].imshow(before - master50, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
+    ax[1, 1].set_title('before - master50')
+    ax[1, 2].imshow(after - master50, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
+    ax[1, 2].set_title('after - master50')
+    ax[1, 3].imshow(gds - master, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
+    ax[1, 3].set_title('MY34 GDS - master')
 
-    print(after-before)
-
-    plt.savefig('/home/kyle/ql_testing/ff_ratio.png', dpi=300)'''
+    plt.savefig('/home/kyle/ql_testing/ff_ratio0.png', dpi=300)'''

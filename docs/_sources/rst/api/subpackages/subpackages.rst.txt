@@ -1,9 +1,0 @@
-Subpackages
-===========
-These are the subpackages contained in PyUVS
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Subpackages:
-
-   subpackages/graphics

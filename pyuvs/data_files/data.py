@@ -283,6 +283,94 @@ class Integration(_FitsRecord):
         return self._case_temp_c
 
 
+class Binning(_FitsRecord):
+    """A data structure representing the "binning" record arrays.
+
+    Parameters
+    ----------
+    structure
+        The .fits record.
+
+    """
+    def __init__(self, structure: fits.fitsrec.FITS_rec):
+        super().__init__(structure)
+
+        self._spabinwidth = self.get_substructure('spabinwidth')[0]
+        self._spapixlo = self.get_substructure('spapixlo')[0]
+        self._spebinwidth = self.get_substructure('spebinwidth')[0]
+        self._spepixlo = self.get_substructure('spepixlo')[0]
+
+        self.delete_structure()
+
+    @property
+    def spatial_pixel_bin_width(self) -> np.ndarray:
+        """Get the numer of detector pixels in each spatial bin.
+
+        Returns
+        -------
+        np.ndarray
+            Spatial pixels in each bin.
+
+        Notes
+        -----
+        This is shape (n_integrations + 2). All values except the first and
+        last pixels have the same value. The 2 correspond to the large and
+        small keyhole.
+
+        """
+        return self._spabinwidth
+
+    @property
+    def spatial_pixel_low(self) -> np.ndarray:
+        """Get the spatial pixel where each integration starts.
+
+        Returns
+        -------
+        np.ndarray
+            Spatial pixels where each bin starts.
+
+        Notes
+        -----
+        This is shape (n_integrations).
+
+        """
+        return self._spapixlo
+
+    @property
+    def spectral_pixel_bin_width(self) -> np.ndarray:
+        """Get the numer of detector pixels in each spectral bin.
+
+        Returns
+        -------
+        np.ndarray
+            Spectral pixels in each bin.
+
+        Notes
+        -----
+        This is shape (n_wavelengths + 2). All values except the first and
+        last pixels have the same value. The 2 correspond to the large and
+        small keyhole.
+
+        """
+        return self._spebinwidth
+
+    @property
+    def spectral_pixel_low(self) -> np.ndarray:
+        """Get the spectral pixel where each wavelength bin starts.
+
+        Returns
+        -------
+        np.ndarray
+            Spectral pixels where each bin starts.
+
+        Notes
+        -----
+        This is shape (n_integrations).
+
+        """
+        return self._spepixlo
+
+
 # TODO: this is incomplete
 class SpacecraftGeometry(_FitsRecord):
     """A data structure representing the "spacecraftgeometry" record arrays.
@@ -615,10 +703,28 @@ class Observation(_FitsRecord):
     def __init__(self, structure: fits.fitsrec.FITS_rec):
         super().__init__(structure)
 
+        self._int_time = \
+            self.get_substructure('int_time')
+        self._channel = \
+            self.get_substructure('channel')
         self._mcp_volt = \
             self.get_substructure('mcp_volt')[0]
+        self._mcp_gain = \
+            self.get_substructure('mcp_gain')[0]
+        self._wavelength = \
+            self.get_substructure('wavelength')[0]
+        self._wavelength_width = \
+            self.get_substructure('wavelength_width')[0]
 
         self.delete_structure()
+
+    @property
+    def integration_time(self) -> np.float32:
+        return self._int_time
+
+    @property
+    def channel(self) -> str:
+        return self._channel
 
     @property
     def mcp_voltage(self) -> np.float32:
@@ -631,6 +737,52 @@ class Observation(_FitsRecord):
 
         """
         return self._mcp_volt
+
+    @property
+    def mcp_gain(self) -> np.float32:
+        """Get the MCP voltage gain settings used to collect data in this file.
+
+        Returns
+        -------
+        np.ndarray
+            MCP voltage gain settings.
+
+        """
+        return self._mcp_gain
+
+    @property
+    def wavelength(self) -> np.ndarray:
+        """Get the wavelengths used throughout this file.
+
+        Returns
+        -------
+        np.ndarray
+            The wavelengths.
+
+        Notes
+        -----
+        All integrations have the same wavelengths, so this shape is
+        (n_spatial_bins, n_spectral_bins).
+
+        """
+        return self._wavelength
+
+    @property
+    def wavelength_width(self) -> np.ndarray:
+        """Get the width of the wavelengths used throughout this file.
+
+        Returns
+        -------
+        np.ndarray
+            The wavelength widths.
+
+        Notes
+        -----
+        All integrations have the same wavelengths, so this shape is
+        (n_spatial_bins, n_spectral_bins).
+
+        """
+        return self._wavelength_width
 
 
 def add_additional_axis(array: np.ndarray) -> np.ndarray:
@@ -687,5 +839,7 @@ def set_off_disk_pixels_to_nan(array: np.ndarray, on_disk_mask: np.ndarray):
 
 
 if __name__ == '__main__':
-    f = L1bFile('foo')
-    print(f.pixel_geometry.latitude)
+    from pyuvs.data_files.path import find_latest_apoapse_muv_file_paths_from_block
+    p = Path('/media/kyle/Samsung_T5/IUVS_Data')
+    files = find_latest_apoapse_muv_file_paths_from_block(p, 3453)
+    hdul = fits.open(files[0])

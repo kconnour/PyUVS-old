@@ -27,7 +27,7 @@ class _InstrumentSettings:
     def __get_settings(self) -> dict:
         return {
             'channel': self.__contents['primary'].header['xuv'].lower(),
-            'detector_voltage': self.__contents['primary'].header['mcp_volt'],
+            #'detector_voltage': self.__contents['primary'].header['mcp_volt'],
             'detector_gain': self.__contents['observation'].data['mcp_gain'][0],
             'integration_time': self.__contents['primary'].header['int_time'],
             'spectral_bin_width': self.__contents['primary'].header['spe_size'],

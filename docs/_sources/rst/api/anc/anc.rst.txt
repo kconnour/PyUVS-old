@@ -5,36 +5,35 @@ anc
 
 .. toctree::
    :maxdepth: 1
-   :caption: Templates:
+   :caption: Flatfields:
 
-   load_muv_templates
-   load_co2p_fdb_template
-   load_co2p_uvd_template
-   load_co_cameron_band_template
-   load_cop_1ng_template
-   load_n2_vk_template
-   load_no_nightglow_template
-   load_oxygen_2972_template
-   load_solar_continuum_template
+   load_flatfield_hi_res
+   load_flatfield_mid_hi_res_pipeline
+   load_flatfield_mid_hi_res_my34gds
+   load_flatfield_mid_res_app_flip
+   load_flatfield_mid_res_no_app_flip
 
 .. toctree::
    :maxdepth: 1
-   :caption: Wavelengths:
+   :caption: Instrument:
 
-   load_muv_wavelengths
-   load_muv_wavelength_center
+   load_fuv_sensitivity_curve_manufacturer
+   load_muv_point_spread_function
+   load_muv_sensitivity_curve_manufacturer
+   load_muv_sensitivity_curve_observational
    load_muv_wavelength_edge
+   load_muv_wavelength_center
 
 .. toctree::
    :maxdepth: 1
    :caption: Maps:
 
-   load_magnetic_field_closed_probability
-   load_magnetic_field_open_probability
-   load_mars_surface_map
+   load_map_magnetic_field_closed_probability
+   load_map_magnetic_field_open_probability
+   load_map_mars_surface
 
 .. toctree::
    :maxdepth: 1
-   :caption: Miscellaneous:
+   :caption: Templates:
 
-   get_package_path
+   load_template_no_nightglow
