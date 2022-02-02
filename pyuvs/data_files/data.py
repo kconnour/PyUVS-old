@@ -35,11 +35,13 @@ class L1bFile:
 
         self._primary = \
             self._get_structures('primary')
-        # TODO: random_dn_unc
+        self._random_dn_unc = \
+            self._get_structures('random_dn_unc')
         # TODO: random_phy_unc
         # TODO: systematic_phy_unc
         # TODO: detector_raw
-        # TODO: detector_dark_subtracted
+        self._detector_dark_subtracted = \
+            self._get_structures('detector_dark_subtracted')
         # TODO: quality_flag
         # TODO: background_dark
         # TODO: dark_integration
@@ -49,7 +51,8 @@ class L1bFile:
         self.integration = \
             Integration(self._get_structures('integration'))
         # TODO: engineering
-        # TODO: binning
+        self.binning = \
+            Binning(self._get_structures('binning'))
         self.spacecraft_geometry = \
             SpacecraftGeometry(self._get_structures('spacecraftgeometry'))
         self.pixel_geometry = \
@@ -72,6 +75,18 @@ class L1bFile:
     @add_integration_dimension
     def primary(self):
         return self._primary
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def random_uncertainty_dn(self):
+        return self._random_dn_unc
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_dark_subtracted(self):
+        return self._detector_dark_subtracted
 
     def _get_structures(self, name: str) -> fits.fitsrec.FITS_rec:
         # or it returns np.ndarray

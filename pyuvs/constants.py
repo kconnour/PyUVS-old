@@ -1,6 +1,8 @@
 """Collection of constants and conversion factors relevant to the instrument.
 
 """
+import numpy as np
+
 
 angular_slit_width: float = 10.64
 """Width of the slit [degrees]."""
@@ -32,3 +34,6 @@ pixel_omega: float = pixel_size / telescope_focal_length * \
 
 muv_wavelength_width: float = 0.16367098
 """Docstring."""
+
+kR: float = 10**10 / (4 * np.pi)
+"""Definition of the kilorayleigh [photons/second/m**2/steradian]."""
