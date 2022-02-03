@@ -1,86 +1,108 @@
-"""MLR = multiple linear regression
+"""This module provides functions to help perform an MLR fit.
+
+MLR = multiple linear regression.
 """
 from pathlib import Path
-import statsmodels.api as sm
-from pyuvs.anc import load_template_no_nightglow, load_muv_wavelength_center, load_muv_sensitivity_curve_observational
-from pyuvs.data_files import find_latest_apoapse_muv_file_paths_from_block, L1bFile
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+import statsmodels.api as sm
+from pyuvs.anc import load_muv_wavelength_center, \
+    load_muv_sensitivity_curve_observational, load_template_no_nightglow, \
+    load_template_co2p_uvd, load_template_co_cameron_bands, \
+    load_template_solar_continuum
 from pyuvs.constants import pixel_omega, kR
+from pyuvs.data_files import find_latest_apoapse_muv_file_paths_from_block, \
+    L1bFile
+
+
+def load_standard_fit_templates() -> np.ndarray:
+    """Load the standard fit templates (NO, aurora, solar)
+
+    Returns
+    -------
+
+    """
+    return np.vstack([load_template_no_nightglow(),
+                      load_template_co_cameron_bands() + load_template_co2p_uvd(),
+                      load_template_solar_continuum()])
+
+
+def rebin_templates(temp, spectral_pix_bin_width) -> np.ndarray:
+    reshaped_templates = \
+        np.reshape(temp, (temp.shape[0], int(temp.shape[1]/spectral_pix_bin_width),
+                          spectral_pix_bin_width))
+    return np.sum(reshaped_templates, axis=-1)
+
+
+def pad_spectral_axis_with_nan(array, start_ind, n_wavelengths):
+    temp_array = np.zeros((array.shape[0], array.shape[1], n_wavelengths)) * np.nan
+    temp_array[..., start_ind:start_ind+array.shape[-1]] = array
+    return temp_array
+
+
+def rebin_wavelengths(wavelengths, spectral_pix_bin_width):
+    return wavelengths.reshape((int(wavelengths.shape[0]/spectral_pix_bin_width), spectral_pix_bin_width)).mean(axis=1)
+
+
+def calculate_calibration_curve(spatial_bin_width, detector_sensitivity_curve, wavelength_width, voltage_gain, integration_time):
+    """DN/kR"""
+    bin_omega = pixel_omega * spatial_bin_width
+    return wavelength_width * voltage_gain * integration_time * kR * detector_sensitivity_curve * bin_omega
 
 
 if __name__ == '__main__':
+    import time
+    t0 = time.time()
+    # Find all files
     p = Path('/media/kyle/Samsung_T5/IUVS_data')
     files = find_latest_apoapse_muv_file_paths_from_block(p, 4000)
+
+    # Load in a test file
     file = L1bFile(files[2])
+    x = -1
+    y = 25
 
-    no_templates = load_template_no_nightglow(detector=True)[1:, :]
-    wavelength_center = load_muv_wavelength_center()
-    '''
-    # Here we just made a clean NO template that I no longer have to make every time
-    gross_template = np.genfromtxt('/home/kyle/Downloads/no_nightglow_detector_1024-bins.dat')
-
-    no_templates = sm.add_constant(no_templates.T)
-    results = sm.OLS(gross_template, no_templates).fit()
-    foo = ['constant', 'gammav0', 'gammav3', 'delta', 'epsilon']
-    print(results.summary(xname=foo))
-    #plt.plot(wavelength_center, gross_template, color='gray')
-    #plt.plot(wavelength_center, results.predict(no_templates), color='r', linewidth=0.5, linestyle='--')
-    #plt.savefig('/home/kyle/junk.png')
-
-    pred_template = results.predict(no_templates)
-    np.save('/home/kyle/repos/PyUVS/pyuvs/anc/templates/no_nightglow_template_detector_from_zac_the_ultimate.npy', pred_template)'''
-
-    # Load in the templates
-    no_template = np.load('/home/kyle/repos/PyUVS/pyuvs/anc/templates/no_nightglow_template_detector_from_zac_the_ultimate.npy')
-    solar_template = np.genfromtxt('/home/kyle/Downloads/zacs_data_files/solar_continuum_detector_1024-bins.dat')
-    co_cameron_template = np.genfromtxt('/home/kyle/Downloads/zacs_data_files/co-cameron-bands_detector_1024-bins.dat')
-    uvd_template = np.genfromtxt('/home/kyle/Downloads/zacs_data_files/co2p_uvd_detector_1024-bins.dat')
-
-    # Rebin the templates to match the data binning
+    # Get info from the test file
     spectral_pixel_bin_width = int(np.median(file.binning.spectral_pixel_bin_width))
-    def rebin_template(template, spe_pix_bin_width):
-        return template.reshape((int(template.shape[0]/spe_pix_bin_width), spe_pix_bin_width)).sum(axis=1)
-    rebin_no_template = rebin_template(no_template, spectral_pixel_bin_width)
-    rebin_solar_template = rebin_template(solar_template, spectral_pixel_bin_width)
-    rebin_co_cameron_template = rebin_template(co_cameron_template, spectral_pixel_bin_width)
-    rebin_uvd_template = rebin_template(uvd_template, spectral_pixel_bin_width)
-    rebin_aurora_template = rebin_co_cameron_template + rebin_uvd_template
-
-    # Stack all templates together
-    templates = np.vstack([rebin_no_template, rebin_aurora_template, rebin_solar_template]).T   # (n_wavelengths, 3)
-    templates = sm.add_constant(templates)
-    dummy_spectrum = file.detector_dark_subtracted[-1, 25, :]
-    dummy_unc = file.random_uncertainty_dn[-1, 25, :]
-
-    observation = np.full_like(templates[:, 0], fill_value=np.nan)
     starting_spectral_index = int(file.binning.spectral_pixel_bin_width[0] / spectral_pixel_bin_width)
-    observation[starting_spectral_index:starting_spectral_index+dummy_spectrum.shape[0]] = dummy_spectrum
-    unc = np.full_like(templates[:, 0], fill_value=np.nan)
-    unc[starting_spectral_index:starting_spectral_index + dummy_spectrum.shape[0]] = dummy_unc
-    def rebin_wavelengths(wavs, spe_pix_bin_width):
-        return wavs.reshape((int(wavs.shape[0]/spe_pix_bin_width), spe_pix_bin_width)).mean(axis=1)
-    rebinned_wavelengths = rebin_wavelengths(wavelength_center, spectral_pixel_bin_width)
+    spatial_pixel_bin_width = int(np.median(file.binning.spatial_pixel_bin_width))
+    wavelength_width = np.median(file.observation.wavelength_width)
+    voltage_gain = file.observation.mcp_gain
+    integration_time = file.observation.integration_time
 
+    # Load in miscellaneous info
+    wavelength_center = load_muv_wavelength_center()
+    rebinned_wavelengths = rebin_wavelengths(wavelength_center, spectral_pixel_bin_width)
+    rebinned_sensitivity_curve = np.interp(rebinned_wavelengths, load_muv_sensitivity_curve_observational()[:, 0],
+                                           load_muv_sensitivity_curve_observational()[:, 1])
+    rebinned_calibration_curve = calculate_calibration_curve(
+        spatial_pixel_bin_width, rebinned_sensitivity_curve, wavelength_width,
+        voltage_gain, integration_time)
+
+    # Rebin the templates to match the data binning and stack them and add constant
+    fit_templates = load_standard_fit_templates()
+    rebinned_templates = rebin_templates(fit_templates, spectral_pixel_bin_width).T
+    templates = sm.add_constant(rebinned_templates)
+
+    # Pad nans
     '''We have now taken our 40 bin spectrum and placed it in its original 
     position within a 256 bin spectrum so we can fit it to the 256 bin template
     '''
+    spectra = pad_spectral_axis_with_nan(file.detector_dark_subtracted, starting_spectral_index, 256)
+    uncertainty = pad_spectral_axis_with_nan(file.random_uncertainty_dn, starting_spectral_index, 256)
+    t1 = time.time()
+    foo = np.zeros(file.detector_dark_subtracted[:, :, 0].shape)
+    for f in range(foo.shape[0]):
+        for g in range(foo.shape[1]):
+            fit = sm.WLS(spectra[f, g, :], templates, weights=1/uncertainty[f, g, :]**2, missing='drop').fit()   # This ignores NaNs
+            coeff = fit.params
 
-    fit = sm.WLS(observation, templates, weights=1/unc**2, missing='drop').fit()   # This ignores NaNs
-    coeff = fit.params
-    new_sensitivity_curve = np.interp(rebinned_wavelengths, load_muv_sensitivity_curve_observational()[:, 0],
-                                      load_muv_sensitivity_curve_observational()[:, 1])
-    spatial_bin_width = int(np.median(file.binning.spatial_pixel_bin_width))
-    w_width = np.median(file.observation.wavelength_width)
-    gn = file.observation.mcp_gain
-    int_time = file.observation.integration_time
-    def calculate_calibration_curve(spa_bin_wid, new_calib_curve, wav_width, gain, itime):
-        """DN/kR"""
-        bin_omega = pixel_omega * spa_bin_wid
-        return wav_width * gain * itime * kR * new_calib_curve * bin_omega
-
-    calcurve = calculate_calibration_curve(spatial_bin_width, new_sensitivity_curve, w_width, gn, int_time)
-    no_brightness = np.sum(coeff[1] * templates[:, 1] * w_width / calcurve)
-    print(no_brightness)
-
-    # Zac's ass-ertion: interp the sensitivity curve to 1024 binning
+            no_brightness = np.sum(coeff[1] * templates[:, 1] * wavelength_width / rebinned_calibration_curve)
+            #print(no_brightness)
+            foo[f, g] = no_brightness
+    t2 = time.time()
+    print(t2-t1, t1-t0)
+    fig, ax = plt.subplots()
+    ax.imshow(foo, vmin=0, vmax=4)
+    plt.savefig('/home/kyle/junk.png')

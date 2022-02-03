@@ -545,24 +545,82 @@ def load_map_mars_surface() -> np.ndarray:
 
 
 # Templates
-def load_template_no_nightglow(detector: bool = True) -> np.ndarray:
+def load_template_co_cameron_bands() -> np.ndarray:
+    """Load the MUV CO Cameron band template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_co_cameron_bands()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return np.load(str(_get_templates_directory() / 'co_cameron_bands.npy'))
+
+
+def load_template_co2p_uvd() -> np.ndarray:
+    """Load the MUV CO :sub:`2` :sup:`+` UVD (ultraviolet doublet) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_co2p_uvd()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return np.load(str(_get_templates_directory() / 'ultraviolet_doublet.npy'))
+
+
+def load_template_no_nightglow() -> np.ndarray:
     """Load the MUV NO nightglow template.
 
-    This array has a shape of (5, 1024). The zeroth axis corresponds to the
-    band system. The indices are noted below:
-
-    0. gamma all
-    1. gamma v0
-    2. gamma v3
-    3. delta all
-    4. epsilon all
-
-    Parameters
-    ----------
-    detector: bool
-        Denote whether to get the template in detector units. True returns
-        the templates in detector units; False returns the templates in
-        calibrated units.
+    This array has a shape of (1024,).
 
     Returns
     -------
@@ -577,47 +635,58 @@ def load_template_no_nightglow(detector: bool = True) -> np.ndarray:
        :include-source:
 
        import matplotlib.pyplot as plt
-       import numpy as np
        import pyuvs as pu
 
        fig, ax = plt.subplots()
 
-       templates = pu.anc.load_template_no_nightglow()
+       template = pu.anc.load_template_no_nightglow()
        wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, np.sum(templates, axis=0))
+       ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
        ax.set_ylabel('Relative brightness')
        plt.show()
 
     """
-    if detector:
-        return np.load(str(_get_templates_directory() /
-                           'no_nightglow_template_detector.npy'))
-    else:
-        return np.load(str(_get_templates_directory() /
-                           'no_nightglow_template_calibrated.npy'))
+    return np.load(str(_get_templates_directory() / 'no_nightglow.npy'))
 
-'''
-def load_muv_templates() -> dict:
-    """Load all the MUV spectral templates.
+
+def load_template_solar_continuum() -> np.ndarray:
+    """Load the MUV solar continuum template.
 
     Returns
     -------
-    dict
-        All the included MUV templates.
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
 
     Examples
     --------
-    Get the dictionary keys:
+    Visualize this array.
 
-    >>> import pyuvs as pu
-    >>> pu.anc.load_muv_templates().keys()
-    dict_keys(['co2p_fdb', 'co2p_uvd', 'co_cameron_bands', 'cop_1ng', 'n2_vk', 'no_nightglow', 'o2972', 'solar_continuum'])
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_solar_continuum()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
 
     """
-    file_path = _get_package_path() / 'anc' / 'muv_templates.npy'
-    return _load_numpy_dict(file_path)
+    return np.load(str(_get_templates_directory() / 'solar_continuum.npy'))
+
+'''
 
 
 def load_co2p_fdb_template() -> np.ndarray:
@@ -654,79 +723,6 @@ def load_co2p_fdb_template() -> np.ndarray:
 
     """
     return load_muv_templates()['co2p_fdb']
-
-
-def load_co2p_uvd_template() -> np.ndarray:
-    """Load the MUV CO :sub:`2` :sup:`+` UVD (ultraviolet doublet) template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_co2p_uvd_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['co2p_uvd']
-
-
-def load_co_cameron_band_template() -> np.ndarray:
-    """Load the MUV CO Cameron band template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_co_cameron_band_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['co_cameron_bands']
-
 
 def load_cop_1ng_template() -> np.ndarray:
     """Load the MUV CO :sup:`+` 1NG (first negative) template.
@@ -800,41 +796,6 @@ def load_n2_vk_template() -> np.ndarray:
     return load_muv_templates()['n2_vk']
 
 
-def load_no_nightglow_template() -> np.ndarray:
-    """Load the MUV NO nightglow template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_no_nightglow_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['no_nightglow']
-
 
 def load_oxygen_2972_template() -> np.ndarray:
     """Load the MUV oxygen 297.2 nm template.
@@ -872,93 +833,9 @@ def load_oxygen_2972_template() -> np.ndarray:
     return load_muv_templates()['o2972']
 
 
-def load_solar_continuum_template() -> np.ndarray:
-    """Load the MUV solar continuum template.
 
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_solar_continuum_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['solar_continuum']
 
 '''
-'''def load_muv_wavelengths() -> dict:
-    """Load all the MUV wavlengths.
-
-    Returns
-    -------
-    dict
-        All the included MUV wavelengths.
-
-    Examples
-    --------
-    Get the dictionary keys:
-
-    >>> import pyuvs as pu
-    >>> pu.anc.load_muv_wavelengths().keys()
-    dict_keys(['wavelength_centers', 'wavelength_edges'])
-
-    """
-    file_path = _get_package_path() / 'anc' / 'muv_wavelengths.npy'
-    return _load_numpy_dict(file_path)
-
-
-def load_muv_wavelength_center() -> np.ndarray:
-    """Load the MUV wavelength center.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the center MUV wavelengths.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    """
-    return load_muv_wavelengths()['wavelength_centers']
-
-
-def load_muv_wavelength_edge() -> np.ndarray:
-    """Load the MUV wavelength edge.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the edge MUV wavelengths.
-
-    Notes
-    -----
-    The shape of this array is (1025,).
-
-    """
-    return load_muv_wavelengths()['wavelength_edges']'''
 
 
 if __name__ == '__main__':
