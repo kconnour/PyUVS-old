@@ -16,8 +16,416 @@ def app_flip(func):
     def wrapper(*args):
         f = func(*args)
         flip = args[0].flip
-        return np.fliplr(f) if flip else f
+        return np.flipud(np.fliplr(f)) if flip else f
     return wrapper
+
+
+class NewL1bFile:
+    """A data structure representing a level 1b data file.
+
+    This class accepts an l1b data file and reads in all of its info into
+    a flattened structure (as opposed to the l1b .fits file, which had arrays
+    nested within BinTableHDUs). It adds an integration dimension when that
+    dimension is missing from the original data. It also flips the data
+    over the integration and spatial dimensions if the APP is flipped.
+
+    Parameters
+    ----------
+    filepath: Path
+        Absolute path to the level 1b data file.
+
+    """
+
+    def __init__(self, filepath: Path):
+        self.hdul = fits.open(filepath)
+        self._primary = self.hdul['primary']
+        self._random_dn_unc = self.hdul['random_dn_unc']
+        self._random_phy_unc = self.hdul['random_phy_unc']
+        self._systematic_phy_unc = self.hdul['systematic_phy_unc']
+        self._detector_raw = self.hdul['detector_raw']
+        self._detector_dark_subtracted = self.hdul['detector_dark_subtracted']
+        self._quality_flag = self.hdul['quality_flag']
+        self._background_dark = self.hdul['background_dark']
+        self._dark_integration = self.hdul['dark_integration']
+
+        del self.hdul
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_raw(self) -> np.ndarray:
+        """Get the detector image without any corrections [DN].
+
+        Returns
+        -------
+        np.ndarray
+            The raw detector image.
+
+        """
+
+        return self._detector_raw
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_random_uncertainty_dn(self) -> np.ndarray:
+        """Get the random uncertainty [DN] of the detector image.
+
+        This is the uncertainty corresponding to
+        :py:attr:`~detector_image_raw`.
+
+        Returns
+        -------
+        np.ndarray
+            The random uncertainty of the detector image [DN].
+
+        """
+
+        return self._random_dn_unc.data
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_dark_current(self) -> np.ndarray:
+        """Get the dark current in detector image [DN].
+
+        Returns
+        -------
+        np.ndarray
+            The dark current in the detector image [DN].
+
+        """
+
+        return self._background_dark
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_dark_subtracted(self) -> np.ndarray:
+        """Get the detector image with dark current subtracted [DN].
+
+        Returns
+        -------
+        np.ndarray
+            The dark-current-corrected detector image [DN].
+
+        Notes
+        -----
+        This array is simply :py:attr:`~detector_image_raw` -
+        :py:attr:`~detector_image_dark_current`
+
+        """
+
+        return self._detector_dark_subtracted
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_calibrated(self) -> np.ndarray:
+        """Get the calibrated detector image [kR/nm].
+
+        This array has shape (number of integrations, number of spatial pixels,
+        number of spectral pixels).
+
+        Returns
+        -------
+        np.ndarray
+            The calibrated detector image.
+
+        Notes
+        -----
+        This array divided by :py:attr:`~detector_image_dark_subtracted` gives
+        arrays of the calibration curves.
+
+        """
+        return self._primary.data
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_random_uncertainty_physical(self) -> np.ndarray:
+        """Get the random uncertainty [kR/nm] of the detector image.
+
+        Returns
+        -------
+        np.ndarray
+            The random uncertainty of the detector image [kR/nm].
+        """
+
+        return self._random_phy_unc.data
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def detector_image_total_uncertainty_physical(self) -> np.ndarray:
+        """Get the combined random and systematic uncertainty [kR/nm] of the
+        detector image.
+
+        Returns
+        -------
+        np.ndarray
+            The total uncertainty of the detector image [kR/nm].
+        """
+
+        return self._systematic_phy_unc.data
+
+    @property
+    @app_flip
+    @add_integration_dimension
+    def quality_flag(self) -> np.ndarray:
+        """Get the quality flag.
+
+        Returns
+        -------
+        np.ndarray
+            The quality flag.
+
+        """
+
+        return self._quality_flag
+
+
+
+
+
+
+
+    @property
+    def disclaimer(self) -> str:
+        """Get the disclaimer associated with this data product.
+
+        Returns
+        -------
+        str
+            The disclaimer.
+
+        """
+        return self._primary.header['comment']
+
+    @property
+    def filename(self) -> str:
+        """Get the filename.
+
+        Returns
+        -------
+        str
+            The filename of this data file.
+
+        """
+        return self._primary.header['filename']
+
+    # TODO: what is SCET? I copied this from the header
+    @property
+    def capture_time(self) -> str:
+        """Get the capture (ephemeris) time of the start of this file.
+
+        Returns
+        -------
+        str
+            The capture time.
+
+        """
+        return self._primary.header['capture']
+
+    @property
+    def processing_time(self) -> str:
+        """Get the processing time of this file.
+
+        Returns
+        -------
+        str
+            The processing time.
+
+        """
+        return self._primary.header['process']
+
+    @property
+    def channel(self) -> str:
+        """Get the spectral channel of this file.
+
+        Returns
+        -------
+        str
+            The spectral channel.
+
+        """
+        return self._primary.header['xuv']
+
+    @property
+    def observation_id(self) -> int:
+        """Get the observation ID.
+
+        This is presumably the downlink bundle number.
+
+        Returns
+        -------
+        int
+            The observation ID.
+
+        """
+        return self._primary.header['obs_id']
+
+    @property
+    def number_absent_bins(self) -> int:
+        """Get the number of absent bins in the observation.
+
+        Returns
+        -------
+        int
+            The number of absent bins.
+
+        """
+        return self._primary.header['n_fill']
+
+    @property
+    def spatial_bin_offset(self) -> int:
+        """Get the starting spatial bin in this set of measurements.
+
+        Returns
+        -------
+        int
+            The starting spatial bin.
+
+        """
+        return self._primary.header['spa_ofs']
+
+    @property
+    def spectral_bin_offset(self) -> int:
+        """Get the starting spectral bin in this set of measurements.
+
+        Returns
+        -------
+        int
+            The starting spectral bin.
+
+        """
+        return self._primary.header['spe_ofs']
+
+    @property
+    def spatial_bin_size(self) -> int:
+        """Get the number of spatial detector pixels in each spatial bin.
+
+        Returns
+        -------
+        int
+            The size of a spatial bin.
+
+        """
+        return self._primary.header['spa_size']
+
+    @property
+    def spectral_bin_size(self) -> int:
+        """Get the number of spectral detector pixels in each spectral bin.
+
+        Returns
+        -------
+        int
+            The size of a spectral bin.
+
+        """
+        return self._primary.header['spe_size']
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @property
+    def dark_timestamp(self) -> np.ndarray:
+        """Time that the integration began according to S/C clock (uncorrected) (units: SCLK seconds)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['timestamp']
+
+    @property
+    def dark_ephemeris_time(self) -> np.ndarray:
+        """ Time that the integration began (corrected for SCLK errors by SCLK  COMMENT   kernel) (units: ET s)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['et']
+
+    @property
+    def dark_utc(self) -> np.ndarray:
+        """Time that the integration began (corrected for SCLK errors by SCLK COMMENT   kernel) (units: UTC date string)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['utc']
+
+    @property
+    def dark_mirror_angle_dn(self) -> np.ndarray:
+        """Mirror position at beginning of this integration (units: DN) TUNIT5  = 'deg'
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['mirror_dn']
+
+    @property
+    def dark_mirror_angle_degree(self) -> np.ndarray:
+        """Mirror position at beginning of this integration (units:    COMMENT   deg)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['mirror_deg']
+
+    @property
+    def dark_field_of_view(self) -> np.ndarray:
+        """Instrument field of view center position at beginning of       COMMENT   integration (=MIRROR_THIS_DEG*2) (units: deg)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['fov_deg']
+
+    @property
+    def dark_lyman_alpha_centroid(self) -> np.ndarray:
+        """Shift of wavelength scale calculated from centroid (units:COMMENT   pixel)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['lya_centroid']
+
+    @property
+    def dark_detector_temperature(self) -> np.ndarray:
+        """DET_TEMP_C: Case temperature (units: degC)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['det_temp_c']
+
+    @property
+    def dark_case_temperature(self) -> np.ndarray:
+        """CASE_TEMP_C: Case temperature (units: degC)
+
+        Returns
+        -------
+
+        """
+        return self._dark_integration.data['case_temp_c']
 
 
 # TODO: this is incomplete
@@ -858,3 +1266,16 @@ if __name__ == '__main__':
     p = Path('/media/kyle/Samsung_T5/IUVS_Data')
     files = find_latest_apoapse_muv_file_paths_from_block(p, 3453)
     hdul = fits.open(files[0])
+
+    #a = hdul['detector_raw'].data - hdul['background_dark'].data
+    #dds = hdul['detector_dark_subtracted'].data
+    #print(np.array_equal(a, dds))
+    #raise SystemExit(9)
+
+    hdul.info()
+    a = hdul['primary']
+    print(a.header)
+    print(a.data.columns)
+    print(a.data['utc'].shape)
+    l = NewL1bFile(files[0])
+    print(l.primary.shape)

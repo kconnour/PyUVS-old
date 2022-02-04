@@ -57,12 +57,12 @@ if __name__ == '__main__':
     # Find all files
     p = Path('/media/kyle/Samsung_T5/IUVS_data')
     files = find_latest_apoapse_muv_file_paths_from_block(p, 4000)
+    files = [L1bFile(f) for f in files]
 
-    # Load in a test file
-    file = L1bFile(files[2])
-    x = -1
-    y = 25
-
+    # Load in a nightside file
+    file = files[2]
+    dds = np.vstack([f.detector_dark_subtracted for f in files if not f.is_dayside_file()])
+    dnunc = np.vstack([f.random_uncertainty_dn for f in files if not f.is_dayside_file()])
     # Get info from the test file
     spectral_pixel_bin_width = int(np.median(file.binning.spectral_pixel_bin_width))
     starting_spectral_index = int(file.binning.spectral_pixel_bin_width[0] / spectral_pixel_bin_width)
@@ -89,10 +89,10 @@ if __name__ == '__main__':
     '''We have now taken our 40 bin spectrum and placed it in its original 
     position within a 256 bin spectrum so we can fit it to the 256 bin template
     '''
-    spectra = pad_spectral_axis_with_nan(file.detector_dark_subtracted, starting_spectral_index, 256)
-    uncertainty = pad_spectral_axis_with_nan(file.random_uncertainty_dn, starting_spectral_index, 256)
+    spectra = pad_spectral_axis_with_nan(dds, starting_spectral_index, 256)
+    uncertainty = pad_spectral_axis_with_nan(dnunc, starting_spectral_index, 256)
     t1 = time.time()
-    foo = np.zeros(file.detector_dark_subtracted[:, :, 0].shape)
+    foo = np.zeros(dds[:, :, 0].shape)
     for f in range(foo.shape[0]):
         for g in range(foo.shape[1]):
             fit = sm.WLS(spectra[f, g, :], templates, weights=1/uncertainty[f, g, :]**2, missing='drop').fit()   # This ignores NaNs
