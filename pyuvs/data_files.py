@@ -4,6 +4,8 @@ from functools import wraps
 from pathlib import Path
 from astropy.io import fits
 import numpy as np
+from pyuvs.constants import minimum_mirror_angle, maximum_mirror_angle, \
+    day_night_voltage_boundary
 
 
 # TODO: this should go in L1bFile since it only applies there
@@ -34,8 +36,8 @@ class L1bFile:
     original data and also flips the data over the spatial dimensions if the
     APP is flipped.
 
-    Most of the properties of this class are custom objects, which are
-    documented below.
+    .. warning::
+       Many of these structures are incomplete
 
     Parameters
     ----------
@@ -50,19 +52,24 @@ class L1bFile:
         self._integration = \
             self.Integration(self.hdul['integration'])
         # TODO: Engineering
-        # TODO: Binning
-        # TODO: SpacecraftGeometry
+        self._binning = \
+            self.Binning(self.hdul['binning'])
+        self._spacecraft_geometry = \
+            self.SpacecraftGeometry(self.hdul['spacecraftgeometry'])
         self._pixel_geometry = \
             self.PixelGeometry(self.hdul['pixelgeometry'])
-        # TODO: Observation
-        # TODO: DarkDetectorImage (detector_dark)
+        self._observation = \
+            self.Observation(self.hdul['observation'])
         self._dark_integration = \
             self.Integration(self.hdul['dark_integration'])
         # TODO: DarkEngineering
-        # TODO: DarkObservation
-        self.flip = True  # TODO: set the APP flip
+        self._dark_observation = \
+            self.Observation(self.hdul['dark_observation'])
+
+        self._flip = self.is_app_flipped()
         self._detector_image.set_flip(self.flip)
         self._pixel_geometry.set_flip(self.flip)
+
         del self.hdul
 
     class _FitsRecord:
@@ -80,7 +87,7 @@ class L1bFile:
         """Get the arrays of the detector image.
 
         All the arrays have shape (number of integrations, number of spatial
-        pixels, number of spectral pixels).
+        pixels, number of spectral pixels) except detector_dark.
 
         Parameters
         ----------
@@ -98,6 +105,7 @@ class L1bFile:
             self._detector_dark_subtracted = hdul['detector_dark_subtracted']
             self._quality_flag = hdul['quality_flag']
             self._background_dark = hdul['background_dark']
+            self._detector_dark = hdul['detector_dark']
 
         @property
         @app_flip
@@ -211,6 +219,20 @@ class L1bFile:
             """
 
             return self._systematic_phy_unc.data
+
+        @property
+        @app_flip
+        @add_integration_dimension
+        def detector_dark(self) -> np.ndarray:
+            """Get the detector dark
+
+            Returns
+            -------
+            np.ndarray
+                The detector dark [DN].
+            """
+
+            return self._detector_dark.data
 
         @property
         @app_flip
@@ -495,6 +517,316 @@ class L1bFile:
             """
             return self._integration['case_temp_c']
 
+    class Binning:
+        """Get the arrays of the binning.
+
+        Parameters
+        ----------
+        binning
+            The binning structure.
+
+        """
+
+        def __init__(self, binning):
+            self._binning = binning.data
+
+        @property
+        def spatial_pixel_bin_width(self) -> np.ndarray:
+            """Get the numer of detector pixels in each spatial bin.
+
+            Returns
+            -------
+            np.ndarray
+                Spatial pixels in each bin.
+
+            Notes
+            -----
+            This is shape (n_integrations + 2). All values except the first and
+            last pixels have the same value. The 2 correspond to the large and
+            small keyhole.
+
+            """
+            return self._binning['spabinwidth']
+
+        @property
+        def spatial_pixel_low(self) -> np.ndarray:
+            """Get the spatial pixel where each spatial bin starts.
+
+            Returns
+            -------
+            np.ndarray
+                Spatial pixels where each bin starts.
+
+            Notes
+            -----
+            This is shape (n_integrations).
+
+            """
+            return self._binning['spapixlo']
+
+        @property
+        def spatial_pixel_high(self) -> np.ndarray:
+            """Get the spatial pixel where each spatial bin ends.
+
+            Returns
+            -------
+            np.ndarray
+                Spatial pixels where each bin eds.
+
+            Notes
+            -----
+            This is shape (n_integrations).
+
+            """
+            return self._binning['spapixhi']
+
+        @property
+        def spatial_pixel_transmit(self) -> np.ndarray:
+            """Get whether the spatial pixels were transmitted.
+
+            Returns
+            -------
+            np.ndarray
+                Spatial pixel transmission.
+
+            """
+            return self._binning['spabintransmit']
+
+        @property
+        def spatial_bin_size(self) -> int:
+            """Get the spatial pixel bin size.
+
+            Returns
+            -------
+            int
+                Spatial pixel bin size.
+
+            """
+            return int(np.median(self.spatial_pixel_bin_width))
+
+        @property
+        def spatial_bin_offset(self) -> int:
+            """Get the spatial pixel bin offset.
+
+            Returns
+            -------
+            int
+                Spatial pixel bin offset.
+
+            """
+            return self.spatial_pixel_low[0, 0]
+
+        @property
+        def spectral_pixel_bin_width(self) -> np.ndarray:
+            """Get the numer of detector pixels in each spectral bin.
+
+            Returns
+            -------
+            np.ndarray
+                Spectral pixels in each bin.
+
+            Notes
+            -----
+            This is shape (n_wavelengths + 2). All values except the first and
+            last pixels have the same value. The 2 correspond to the large and
+            small keyhole.
+
+            """
+            return self._binning['spebinwidth']
+
+        @property
+        def spectral_pixel_low(self) -> np.ndarray:
+            """Get the spectral pixel where each spectral bin starts.
+
+            Returns
+            -------
+            np.ndarray
+                Spectral pixels where each bin starts.
+
+            Notes
+            -----
+            This is shape (n_integrations).
+
+            """
+            return self._binning['spepixlo']
+
+        @property
+        def spectral_pixel_high(self) -> np.ndarray:
+            """Get the spatial pixel where each spectral bin ends.
+
+            Returns
+            -------
+            np.ndarray
+                Spatial pixels where each bin eds.
+
+            Notes
+            -----
+            This is shape (n_integrations).
+
+            """
+            return self._binning['spepixhi']
+
+        @property
+        def spectral_pixel_transmit(self) -> np.ndarray:
+            """Get whether the spectral pixels were transmitted.
+
+            Returns
+            -------
+            np.ndarray
+                Spectral pixel transmission.
+
+            """
+            return self._binning['spebintransmit']
+
+        @property
+        def spectral_bin_size(self) -> int:
+            """Get the spectral pixel bin size.
+
+            Returns
+            -------
+            int
+                Spectral pixel bin size.
+
+            """
+            return int(np.median(self.spectral_pixel_bin_width))
+
+        @property
+        def spectral_bin_offset(self) -> int:
+            """Get the spectral pixel bin offset.
+
+            Returns
+            -------
+            int
+                Spectral pixel bin offset.
+
+            """
+            return self.spectral_pixel_low[0, 0]
+
+        @property
+        def bin_table_name(self) -> str:
+            """Get the name of the bin table used in this file.
+
+            Returns
+            -------
+            str
+                The name of the bin table.
+
+            """
+            return self._binning['bintablename'][0]
+
+    class SpacecraftGeometry:
+        """A data structure representing the "spacecraftgeometry" bin table.
+
+        Parameters
+        ----------
+        spacecraft_geometry
+            The spacecraft geometry structure.
+
+        """
+
+        def __init__(self, spacecraft_geometry):
+            self._spacecraft_geometry = spacecraft_geometry.data
+
+        @property
+        def sub_spacecraft_latitude(self) -> np.ndarray:
+            """Get the sub-spacecraft latitude [degrees] of each integration.
+
+            Returns
+            -------
+            np.ndarray
+                Sub-spacecraft latitude of each integration.
+
+            """
+            return self._spacecraft_geometry['sub_spacecraft_lat']
+
+        @property
+        def sub_spacecraft_longitude(self) -> np.ndarray:
+            """Get the sub-spacecraft longitude [degrees] of each integration.
+
+            Returns
+            -------
+            np.ndarray
+                Sub-spacecraft longitude of each integration.
+
+            """
+            return self._spacecraft_geometry['sub_spacecraft_lon']
+
+        @property
+        def sub_solar_latitude(self) -> np.ndarray:
+            return self._spacecraft_geometry['sub_solar_lat']
+
+        @property
+        def sub_solar_longitude(self) -> np.ndarray:
+            return self._spacecraft_geometry['sub_solar_lon']
+
+        @property
+        def sub_solar_altitude(self) -> np.ndarray:
+            return self._spacecraft_geometry['sub_solar_alt']
+
+        @property
+        def spacecraft_position_vector(self) -> np.ndarray:
+            return self._spacecraft_geometry['v_spacecraft']
+
+        @property
+        def spacecraft_velocity_vector(self) -> np.ndarray:
+            return self._spacecraft_geometry['v_spacecraft_rate']
+
+        @property
+        def sun_position_vector(self) -> np.ndarray:
+            """Get the position of the sun relative to Mars' center of mass
+            [km].
+
+            Returns
+            -------
+            np.ndarray
+                Position of the sun.
+
+            """
+            return self._spacecraft_geometry['v_sun']
+
+        @property
+        def sun_velocity_vector(self) -> np.ndarray:
+            """Get the velocity of the sun relative to Mars' center of mass
+            [km/s].
+
+            Returns
+            -------
+            np.ndarray
+                Position of the sun.
+
+            """
+            return self._spacecraft_geometry['v_sun_rate']
+
+        @property
+        def spacecraft_x_unit_vector(self):
+            return self._spacecraft_geometry['v_sun_rate']
+
+        @property
+        def inertial_frame_instrument_x_unit_vector(self) -> np.ndarray:
+            """Get the unit vector of the "x" component of the instrument in the
+            inertial frame of each integration.
+
+            Returns
+            -------
+            np.ndarray
+                "x" component of the instrument velocity in the inertial frame.
+
+            """
+            return self._spacecraft_geometry['vx_instrument_inertial']
+
+        @property
+        def inertial_frame_spacecraft_velocity_vector(self) -> np.ndarray:
+            """Get the spacecraft velocity vector [km/s] in the inertial frame of
+            each integration.
+
+            Returns
+            -------
+            np.ndarray
+                Spacecraft velocity vector in the inertial frame.
+
+            """
+            return self._spacecraft_geometry['v_spacecraft_rate_inertial']
+
     class PixelGeometry(_FitsRecord):
         """Get the arrays of the pixel geometry.
 
@@ -712,6 +1044,102 @@ class L1bFile:
             """
             return self._pixel_geometry['pixel_local_time']
 
+    class Observation:
+        """A data structure representing the "observation" record arrays.
+
+        Parameters
+        ----------
+        observation
+            The observation structure.
+
+        """
+        def __init__(self, observation):
+            self._observation = observation
+
+        @property
+        def integration_time(self) -> np.float32:
+            """Get the integration time corresponding to this observation.
+
+            Returns
+            -------
+            str
+                The integration time.
+
+            """
+            return self._observation['int_time']
+
+        @property
+        def channel(self) -> str:
+            """Get the channel corresponding to this observation.
+
+            Returns
+            -------
+            str
+                The channel name.
+
+            """
+            return self._observation['channel']
+
+        @property
+        def voltage(self) -> np.float32:
+            """Get the MCP voltage [V] settings used to collect data in this
+            file.
+
+            Returns
+            -------
+            np.ndarray
+                MCP voltage settings.
+
+            """
+            return self._observation['mcp_volt'][0]
+
+        @property
+        def voltage_gain(self) -> np.float32:
+            """Get the MCP voltage gain settings used to collect data in this
+            file.
+
+            Returns
+            -------
+            np.ndarray
+                MCP voltage gain settings.
+
+            """
+            return self._observation['mcp_gain'][0]
+
+        @property
+        def wavelength(self) -> np.ndarray:
+            """Get the wavelengths used throughout this file.
+
+            Returns
+            -------
+            np.ndarray
+                The wavelengths.
+
+            Notes
+            -----
+            All integrations have the same wavelengths, so this shape is
+            (n_spatial_bins, n_spectral_bins).
+
+            """
+            return self._observation['wavelength'][0]
+
+        @property
+        def wavelength_width(self) -> np.ndarray:
+            """Get the width of the wavelengths used throughout this file.
+
+            Returns
+            -------
+            np.ndarray
+                The wavelength widths.
+
+            Notes
+            -----
+            All integrations have the same wavelengths, so this shape is
+            (n_spatial_bins, n_spectral_bins).
+
+            """
+            return self._observation['wavelength_width'][0]
+
     @property
     def detector_image(self) -> DetectorImage:
         """Get the detector image substructure.
@@ -737,6 +1165,30 @@ class L1bFile:
         return self._integration
 
     @property
+    def binning(self) -> Binning:
+        """Get the binning substructure.
+
+        Returns
+        -------
+        Binning
+            The binning.
+
+        """
+        return self._binning
+
+    @property
+    def spacecraft_geometry(self) -> SpacecraftGeometry:
+        """Get the spacecraft geometry structure.
+
+        Returns
+        -------
+        SpacecraftGeometry
+            The spacecraft geometry structure.
+
+        """
+        return self._spacecraft_geometry
+
+    @property
     def pixel_geometry(self) -> PixelGeometry:
         """Get the pixel geometry substructure.
 
@@ -747,6 +1199,18 @@ class L1bFile:
 
         """
         return self._pixel_geometry
+
+    @property
+    def observation(self) -> Observation:
+        """Get the observation substructure.
+
+        Returns
+        -------
+        Observation
+            The observation information.
+
+        """
+        return self._observation
 
     @property
     def dark_integration(self) -> Integration:
@@ -760,78 +1224,21 @@ class L1bFile:
         """
         return self._dark_integration
 
+    @property
+    def dark_observation(self) -> Observation:
+        """Get the observation substructure.
 
-# TODO: this is incomplete
-'''class L1bFile:
-    """A data structure representing a level 1b data file.
+        Returns
+        -------
+        Observation
+            The observation information.
 
-    Parameters
-    ----------
-    filepath: Path
-        Absolute path to the level 1b data file.
-
-    """
-    def __init__(self, filepath: Path):
-        self.hdul = fits.open(filepath)
-
-        self._primary = \
-            self._get_structures('primary')
-        self._random_dn_unc = \
-            self._get_structures('random_dn_unc')
-        # TODO: random_phy_unc
-        # TODO: systematic_phy_unc
-        # TODO: detector_raw
-        self._detector_dark_subtracted = \
-            self._get_structures('detector_dark_subtracted')
-        # TODO: quality_flag
-        # TODO: background_dark
-        # TODO: dark_integration
-        # TODO: dark_engineering
-        # TODO: dark_observation
-        # TODO: detector_dark
-        self.integration = \
-            Integration(self._get_structures('integration'))
-        # TODO: engineering
-        self.binning = \
-            Binning(self._get_structures('binning'))
-        self.spacecraft_geometry = \
-            SpacecraftGeometry(self._get_structures('spacecraftgeometry'))
-        self.pixel_geometry = \
-            PixelGeometry(self._get_structures('pixelgeometry'))
-        self.observation = \
-            Observation(self._get_structures('observation'))
-
-        self._flip = self.is_app_flipped()
-
-        self.pixel_geometry.set_flip(self._flip)
-
-        del self.hdul
+        """
+        return self._dark_observation
 
     @property
     def flip(self):
         return self._flip
-
-    @property
-    @app_flip
-    @add_integration_dimension
-    def primary(self):
-        return self._primary
-
-    @property
-    @app_flip
-    @add_integration_dimension
-    def random_uncertainty_dn(self):
-        return self._random_dn_unc
-
-    @property
-    @app_flip
-    @add_integration_dimension
-    def detector_dark_subtracted(self):
-        return self._detector_dark_subtracted
-
-    def _get_structures(self, name: str) -> fits.fitsrec.FITS_rec:
-        # or it returns np.ndarray
-        return self.hdul[name].data
 
     def is_app_flipped(self) -> bool:
         """Determine if the APP was flipped.
@@ -843,8 +1250,10 @@ class L1bFile:
 
         """
         dot_product = np.dot(
-            self.spacecraft_geometry.inertial_frame_instrument_x_unit_vector[-1],
-            self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector[-1])
+            self.spacecraft_geometry.inertial_frame_instrument_x_unit_vector[
+                -1],
+            self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector[
+                -1])
         return np.sign(dot_product) > 0
 
     def is_dayside_file(self) -> bool:
@@ -856,19 +1265,7 @@ class L1bFile:
             True if the file is a dayside file; False otherwise.
 
         """
-        return self.observation.mcp_voltage < day_night_voltage_boundary
-
-    def positive_mirror_scan_direction(self) -> bool:
-        """Determine if the mirror is scanning in a positive direction.
-
-        Returns
-        -------
-        True if the mirror angle is increasing each integration; False
-        otherwise.
-
-        """
-        return self.integration.mirror_angle[-1] - \
-            self.integration.mirror_angle[0] > 0
+        return self.observation.voltage < day_night_voltage_boundary
 
     def is_relay_file(self) -> bool:
         """Determine if the input file is a relay file.
@@ -879,287 +1276,9 @@ class L1bFile:
             True if the file is a relay file; False otherwise.
 
         """
-        return np.amin(self.integration.mirror_angle) == minimum_mirror_angle \
-            and np.amax(self.integration.mirror_angle) == maximum_mirror_angle'''
-
-
-class _FitsRecord:
-    def __init__(self, structure: fits.fitsrec.FITS_rec):
-        self._flip = None
-        self.structure = structure
-
-    def get_substructure(self, name: str):
-        return self.structure[name]
-
-    def delete_structure(self):
-        del self.structure
-
-    def set_flip(self, flip: bool):
-        self._flip = flip
-
-    @property
-    def flip(self):
-        return self._flip
-
-
-
-class Binning(_FitsRecord):
-    """A data structure representing the "binning" record arrays.
-
-    Parameters
-    ----------
-    structure
-        The .fits record.
-
-    """
-    def __init__(self, structure: fits.fitsrec.FITS_rec):
-        super().__init__(structure)
-
-        self._spabinwidth = self.get_substructure('spabinwidth')[0]
-        self._spapixlo = self.get_substructure('spapixlo')[0]
-        self._spebinwidth = self.get_substructure('spebinwidth')[0]
-        self._spepixlo = self.get_substructure('spepixlo')[0]
-
-        self.delete_structure()
-
-    @property
-    def spatial_pixel_bin_width(self) -> np.ndarray:
-        """Get the numer of detector pixels in each spatial bin.
-
-        Returns
-        -------
-        np.ndarray
-            Spatial pixels in each bin.
-
-        Notes
-        -----
-        This is shape (n_integrations + 2). All values except the first and
-        last pixels have the same value. The 2 correspond to the large and
-        small keyhole.
-
-        """
-        return self._spabinwidth
-
-    @property
-    def spatial_pixel_low(self) -> np.ndarray:
-        """Get the spatial pixel where each integration starts.
-
-        Returns
-        -------
-        np.ndarray
-            Spatial pixels where each bin starts.
-
-        Notes
-        -----
-        This is shape (n_integrations).
-
-        """
-        return self._spapixlo
-
-    @property
-    def spectral_pixel_bin_width(self) -> np.ndarray:
-        """Get the numer of detector pixels in each spectral bin.
-
-        Returns
-        -------
-        np.ndarray
-            Spectral pixels in each bin.
-
-        Notes
-        -----
-        This is shape (n_wavelengths + 2). All values except the first and
-        last pixels have the same value. The 2 correspond to the large and
-        small keyhole.
-
-        """
-        return self._spebinwidth
-
-    @property
-    def spectral_pixel_low(self) -> np.ndarray:
-        """Get the spectral pixel where each wavelength bin starts.
-
-        Returns
-        -------
-        np.ndarray
-            Spectral pixels where each bin starts.
-
-        Notes
-        -----
-        This is shape (n_integrations).
-
-        """
-        return self._spepixlo
-
-
-# TODO: this is incomplete
-class SpacecraftGeometry(_FitsRecord):
-    """A data structure representing the "spacecraftgeometry" record arrays.
-
-    Parameters
-    ----------
-    structure
-        The .fits record.
-
-    """
-    def __init__(self, structure: fits.fitsrec.FITS_rec):
-        super().__init__(structure)
-
-        self._sub_spacecraft_lat = \
-            self.get_substructure('sub_spacecraft_lat')
-        self._sub_spacecraft_lon = \
-            self.get_substructure('sub_spacecraft_lon')
-        self._vx_instrument_inertial = \
-            self.get_substructure('vx_instrument_inertial')
-        self._v_spacecraft_rate_inertial = \
-            self.get_substructure('v_spacecraft_rate_inertial')
-
-        self.delete_structure()
-
-    @property
-    def sub_spacecraft_latitude(self) -> np.ndarray:
-        """Get the sub-spacecraft latitude [degrees] of each integration.
-
-        Returns
-        -------
-        np.ndarray
-            Sub-spacecraft latitude of each integration.
-
-        """
-        return self._sub_spacecraft_lat
-
-    @property
-    def sub_spacecraft_longitude(self) -> np.ndarray:
-        """Get the sub-spacecraft longitude [degrees] of each integration.
-
-        Returns
-        -------
-        np.ndarray
-            Sub-spacecraft longitude of each integration.
-
-        """
-        return self._sub_spacecraft_lon
-
-    @property
-    def inertial_frame_instrument_x_unit_vector(self) -> np.ndarray:
-        """Get the unit vector of the "x" component of the instrument in the
-        inertial frame of each integration.
-
-        Returns
-        -------
-        np.ndarray
-            "x" component of the instrument velocity in the inertial frame.
-
-        """
-        return self._vx_instrument_inertial
-
-    @property
-    def inertial_frame_spacecraft_velocity_vector(self) -> np.ndarray:
-        """Get the spacecraft velocity vector [km/s] in the inertial frame of
-        each integration.
-
-        Returns
-        -------
-        np.ndarray
-            Spacecraft velocity vector in the inertial frame.
-
-        """
-        return self._v_spacecraft_rate_inertial
-
-
-# TODO: this is incomplete
-# TODO: write what MCP stands for
-class Observation(_FitsRecord):
-    """A data structure representing the "observation" record arrays.
-
-    Parameters
-    ----------
-    structure
-        The .fits record.
-
-    """
-    def __init__(self, structure: fits.fitsrec.FITS_rec):
-        super().__init__(structure)
-
-        self._int_time = \
-            self.get_substructure('int_time')
-        self._channel = \
-            self.get_substructure('channel')
-        self._mcp_volt = \
-            self.get_substructure('mcp_volt')[0]
-        self._mcp_gain = \
-            self.get_substructure('mcp_gain')[0]
-        self._wavelength = \
-            self.get_substructure('wavelength')[0]
-        self._wavelength_width = \
-            self.get_substructure('wavelength_width')[0]
-
-        self.delete_structure()
-
-    @property
-    def integration_time(self) -> np.float32:
-        return self._int_time
-
-    @property
-    def channel(self) -> str:
-        return self._channel
-
-    @property
-    def mcp_voltage(self) -> np.float32:
-        """Get the MCP voltage [V] settings used to collect data in this file.
-
-        Returns
-        -------
-        np.ndarray
-            MCP voltage settings.
-
-        """
-        return self._mcp_volt
-
-    @property
-    def mcp_gain(self) -> np.float32:
-        """Get the MCP voltage gain settings used to collect data in this file.
-
-        Returns
-        -------
-        np.ndarray
-            MCP voltage gain settings.
-
-        """
-        return self._mcp_gain
-
-    @property
-    def wavelength(self) -> np.ndarray:
-        """Get the wavelengths used throughout this file.
-
-        Returns
-        -------
-        np.ndarray
-            The wavelengths.
-
-        Notes
-        -----
-        All integrations have the same wavelengths, so this shape is
-        (n_spatial_bins, n_spectral_bins).
-
-        """
-        return self._wavelength
-
-    @property
-    def wavelength_width(self) -> np.ndarray:
-        """Get the width of the wavelengths used throughout this file.
-
-        Returns
-        -------
-        np.ndarray
-            The wavelength widths.
-
-        Notes
-        -----
-        All integrations have the same wavelengths, so this shape is
-        (n_spatial_bins, n_spectral_bins).
-
-        """
-        return self._wavelength_width
+        return np.amin(self.integration.mirror_angle_degree) == minimum_mirror_angle \
+               and np.amax(
+            self.integration.mirror_angle_degree) == maximum_mirror_angle
 
 
 def add_additional_axis(array: np.ndarray) -> np.ndarray:
@@ -1218,18 +1337,6 @@ def set_off_disk_pixels_to_nan(array: np.ndarray, on_disk_mask: np.ndarray):
 if __name__ == '__main__':
     from pyuvs.data_files0.path import find_latest_apoapse_muv_file_paths_from_block
     p = Path('/media/kyle/Samsung_T5/IUVS_Data')
-    files = find_latest_apoapse_muv_file_paths_from_block(p, 3453)
-    hdul = fits.open(files[0])
-    #a = hdul['detector_raw'].data - hdul['background_dark'].data
-    #dds = hdul['detector_dark_subtracted'].data
-    #print(np.array_equal(a, dds))
-    #raise SystemExit(9)
-
-    hdul.info()
-    #a = hdul['primary']
-    #print(a.header)
-    #print(a.data.columns)
-    #print(a.data['utc'].shape)
+    files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
     l = L1bFile(files[0])
-    print(hdul['pixelgeometry'].data['pixel_corner_lat'][0, 0, :])
-    print(l.pixel_geometry.latitude[0, -1, :])
+    print(l.flip, l.is_relay_file())

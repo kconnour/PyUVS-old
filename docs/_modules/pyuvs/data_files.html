@@ -193,8 +193,8 @@
 <span class="sd">    original data and also flips the data over the spatial dimensions if the</span>
 <span class="sd">    APP is flipped.</span>
 
-<span class="sd">    Most of the properties of this class are custom objects, which are</span>
-<span class="sd">    documented below.</span>
+<span class="sd">    .. warning::</span>
+<span class="sd">       Many of these</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -209,20 +209,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_integration</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">Integration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;integration&#39;</span><span class="p">])</span>
         <span class="c1"># TODO: Engineering</span>
-        <span class="c1"># TODO: Binning</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">Binning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;binning&#39;</span><span class="p">])</span>
         <span class="c1"># TODO: SpacecraftGeometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">PixelGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;pixelgeometry&#39;</span><span class="p">])</span>
-        <span class="c1"># TODO: Observation</span>
-        <span class="c1"># TODO: DarkDetectorImage (detector_dark)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">Observation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dark_integration</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">Integration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;dark_integration&#39;</span><span class="p">])</span>
         <span class="c1"># TODO: DarkEngineering</span>
-        <span class="c1"># TODO: DarkObservation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dark_observation</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">Observation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;dark_observation&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flip</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># TODO: set the APP flip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_detector_image</span><span class="o">.</span><span class="n">set_flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span><span class="o">.</span><span class="n">set_flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdul</span>
+        <span class="c1"># TODO: Methods...</span>
 
     <span class="k">class</span> <span class="nc">_FitsRecord</span><span class="p">:</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -235,11 +238,11 @@
         <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span>
 
-<div class="viewcode-block" id="L1bFile.DetectorImage"><a class="viewcode-back" href="../../rst/api/data_files/L1bFile.html#pyuvs.data_files.L1bFile.DetectorImage">[docs]</a>    <span class="k">class</span> <span class="nc">DetectorImage</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">DetectorImage</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the detector image.</span>
 
 <span class="sd">        All the arrays have shape (number of integrations, number of spatial</span>
-<span class="sd">        pixels, number of spectral pixels).</span>
+<span class="sd">        pixels, number of spectral pixels) except detector_dark.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -257,6 +260,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_detector_dark_subtracted</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;detector_dark_subtracted&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_quality_flag</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;quality_flag&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_background_dark</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;background_dark&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_detector_dark</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;detector_dark&#39;</span><span class="p">]</span>
 
         <span class="nd">@property</span>
         <span class="nd">@app_flip</span>
@@ -370,6 +374,20 @@
 <span class="sd">            &quot;&quot;&quot;</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_systematic_phy_unc</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="nd">@property</span>
+        <span class="nd">@app_flip</span>
+        <span class="nd">@add_integration_dimension</span>
+        <span class="k">def</span> <span class="nf">detector_dark</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the detector dark</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                The detector dark [DN].</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detector_dark</span><span class="o">.</span><span class="n">data</span>
 
         <span class="nd">@property</span>
         <span class="nd">@app_flip</span>
@@ -518,9 +536,9 @@
 <span class="sd">                The size of a spectral bin.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;spe_size&#39;</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;spe_size&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="L1bFile.Integration"><a class="viewcode-back" href="../../rst/api/data_files/L1bFile.html#pyuvs.data_files.L1bFile.Integration">[docs]</a>    <span class="k">class</span> <span class="nc">Integration</span><span class="p">:</span>
+    <span class="k">class</span> <span class="nc">Integration</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the integrations.</span>
 
 <span class="sd">        Parameters</span>
@@ -652,9 +670,319 @@
 <span class="sd">                The instrument case temperature of each integration.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integration</span><span class="p">[</span><span class="s1">&#39;case_temp_c&#39;</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integration</span><span class="p">[</span><span class="s1">&#39;case_temp_c&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="L1bFile.PixelGeometry"><a class="viewcode-back" href="../../rst/api/data_files/L1bFile.html#pyuvs.data_files.L1bFile.PixelGeometry">[docs]</a>    <span class="k">class</span> <span class="nc">PixelGeometry</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Binning</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the arrays of the binning.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        binning</span>
+<span class="sd">            The binning structure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">binning</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span> <span class="o">=</span> <span class="n">binning</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spatial_pixel_bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the numer of detector pixels in each spatial bin.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spatial pixels in each bin.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            This is shape (n_integrations + 2). All values except the first and</span>
+<span class="sd">            last pixels have the same value. The 2 correspond to the large and</span>
+<span class="sd">            small keyhole.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spabinwidth&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spatial_pixel_low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spatial pixel where each spatial bin starts.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spatial pixels where each bin starts.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            This is shape (n_integrations).</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spapixlo&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spatial_pixel_high</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spatial pixel where each spatial bin ends.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spatial pixels where each bin eds.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            This is shape (n_integrations).</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spapixhi&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spatial_pixel_transmit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get whether the spatial pixels were transmitted.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spatial pixel transmission.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spabintransmit&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spatial_bin_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spatial pixel bin size.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            int</span>
+<span class="sd">                Spatial pixel bin size.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spatial_pixel_bin_width</span><span class="p">))</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spatial_bin_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spatial pixel bin offset.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            int</span>
+<span class="sd">                Spatial pixel bin offset.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spatial_pixel_low</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spectral_pixel_bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the numer of detector pixels in each spectral bin.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spectral pixels in each bin.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            This is shape (n_wavelengths + 2). All values except the first and</span>
+<span class="sd">            last pixels have the same value. The 2 correspond to the large and</span>
+<span class="sd">            small keyhole.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spebinwidth&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spectral_pixel_low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spectral pixel where each spectral bin starts.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spectral pixels where each bin starts.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            This is shape (n_integrations).</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spepixlo&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spectral_pixel_high</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spatial pixel where each spectral bin ends.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spatial pixels where each bin eds.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            This is shape (n_integrations).</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spepixhi&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spectral_pixel_transmit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get whether the spectral pixels were transmitted.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spectral pixel transmission.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;spebintransmit&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spectral_bin_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spectral pixel bin size.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            int</span>
+<span class="sd">                Spectral pixel bin size.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">))</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spectral_bin_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spectral pixel bin offset.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            int</span>
+<span class="sd">                Spectral pixel bin offset.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_pixel_low</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">bin_table_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the name of the bin table used in this file.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            str</span>
+<span class="sd">                The name of the bin table.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;bintablename&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">class</span> <span class="nc">SpacecraftGeometry</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;spacecraftgeometry&quot; bin table.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spacecraft_geometry</span>
+<span class="sd">            The spacecraft geometry structure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacecraft_geometry</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span> <span class="o">=</span> <span class="n">spacecraft_geometry</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sub_spacecraft_latitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the sub-spacecraft latitude [degrees] of each integration.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Sub-spacecraft latitude of each integration.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;sub_spacecraft_lat&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sub_spacecraft_longitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the sub-spacecraft longitude [degrees] of each integration.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Sub-spacecraft longitude of each integration.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;sub_spacecraft_lon&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sub_solar_latitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;sub_solar_lat&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sub_solar_longitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;sub_solar_lon&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sub_solar_altitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;sub_solar_alt&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spacecraft_position_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_spacecraft&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spacecraft_velocity_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_spacecraft_rate&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sun_position_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the position of the sun relative to Mars&#39; center of mass</span>
+<span class="sd">            [km].</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Position of the sun.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_sun&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">sun_velocity_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the velocity of the sun relative to Mars&#39; center of mass</span>
+<span class="sd">            [km/s].</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Position of the sun.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_sun_rate&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">spacecraft_x_unit_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_sun_rate&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">inertial_frame_instrument_x_unit_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the unit vector of the &quot;x&quot; component of the instrument in the</span>
+<span class="sd">            inertial frame of each integration.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                &quot;x&quot; component of the instrument velocity in the inertial frame.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;vx_instrument_inertial&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">inertial_frame_spacecraft_velocity_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the spacecraft velocity vector [km/s] in the inertial frame of</span>
+<span class="sd">            each integration.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                Spacecraft velocity vector in the inertial frame.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_spacecraft_rate_inertial&#39;</span><span class="p">]</span>
+
+    <span class="k">class</span> <span class="nc">PixelGeometry</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the pixel geometry.</span>
 
 <span class="sd">        Parameters</span>
@@ -869,7 +1197,103 @@
 <span class="sd">                Local time of each spatial pixel.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span><span class="p">[</span><span class="s1">&#39;pixel_local_time&#39;</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span><span class="p">[</span><span class="s1">&#39;pixel_local_time&#39;</span><span class="p">]</span>
+
+    <span class="k">class</span> <span class="nc">Observation</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;observation&quot; record arrays.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observation</span>
+<span class="sd">            The observation structure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span> <span class="o">=</span> <span class="n">observation</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">integration_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the integration time corresponding to this observation.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            str</span>
+<span class="sd">                The integration time.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;int_time&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">channel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the channel corresponding to this observation.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            str</span>
+<span class="sd">                The channel name.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the MCP voltage [V] settings used to collect data in this</span>
+<span class="sd">            file.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                MCP voltage settings.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;mcp_volt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">voltage_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the MCP voltage gain settings used to collect data in this</span>
+<span class="sd">            file.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                MCP voltage gain settings.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;mcp_gain&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the wavelengths used throughout this file.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                The wavelengths.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            All integrations have the same wavelengths, so this shape is</span>
+<span class="sd">            (n_spatial_bins, n_spectral_bins).</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">wavelength_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;Get the width of the wavelengths used throughout this file.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            np.ndarray</span>
+<span class="sd">                The wavelength widths.</span>
+
+<span class="sd">            Notes</span>
+<span class="sd">            -----</span>
+<span class="sd">            All integrations have the same wavelengths, so this shape is</span>
+<span class="sd">            (n_spatial_bins, n_spectral_bins).</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;wavelength_width&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">detector_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DetectorImage</span><span class="p">:</span>
@@ -896,6 +1320,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integration</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">binning</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Binning</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the binning substructure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Binning</span>
+<span class="sd">            The binning.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pixel_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PixelGeometry</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the pixel geometry substructure.</span>
 
@@ -908,6 +1344,18 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">observation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Observation</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the observation substructure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Observation</span>
+<span class="sd">            The observation information.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dark_integration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Integration</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the dark integration substructure.</span>
 
@@ -917,7 +1365,19 @@
 <span class="sd">            The dark integration.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dark_integration</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dark_integration</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dark_observation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Observation</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the observation substructure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Observation</span>
+<span class="sd">            The observation information.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dark_observation</span></div>
 
 
 <span class="c1"># TODO: this is incomplete</span>
@@ -1042,283 +1502,8 @@
 <span class="sd">            and np.amax(self.integration.mirror_angle) == maximum_mirror_angle&#39;&#39;&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">_FitsRecord</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">fits</span><span class="o">.</span><span class="n">fitsrec</span><span class="o">.</span><span class="n">FITS_rec</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">structure</span>
 
-    <span class="k">def</span> <span class="nf">get_substructure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">delete_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span>
-
-    <span class="k">def</span> <span class="nf">set_flip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flip</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span> <span class="o">=</span> <span class="n">flip</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span>
-
-
-
-<span class="k">class</span> <span class="nc">Binning</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;binning&quot; record arrays.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    structure</span>
-<span class="sd">        The .fits record.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">fits</span><span class="o">.</span><span class="n">fitsrec</span><span class="o">.</span><span class="n">FITS_rec</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spabinwidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;spabinwidth&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spapixlo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;spapixlo&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spebinwidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;spebinwidth&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spepixlo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;spepixlo&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_structure</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spatial_pixel_bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the numer of detector pixels in each spatial bin.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Spatial pixels in each bin.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        This is shape (n_integrations + 2). All values except the first and</span>
-<span class="sd">        last pixels have the same value. The 2 correspond to the large and</span>
-<span class="sd">        small keyhole.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spabinwidth</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spatial_pixel_low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the spatial pixel where each integration starts.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Spatial pixels where each bin starts.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        This is shape (n_integrations).</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spapixlo</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spectral_pixel_bin_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the numer of detector pixels in each spectral bin.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Spectral pixels in each bin.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        This is shape (n_wavelengths + 2). All values except the first and</span>
-<span class="sd">        last pixels have the same value. The 2 correspond to the large and</span>
-<span class="sd">        small keyhole.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spebinwidth</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spectral_pixel_low</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the spectral pixel where each wavelength bin starts.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Spectral pixels where each bin starts.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        This is shape (n_integrations).</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spepixlo</span>
-
-
-<span class="c1"># TODO: this is incomplete</span>
-<span class="k">class</span> <span class="nc">SpacecraftGeometry</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;spacecraftgeometry&quot; record arrays.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    structure</span>
-<span class="sd">        The .fits record.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">fits</span><span class="o">.</span><span class="n">fitsrec</span><span class="o">.</span><span class="n">FITS_rec</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_spacecraft_lat</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;sub_spacecraft_lat&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sub_spacecraft_lon</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;sub_spacecraft_lon&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vx_instrument_inertial</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;vx_instrument_inertial&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_v_spacecraft_rate_inertial</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;v_spacecraft_rate_inertial&#39;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_structure</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sub_spacecraft_latitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the sub-spacecraft latitude [degrees] of each integration.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Sub-spacecraft latitude of each integration.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_spacecraft_lat</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">sub_spacecraft_longitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the sub-spacecraft longitude [degrees] of each integration.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Sub-spacecraft longitude of each integration.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_spacecraft_lon</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">inertial_frame_instrument_x_unit_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the unit vector of the &quot;x&quot; component of the instrument in the</span>
-<span class="sd">        inertial frame of each integration.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            &quot;x&quot; component of the instrument velocity in the inertial frame.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vx_instrument_inertial</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">inertial_frame_spacecraft_velocity_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the spacecraft velocity vector [km/s] in the inertial frame of</span>
-<span class="sd">        each integration.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            Spacecraft velocity vector in the inertial frame.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v_spacecraft_rate_inertial</span>
-
-
-<span class="c1"># TODO: this is incomplete</span>
-<span class="c1"># TODO: write what MCP stands for</span>
-<span class="k">class</span> <span class="nc">Observation</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;observation&quot; record arrays.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    structure</span>
-<span class="sd">        The .fits record.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure</span><span class="p">:</span> <span class="n">fits</span><span class="o">.</span><span class="n">fitsrec</span><span class="o">.</span><span class="n">FITS_rec</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_int_time</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;int_time&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;channel&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mcp_volt</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;mcp_volt&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mcp_gain</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;mcp_gain&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;wavelength&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_width</span> <span class="o">=</span> \
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_substructure</span><span class="p">(</span><span class="s1">&#39;wavelength_width&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_structure</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">integration_time</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_time</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">channel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mcp_voltage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the MCP voltage [V] settings used to collect data in this file.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            MCP voltage settings.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcp_volt</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mcp_gain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the MCP voltage gain settings used to collect data in this file.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            MCP voltage gain settings.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mcp_gain</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the wavelengths used throughout this file.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            The wavelengths.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        All integrations have the same wavelengths, so this shape is</span>
-<span class="sd">        (n_spatial_bins, n_spectral_bins).</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">wavelength_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the width of the wavelengths used throughout this file.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        np.ndarray</span>
-<span class="sd">            The wavelength widths.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        All integrations have the same wavelengths, so this shape is</span>
-<span class="sd">        (n_spatial_bins, n_spectral_bins).</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_width</span>
 
 
 <span class="k">def</span> <span class="nf">add_additional_axis</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -1389,9 +1574,13 @@
     <span class="c1">#print(a.header)</span>
     <span class="c1">#print(a.data.columns)</span>
     <span class="c1">#print(a.data[&#39;utc&#39;].shape)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">L1bFile</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;pixelgeometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;pixel_corner_lat&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">latitude</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="c1">#print(hdul[&#39;binning&#39;].data.columns)</span>
+    <span class="c1">#print(hdul[&#39;binning&#39;].header)</span>
+    <span class="c1">#print(hdul[&#39;binning&#39;].data[&#39;bintablename&#39;])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1">#l = L1bFile(files[0])</span>
 </pre></div>
 
               </div>
