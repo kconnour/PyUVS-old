@@ -9,7 +9,7 @@ from pyuvs.anc import load_midhires_flatfield
 from pyuvs.constants import angular_slit_width, minimum_mirror_angle, \
     maximum_mirror_angle
 from pyuvs.swath import swath_number
-from pyuvs.data_files import L1bFile, \
+from pyuvs.data_files0 import L1bFile, \
     find_latest_apoapse_muv_file_paths_from_block, stack_daynight_primary, \
     stack_daynight_solar_zenith_angle, stack_daynight_emission_angle, \
     stack_daynight_phase_angle, stack_daynight_local_time, \

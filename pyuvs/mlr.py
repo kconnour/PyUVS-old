@@ -12,7 +12,7 @@ from pyuvs.anc import load_muv_wavelength_center, \
     load_template_co2p_uvd, load_template_co_cameron_bands, \
     load_template_solar_continuum
 from pyuvs.constants import pixel_omega, kR
-from pyuvs.data_files import find_latest_apoapse_muv_file_paths_from_block, \
+from pyuvs.data_files0 import find_latest_apoapse_muv_file_paths_from_block, \
     L1bFile
 
 

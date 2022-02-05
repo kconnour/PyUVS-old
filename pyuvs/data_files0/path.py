@@ -1,6 +1,6 @@
 import math
 from pathlib import Path
-from pyuvs.data_files.filename import DataFilename
+from pyuvs.data_files0.filename import DataFilename
 
 
 def make_orbit_code(orbit: int) -> str:
@@ -18,7 +18,7 @@ def make_orbit_code(orbit: int) -> str:
 
     Examples
     --------
-    >>> from pyuvs.data_files import make_orbit_code
+    >>> from pyuvs.data_files0 import make_orbit_code
     >>> make_orbit_code(3453)
     '03453'
 
@@ -41,7 +41,7 @@ def make_orbit_block(orbit: int) -> int:
 
     Examples
     --------
-    >>> from pyuvs.data_files import make_orbit_block
+    >>> from pyuvs.data_files0 import make_orbit_block
     >>> make_orbit_block(3453)
     3400
 
@@ -67,7 +67,7 @@ def make_orbit_block_folder(orbit: int) -> str:
 
     Examples
     --------
-    >>> from pyuvs.data_files import make_orbit_block_folder
+    >>> from pyuvs.data_files0 import make_orbit_block_folder
     >>> make_orbit_block_folder(3453)
     'orbit03400'
 

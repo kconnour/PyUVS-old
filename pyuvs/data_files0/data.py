@@ -1262,7 +1262,7 @@ def set_off_disk_pixels_to_nan(array: np.ndarray, on_disk_mask: np.ndarray):
 
 
 if __name__ == '__main__':
-    from pyuvs.data_files.path import find_latest_apoapse_muv_file_paths_from_block
+    from pyuvs.data_files0.path import find_latest_apoapse_muv_file_paths_from_block
     p = Path('/media/kyle/Samsung_T5/IUVS_Data')
     files = find_latest_apoapse_muv_file_paths_from_block(p, 3453)
     hdul = fits.open(files[0])

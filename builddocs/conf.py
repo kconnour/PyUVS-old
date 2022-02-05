@@ -62,8 +62,10 @@ html_static_path = []
 
 # This allows me to write docstrings in __init__
 autoclass_content = 'both'
-autodoc_typehints = 'description'  # Only show typehints in the description,
+#autodoc_typehints = 'description'  # Only show typehints in the description,
 # not the signature
+autodoc_member_order = 'bysource'  # Document properties in order
+
 
 # This displays "ArrayLike" instead of "numpy.typing.ArrayLike"
 autodoc_type_aliases = {
