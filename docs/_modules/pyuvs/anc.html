@@ -160,7 +160,6 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module provides functions to load in standard dictionaries and arrays</span>
 <span class="sd">for working with IUVS data.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
@@ -190,7 +189,7 @@
 
 <span class="c1"># Flatfields</span>
 <span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
-<div class="viewcode-block" id="load_flatfield_mid_hi_res_pipeline"><a class="viewcode-back" href="../../rst/api/anc/load_flatfield_mid_hi_res_pipeline.html#pyuvs.anc.load_flatfield_mid_hi_res_pipeline">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_hi_res_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_flatfield_mid_hi_res_pipeline"><a class="viewcode-back" href="../../rst/api/anc0/load_flatfield_mid_hi_res_pipeline.html#pyuvs.anc.load_flatfield_mid_hi_res_pipeline">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_hi_res_pipeline</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load mid-hi-resolution flatfield used in the pipeline.</span>
 
 <span class="sd">    This array has a shape of (133, 19).</span>
@@ -214,7 +213,7 @@
 <span class="sd">       import matplotlib.pyplot as plt</span>
 <span class="sd">       import pyuvs as pu</span>
 
-<span class="sd">       fig, ax = plt.subplots(figsize=(6, 2))</span>
+<span class="sd">       fig, ax = plt.subplots()</span>
 
 <span class="sd">       flatfield = pu.load_flatfield_mid_hi_res_pipeline()</span>
 <span class="sd">       ax.imshow(flatfield.T, cmap=&#39;inferno&#39;)</span>
@@ -227,7 +226,8 @@
                    <span class="s1">&#39;mid-hi-res-flatfield-pipeline.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_flatfield_mid_hi_res_my34gds"><a class="viewcode-back" href="../../rst/api/anc/load_flatfield_mid_hi_res_my34gds.html#pyuvs.anc.load_flatfield_mid_hi_res_my34gds">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_hi_res_my34gds</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_flatfield_mid_hi_res_my34gds"><a class="viewcode-back" href="../../rst/api/anc0/load_flatfield_mid_hi_res_my34gds.html#pyuvs.anc.load_flatfield_mid_hi_res_my34gds">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_hi_res_my34gds</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load mid-hi-resolution flatfield created from data taken during the</span>
 <span class="sd">    Mars year 34 global dust storm.</span>
 
@@ -252,7 +252,7 @@
 <span class="sd">       import matplotlib.pyplot as plt</span>
 <span class="sd">       import pyuvs as pu</span>
 
-<span class="sd">       fig, ax = plt.subplots(figsize=(6, 2))</span>
+<span class="sd">       fig, ax = plt.subplots()</span>
 
 <span class="sd">       flatfield = pu.load_flatfield_mid_hi_res_my34gds()</span>
 <span class="sd">       ax.imshow(flatfield.T, cmap=&#39;inferno&#39;)</span>
@@ -265,7 +265,8 @@
                    <span class="s1">&#39;mid-hi-res-flatfield-my34gds.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_flatfield_hi_res"><a class="viewcode-back" href="../../rst/api/anc/load_flatfield_hi_res.html#pyuvs.anc.load_flatfield_hi_res">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_hi_res</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_flatfield_hi_res"><a class="viewcode-back" href="../../rst/api/anc0/load_flatfield_hi_res.html#pyuvs.anc.load_flatfield_hi_res">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_hi_res</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load hi-resolution flatfield created from data taken during outdisk.</span>
 
 <span class="sd">    This array has a shape of (200, 19).</span>
@@ -289,7 +290,7 @@
 <span class="sd">       import matplotlib.pyplot as plt</span>
 <span class="sd">       import pyuvs as pu</span>
 
-<span class="sd">       fig, ax = plt.subplots(figsize=(6, 2))</span>
+<span class="sd">       fig, ax = plt.subplots()</span>
 
 <span class="sd">       flatfield = pu.load_flatfield_hi_res()</span>
 <span class="sd">       ax.imshow(flatfield.T, cmap=&#39;inferno&#39;)</span>
@@ -302,7 +303,8 @@
                    <span class="s1">&#39;hi-res-flatfield.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_flatfield_mid_res_app_flip"><a class="viewcode-back" href="../../rst/api/anc/load_flatfield_mid_res_app_flip.html#pyuvs.anc.load_flatfield_mid_res_app_flip">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_res_app_flip</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_flatfield_mid_res_app_flip"><a class="viewcode-back" href="../../rst/api/anc0/load_flatfield_mid_res_app_flip.html#pyuvs.anc.load_flatfield_mid_res_app_flip">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_res_app_flip</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load mid-resolution flatfield created from data taken when the APP was</span>
 <span class="sd">    flipped.</span>
 
@@ -327,7 +329,7 @@
 <span class="sd">       import matplotlib.pyplot as plt</span>
 <span class="sd">       import pyuvs as pu</span>
 
-<span class="sd">       fig, ax = plt.subplots(figsize=(6, 2))</span>
+<span class="sd">       fig, ax = plt.subplots()</span>
 
 <span class="sd">       flatfield = pu.load_flatfield_mid_res_app_flip()</span>
 <span class="sd">       ax.imshow(flatfield.T, cmap=&#39;inferno&#39;)</span>
@@ -340,7 +342,8 @@
                    <span class="s1">&#39;mid-res-flatfield-APP-flip.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_flatfield_mid_res_no_app_flip"><a class="viewcode-back" href="../../rst/api/anc/load_flatfield_mid_res_no_app_flip.html#pyuvs.anc.load_flatfield_mid_res_no_app_flip">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_res_no_app_flip</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_flatfield_mid_res_no_app_flip"><a class="viewcode-back" href="../../rst/api/anc0/load_flatfield_mid_res_no_app_flip.html#pyuvs.anc.load_flatfield_mid_res_no_app_flip">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_res_no_app_flip</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load mid-resolution flatfield created from data taken when the APP was</span>
 <span class="sd">    not flipped.</span>
 
@@ -365,7 +368,7 @@
 <span class="sd">       import matplotlib.pyplot as plt</span>
 <span class="sd">       import pyuvs as pu</span>
 
-<span class="sd">       fig, ax = plt.subplots(figsize=(6, 2))</span>
+<span class="sd">       fig, ax = plt.subplots()</span>
 
 <span class="sd">       flatfield = pu.load_flatfield_mid_res_no_app_flip()</span>
 <span class="sd">       ax.imshow(flatfield.T, cmap=&#39;inferno&#39;)</span>
@@ -379,7 +382,7 @@
 
 
 <span class="c1"># Instrument</span>
-<div class="viewcode-block" id="load_fuv_sensitivity_curve_manufacturer"><a class="viewcode-back" href="../../rst/api/anc/load_fuv_sensitivity_curve_manufacturer.html#pyuvs.anc.load_fuv_sensitivity_curve_manufacturer">[docs]</a><span class="k">def</span> <span class="nf">load_fuv_sensitivity_curve_manufacturer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_fuv_sensitivity_curve_manufacturer"><a class="viewcode-back" href="../../rst/api/anc0/load_fuv_sensitivity_curve_manufacturer.html#pyuvs.anc.load_fuv_sensitivity_curve_manufacturer">[docs]</a><span class="k">def</span> <span class="nf">load_fuv_sensitivity_curve_manufacturer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the FUV factory sensitivity curve as reported by manufacturer.</span>
 
 <span class="sd">    This array has a shape of (101, 2). Index 0 of the first axis is the</span>
@@ -422,7 +425,7 @@
                        <span class="s1">&#39;fuv_sensitivity_curve_manufacturer.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_muv_point_spread_function"><a class="viewcode-back" href="../../rst/api/anc/load_muv_point_spread_function.html#pyuvs.anc.load_muv_point_spread_function">[docs]</a><span class="k">def</span> <span class="nf">load_muv_point_spread_function</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_muv_point_spread_function"><a class="viewcode-back" href="../../rst/api/anc0/load_muv_point_spread_function.html#pyuvs.anc.load_muv_point_spread_function">[docs]</a><span class="k">def</span> <span class="nf">load_muv_point_spread_function</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV point spread function.</span>
 
 <span class="sd">    This array has a shape of (181,).</span>
@@ -457,7 +460,7 @@
                        <span class="s1">&#39;muv_point_spread_function.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_muv_sensitivity_curve_manufacturer"><a class="viewcode-back" href="../../rst/api/anc/load_muv_sensitivity_curve_manufacturer.html#pyuvs.anc.load_muv_sensitivity_curve_manufacturer">[docs]</a><span class="k">def</span> <span class="nf">load_muv_sensitivity_curve_manufacturer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_muv_sensitivity_curve_manufacturer"><a class="viewcode-back" href="../../rst/api/anc0/load_muv_sensitivity_curve_manufacturer.html#pyuvs.anc.load_muv_sensitivity_curve_manufacturer">[docs]</a><span class="k">def</span> <span class="nf">load_muv_sensitivity_curve_manufacturer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV factory sensitivity curve as reported by manufacturer.</span>
 
 <span class="sd">    This array has a shape of (101, 2). Index 0 of the first axis is the</span>
@@ -505,7 +508,7 @@
                        <span class="s1">&#39;muv_sensitivity_curve_manufacturer.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_muv_sensitivity_curve_observational"><a class="viewcode-back" href="../../rst/api/anc/load_muv_sensitivity_curve_observational.html#pyuvs.anc.load_muv_sensitivity_curve_observational">[docs]</a><span class="k">def</span> <span class="nf">load_muv_sensitivity_curve_observational</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_muv_sensitivity_curve_observational"><a class="viewcode-back" href="../../rst/api/anc0/load_muv_sensitivity_curve_observational.html#pyuvs.anc.load_muv_sensitivity_curve_observational">[docs]</a><span class="k">def</span> <span class="nf">load_muv_sensitivity_curve_observational</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV factory sensitivity curve derived from observations.</span>
 
 <span class="sd">    This array has a shape of (512, 2). Index 0 of the first axis is the</span>
@@ -553,7 +556,7 @@
                        <span class="s1">&#39;muv_sensitivity_curve_observational.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_muv_wavelength_edge"><a class="viewcode-back" href="../../rst/api/anc/load_muv_wavelength_edge.html#pyuvs.anc.load_muv_wavelength_edge">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelength_edge</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_muv_wavelength_edge"><a class="viewcode-back" href="../../rst/api/anc0/load_muv_wavelength_edge.html#pyuvs.anc.load_muv_wavelength_edge">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelength_edge</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV wavelength edge.</span>
 
 <span class="sd">    This array has a shape of (1025,).</span>
@@ -568,7 +571,7 @@
                        <span class="s1">&#39;muv_wavelength_edges.npy&#39;</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_muv_wavelength_center"><a class="viewcode-back" href="../../rst/api/anc/load_muv_wavelength_center.html#pyuvs.anc.load_muv_wavelength_center">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelength_center</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="load_muv_wavelength_center"><a class="viewcode-back" href="../../rst/api/anc0/load_muv_wavelength_center.html#pyuvs.anc.load_muv_wavelength_center">[docs]</a><span class="k">def</span> <span class="nf">load_muv_wavelength_center</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV wavelength center.</span>
 
 <span class="sd">    This array has a shape of (1024,).</span>
@@ -584,7 +587,8 @@
 
 
 <span class="c1"># Maps</span>
-<div class="viewcode-block" id="load_map_magnetic_field_closed_probability"><a class="viewcode-back" href="../../rst/api/anc/load_map_magnetic_field_closed_probability.html#pyuvs.anc.load_map_magnetic_field_closed_probability">[docs]</a><span class="k">def</span> <span class="nf">load_map_magnetic_field_closed_probability</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_map_magnetic_field_closed_probability"><a class="viewcode-back" href="../../rst/api/anc0/load_map_magnetic_field_closed_probability.html#pyuvs.anc.load_map_magnetic_field_closed_probability">[docs]</a><span class="k">def</span> <span class="nf">load_map_magnetic_field_closed_probability</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the map denoting the probability of a closed magnetic field line.</span>
 
 <span class="sd">    This array has a shape of (180, 360).</span>
@@ -620,11 +624,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">_get_maps_directory</span><span class="p">()</span> <span class="o">/</span> \
-        <span class="s1">&#39;magnetic_field_closed_probability_map.npy&#39;</span>
+        <span class="s1">&#39;magnetic_field_closed_probability.npy&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_map_magnetic_field_open_probability"><a class="viewcode-back" href="../../rst/api/anc/load_map_magnetic_field_open_probability.html#pyuvs.anc.load_map_magnetic_field_open_probability">[docs]</a><span class="k">def</span> <span class="nf">load_map_magnetic_field_open_probability</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_map_magnetic_field_open_probability"><a class="viewcode-back" href="../../rst/api/anc0/load_map_magnetic_field_open_probability.html#pyuvs.anc.load_map_magnetic_field_open_probability">[docs]</a><span class="k">def</span> <span class="nf">load_map_magnetic_field_open_probability</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the map denoting the probability of an open magnetic field line.</span>
 
 <span class="sd">    This array has a shape of (180, 360).</span>
@@ -660,11 +665,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">_get_maps_directory</span><span class="p">()</span> <span class="o">/</span> \
-        <span class="s1">&#39;magnetic_field_open_probability_map.npy&#39;</span>
+        <span class="s1">&#39;magnetic_field_open_probability.npy&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="load_map_mars_surface"><a class="viewcode-back" href="../../rst/api/anc/load_map_mars_surface.html#pyuvs.anc.load_map_mars_surface">[docs]</a><span class="k">def</span> <span class="nf">load_map_mars_surface</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: fix the tight layout in the graphics of documentation</span>
+<div class="viewcode-block" id="load_map_mars_surface"><a class="viewcode-back" href="../../rst/api/anc0/load_map_mars_surface.html#pyuvs.anc.load_map_mars_surface">[docs]</a><span class="k">def</span> <span class="nf">load_map_mars_surface</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the Mars surface map.</span>
 
 <span class="sd">    The shape of this array is (1800, 3600, 4).</span>
@@ -699,7 +705,7 @@
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">file_path</span> <span class="o">=</span> <span class="n">_get_maps_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;mars_surface_map.npy&#39;</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">_get_maps_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;mars_surface.npy&#39;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span></div>
 
 
@@ -740,7 +746,80 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;co_cameron_bands.npy&#39;</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">load_template_co2p_uvd</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">load_template_co_plus_1st_negative</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV CO :sup:`+` 1NG (first negative) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_template_co_plus_1st_negative()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;co+_first_negative.npy&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">load_template_co2_plus_fdb</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV CO :sub:`2` :sup:`+` FDB (Fox-Duffendack-Barker) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_template_co2_plus_fdb()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span>
+                       <span class="s1">&#39;co2+_fox_duffendack_barker.npy&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">load_template_co2_plus_uvd</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV CO :sub:`2` :sup:`+` UVD (ultraviolet doublet) template.</span>
 
 <span class="sd">    Returns</span>
@@ -764,7 +843,7 @@
 
 <span class="sd">       fig, ax = plt.subplots()</span>
 
-<span class="sd">       template = pu.anc.load_template_co2p_uvd()</span>
+<span class="sd">       template = pu.anc.load_template_co2_plus_uvd()</span>
 <span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
 <span class="sd">       ax.plot(wavelengths, template)</span>
 <span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
@@ -773,10 +852,48 @@
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;ultraviolet_doublet.npy&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span>
+                       <span class="s1">&#39;co2+_ultraviolet_doublet.npy&#39;</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="load_template_no_nightglow"><a class="viewcode-back" href="../../rst/api/anc/load_template_no_nightglow.html#pyuvs.anc.load_template_no_nightglow">[docs]</a><span class="k">def</span> <span class="nf">load_template_no_nightglow</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">load_template_n2_vk</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV N :sub:`2` VK (Vegard-Kaplan) template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_template_n2_vk()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span>
+                       <span class="s1">&#39;nitrogen_vegard_kaplan.npy&#39;</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="load_template_no_nightglow"><a class="viewcode-back" href="../../rst/api/anc0/load_template_no_nightglow.html#pyuvs.anc.load_template_no_nightglow">[docs]</a><span class="k">def</span> <span class="nf">load_template_no_nightglow</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the MUV NO nightglow template.</span>
 
 <span class="sd">    This array has a shape of (1024,).</span>
@@ -808,6 +925,42 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;no_nightglow.npy&#39;</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">load_template_oxygen_2972</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the MUV oxygen 297.2 nm template.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the template.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The shape of this array is (1024,).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this array.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots()</span>
+
+<span class="sd">       template = pu.anc.load_template_oxygen_2972()</span>
+<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
+<span class="sd">       ax.plot(wavelengths, template)</span>
+<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
+<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;oxygen_2972.npy&#39;</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">load_template_solar_continuum</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -844,226 +997,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;solar_continuum.npy&#39;</span><span class="p">))</span>
-
-<span class="sd">&#39;&#39;&#39;</span>
-
-
-<span class="sd">def load_co2p_fdb_template() -&gt; np.ndarray:</span>
-<span class="sd">    &quot;&quot;&quot;Load the MUV CO :sub:`2` :sup:`+` FDB (Fox-Duffendack-Barker) template.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    np.ndarray</span>
-<span class="sd">        Array of the template.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The shape of this array is (1024,).</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    Visualize this array.</span>
-
-<span class="sd">    .. plot::</span>
-<span class="sd">       :include-source:</span>
-
-<span class="sd">       import matplotlib.pyplot as plt</span>
-<span class="sd">       import pyuvs as pu</span>
-
-<span class="sd">       fig, ax = plt.subplots()</span>
-
-<span class="sd">       template = pu.anc.load_co2p_fdb_template()</span>
-<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
-<span class="sd">       ax.plot(wavelengths, template)</span>
-<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
-<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
-<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
-<span class="sd">       plt.show()</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-<span class="sd">    return load_muv_templates()[&#39;co2p_fdb&#39;]</span>
-
-<span class="sd">def load_cop_1ng_template() -&gt; np.ndarray:</span>
-<span class="sd">    &quot;&quot;&quot;Load the MUV CO :sup:`+` 1NG (first negative) template.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    np.ndarray</span>
-<span class="sd">        Array of the template.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The shape of this array is (1024,).</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    Visualize this array.</span>
-
-<span class="sd">    .. plot::</span>
-<span class="sd">       :include-source:</span>
-
-<span class="sd">       import matplotlib.pyplot as plt</span>
-<span class="sd">       import pyuvs as pu</span>
-
-<span class="sd">       fig, ax = plt.subplots()</span>
-
-<span class="sd">       template = pu.anc.load_cop_1ng_template()</span>
-<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
-<span class="sd">       ax.plot(wavelengths, template)</span>
-<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
-<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
-<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
-<span class="sd">       plt.show()</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-<span class="sd">    return load_muv_templates()[&#39;cop_1ng&#39;]</span>
-
-
-<span class="sd">def load_n2_vk_template() -&gt; np.ndarray:</span>
-<span class="sd">    &quot;&quot;&quot;Load the MUV N :sub:`2` VK (Vegard-Kaplan) template.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    np.ndarray</span>
-<span class="sd">        Array of the template.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The shape of this array is (1024,).</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    Visualize this array.</span>
-
-<span class="sd">    .. plot::</span>
-<span class="sd">       :include-source:</span>
-
-<span class="sd">       import matplotlib.pyplot as plt</span>
-<span class="sd">       import pyuvs as pu</span>
-
-<span class="sd">       fig, ax = plt.subplots()</span>
-
-<span class="sd">       template = pu.anc.load_n2_vk_template()</span>
-<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
-<span class="sd">       ax.plot(wavelengths, template)</span>
-<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
-<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
-<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
-<span class="sd">       plt.show()</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-<span class="sd">    return load_muv_templates()[&#39;n2_vk&#39;]</span>
-
-
-
-<span class="sd">def load_oxygen_2972_template() -&gt; np.ndarray:</span>
-<span class="sd">    &quot;&quot;&quot;Load the MUV oxygen 297.2 nm template.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    np.ndarray</span>
-<span class="sd">        Array of the template.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The shape of this array is (1024,).</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    Visualize this array.</span>
-
-<span class="sd">    .. plot::</span>
-<span class="sd">       :include-source:</span>
-
-<span class="sd">       import matplotlib.pyplot as plt</span>
-<span class="sd">       import pyuvs as pu</span>
-
-<span class="sd">       fig, ax = plt.subplots()</span>
-
-<span class="sd">       template = pu.anc.load_oxygen_2972_template()</span>
-<span class="sd">       wavelengths = pu.anc.load_muv_wavelength_center()</span>
-<span class="sd">       ax.plot(wavelengths, template)</span>
-<span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
-<span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
-<span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
-<span class="sd">       plt.show()</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-<span class="sd">    return load_muv_templates()[&#39;o2972&#39;]</span>
-
-
-
-
-<span class="sd">&#39;&#39;&#39;</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">colors</span>
-
-    <span class="k">def</span> <span class="nf">make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
-        <span class="n">scalar_mappable</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
-        <span class="n">scalar_mappable</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span>
-        <span class="k">return</span> <span class="n">scalar_mappable</span><span class="p">,</span> <span class="n">norm</span>
-
-
-    <span class="n">master</span> <span class="o">=</span> <span class="n">load_flatfield_mid_hi_res_pipeline</span><span class="p">()</span>
-    <span class="n">before</span> <span class="o">=</span> <span class="n">load_flatfield_mid_res_no_app_flip</span><span class="p">()</span>
-    <span class="n">after</span> <span class="o">=</span> <span class="n">load_flatfield_mid_res_app_flip</span><span class="p">()</span>
-    <span class="n">gds</span> <span class="o">=</span> <span class="n">load_flatfield_mid_hi_res_my34gds</span><span class="p">()</span>
-    <span class="n">hires</span> <span class="o">=</span> <span class="n">load_flatfield_hi_res</span><span class="p">()</span>
-
-    <span class="c1"># REscale FF</span>
-    <span class="n">master50</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">19</span><span class="p">))</span>
-    <span class="n">gds50</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">19</span><span class="p">))</span>
-    <span class="n">hires50</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">50</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">19</span><span class="p">):</span>
-        <span class="n">foo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">132</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-        <span class="n">bar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">132</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">133</span><span class="p">)</span>
-        <span class="n">master50</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">master</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
-        <span class="n">gds50</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">gds</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">15</span><span class="p">:</span>
-            <span class="n">hires50</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">199</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">199</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">200</span><span class="p">),</span> <span class="n">hires</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
-
-    <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
-    <span class="n">font</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">font</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">({</span><span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
-
-    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">after</span><span class="o">/</span><span class="n">before</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;after/before&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">before</span><span class="o">/</span><span class="n">master50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;before/master50&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">after</span><span class="o">/</span><span class="n">master50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;after/master50&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gds50</span><span class="o">/</span><span class="n">master50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;MY34 GDS50/master50&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">hires50</span><span class="o">/</span><span class="n">master50</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Hi-res50/master50&#39;</span><span class="p">)</span>
-    <span class="n">sm</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-
-    <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;inferno&#39;</span>
-    <span class="n">font</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">font</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">after</span> <span class="o">-</span> <span class="n">before</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;after - before&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">before</span> <span class="o">-</span> <span class="n">master50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;before - master50&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">after</span> <span class="o">-</span> <span class="n">master50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;after - master50&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">gds50</span> <span class="o">-</span> <span class="n">master50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;MY34 GDS50 - master50&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">hires50</span> <span class="o">-</span> <span class="n">master50</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;MY34 GDS50 - master50&#39;</span><span class="p">)</span>
-    <span class="n">sm</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">0.08</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/home/kyle/ql_testing/ff_ratio1.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 </pre></div>
 
               </div>

@@ -1,5 +1,4 @@
-"""
-
+"""This module provides functions to work with swaths.
 """
 import numpy as np
 
@@ -9,7 +8,7 @@ def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    mirror_angles
+    mirror_angles: np.ndarray
         1D array of the mirror angles from an orbital segment.
 
     Returns
@@ -34,37 +33,3 @@ def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
     interp_swaths = np.interp(range(len(mirror_angles)), mirror_discontinuities,
                               range(1, n_swaths), left=0)
     return np.floor(interp_swaths).astype('int')
-
-
-def count_integrations_in_swath(
-        swath_numbers: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """Count the number of integrations that fall in each swath number given
-    a mask that selects integrations of interest.
-
-    Parameters
-    ----------
-    swath_numbers: np.ndarray
-        1D array of the swath numbers of each integration.
-    mask: np.ndarray
-        1D array of booleans, where :code:`True` values indicate integrations
-        of interest. Must be the same shape as :code:`swath_numbers`.
-
-    Returns
-    -------
-    np.ndarray
-        The number of integrations in each swath that meet the mask's criteria.
-
-    Examples
-    --------
-    Count the number of dayside integrations in a fictionalized set of swath
-    numbers.
-
-    >>> from pyuvs.swath import count_integrations_in_swath
-    >>> swath_numbers = np.array([0, 0, 0, 1, 1, 1])
-    >>> dayside_mask = np.array([True, True, False, True, False, False])
-    >>> count_integrations_in_swath(swath_numbers, dayside_mask)
-    array([2, 1])
-
-    """
-    edges = np.concatenate([[-1], np.unique(swath_numbers)]) + 0.5
-    return np.histogram(swath_numbers[mask], bins=edges)[0]

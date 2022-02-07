@@ -1,0 +1,4 @@
+stack_daynight_phase_angle()
+============================
+
+.. autofunction:: pyuvs.data_files.stack_daynight_phase_angle

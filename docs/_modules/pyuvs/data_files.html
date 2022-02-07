@@ -163,6 +163,8 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyuvs.constants</span> <span class="kn">import</span> <span class="n">minimum_mirror_angle</span><span class="p">,</span> <span class="n">maximum_mirror_angle</span><span class="p">,</span> \
+    <span class="n">day_night_voltage_boundary</span>
 
 
 <span class="c1"># TODO: this should go in L1bFile since it only applies there</span>
@@ -184,7 +186,7 @@
     <span class="k">return</span> <span class="n">wrapper</span>
 
 
-<div class="viewcode-block" id="L1bFile"><a class="viewcode-back" href="../../rst/api/data_files/L1bFile.html#pyuvs.data_files.L1bFile">[docs]</a><span class="k">class</span> <span class="nc">L1bFile</span><span class="p">:</span>
+<div class="viewcode-block" id="L1bFile"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile">[docs]</a><span class="k">class</span> <span class="nc">L1bFile</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A data structure representing a level 1b data file.</span>
 
 <span class="sd">    This class accepts an l1b data file and reads in all of its info into</span>
@@ -194,7 +196,7 @@
 <span class="sd">    APP is flipped.</span>
 
 <span class="sd">    .. warning::</span>
-<span class="sd">       Many of these</span>
+<span class="sd">       Many of these structures are incomplete</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -211,7 +213,8 @@
         <span class="c1"># TODO: Engineering</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">Binning</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;binning&#39;</span><span class="p">])</span>
-        <span class="c1"># TODO: SpacecraftGeometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">SpacecraftGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;spacecraftgeometry&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">PixelGeometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;pixelgeometry&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span> <span class="o">=</span> \
@@ -221,11 +224,12 @@
         <span class="c1"># TODO: DarkEngineering</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dark_observation</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">Observation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;dark_observation&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flip</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># TODO: set the APP flip</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_app_flipped</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_detector_image</span><span class="o">.</span><span class="n">set_flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span><span class="o">.</span><span class="n">set_flip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flip</span><span class="p">)</span>
+
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdul</span>
-        <span class="c1"># TODO: Methods...</span>
 
     <span class="k">class</span> <span class="nc">_FitsRecord</span><span class="p">:</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -238,7 +242,7 @@
         <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span>
 
-    <span class="k">class</span> <span class="nc">DetectorImage</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
+<div class="viewcode-block" id="L1bFile.DetectorImage"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.DetectorImage">[docs]</a>    <span class="k">class</span> <span class="nc">DetectorImage</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the detector image.</span>
 
 <span class="sd">        All the arrays have shape (number of integrations, number of spatial</span>
@@ -536,9 +540,9 @@
 <span class="sd">                The size of a spectral bin.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;spe_size&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;spe_size&#39;</span><span class="p">]</span></div>
 
-    <span class="k">class</span> <span class="nc">Integration</span><span class="p">:</span>
+<div class="viewcode-block" id="L1bFile.Integration"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.Integration">[docs]</a>    <span class="k">class</span> <span class="nc">Integration</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the integrations.</span>
 
 <span class="sd">        Parameters</span>
@@ -670,9 +674,9 @@
 <span class="sd">                The instrument case temperature of each integration.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integration</span><span class="p">[</span><span class="s1">&#39;case_temp_c&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integration</span><span class="p">[</span><span class="s1">&#39;case_temp_c&#39;</span><span class="p">]</span></div>
 
-    <span class="k">class</span> <span class="nc">Binning</span><span class="p">:</span>
+<div class="viewcode-block" id="L1bFile.Binning"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.Binning">[docs]</a>    <span class="k">class</span> <span class="nc">Binning</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the binning.</span>
 
 <span class="sd">        Parameters</span>
@@ -867,9 +871,9 @@
 <span class="sd">                The name of the bin table.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;bintablename&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span><span class="p">[</span><span class="s1">&#39;bintablename&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
 
-    <span class="k">class</span> <span class="nc">SpacecraftGeometry</span><span class="p">:</span>
+<div class="viewcode-block" id="L1bFile.SpacecraftGeometry"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.SpacecraftGeometry">[docs]</a>    <span class="k">class</span> <span class="nc">SpacecraftGeometry</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;spacecraftgeometry&quot; bin table.</span>
 
 <span class="sd">        Parameters</span>
@@ -980,9 +984,9 @@
 <span class="sd">                Spacecraft velocity vector in the inertial frame.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_spacecraft_rate_inertial&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span><span class="p">[</span><span class="s1">&#39;v_spacecraft_rate_inertial&#39;</span><span class="p">]</span></div>
 
-    <span class="k">class</span> <span class="nc">PixelGeometry</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
+<div class="viewcode-block" id="L1bFile.PixelGeometry"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.PixelGeometry">[docs]</a>    <span class="k">class</span> <span class="nc">PixelGeometry</span><span class="p">(</span><span class="n">_FitsRecord</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the arrays of the pixel geometry.</span>
 
 <span class="sd">        Parameters</span>
@@ -1197,9 +1201,9 @@
 <span class="sd">                Local time of each spatial pixel.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span><span class="p">[</span><span class="s1">&#39;pixel_local_time&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_geometry</span><span class="p">[</span><span class="s1">&#39;pixel_local_time&#39;</span><span class="p">]</span></div>
 
-    <span class="k">class</span> <span class="nc">Observation</span><span class="p">:</span>
+<div class="viewcode-block" id="L1bFile.Observation"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.Observation">[docs]</a>    <span class="k">class</span> <span class="nc">Observation</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;A data structure representing the &quot;observation&quot; record arrays.</span>
 
 <span class="sd">        Parameters</span>
@@ -1293,7 +1297,7 @@
 <span class="sd">            (n_spatial_bins, n_spectral_bins).</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;wavelength_width&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observation</span><span class="p">[</span><span class="s1">&#39;wavelength_width&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">detector_image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DetectorImage</span><span class="p">:</span>
@@ -1330,6 +1334,18 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binning</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">spacecraft_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SpacecraftGeometry</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the spacecraft geometry structure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SpacecraftGeometry</span>
+<span class="sd">            The spacecraft geometry structure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spacecraft_geometry</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pixel_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PixelGeometry</span><span class="p">:</span>
@@ -1377,83 +1393,14 @@
 <span class="sd">            The observation information.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dark_observation</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dark_observation</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip</span>
 
-<span class="c1"># TODO: this is incomplete</span>
-<span class="sd">&#39;&#39;&#39;class L1bFile:</span>
-<span class="sd">    &quot;&quot;&quot;A data structure representing a level 1b data file.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    filepath: Path</span>
-<span class="sd">        Absolute path to the level 1b data file.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-<span class="sd">    def __init__(self, filepath: Path):</span>
-<span class="sd">        self.hdul = fits.open(filepath)</span>
-
-<span class="sd">        self._primary = \</span>
-<span class="sd">            self._get_structures(&#39;primary&#39;)</span>
-<span class="sd">        self._random_dn_unc = \</span>
-<span class="sd">            self._get_structures(&#39;random_dn_unc&#39;)</span>
-<span class="sd">        # TODO: random_phy_unc</span>
-<span class="sd">        # TODO: systematic_phy_unc</span>
-<span class="sd">        # TODO: detector_raw</span>
-<span class="sd">        self._detector_dark_subtracted = \</span>
-<span class="sd">            self._get_structures(&#39;detector_dark_subtracted&#39;)</span>
-<span class="sd">        # TODO: quality_flag</span>
-<span class="sd">        # TODO: background_dark</span>
-<span class="sd">        # TODO: dark_integration</span>
-<span class="sd">        # TODO: dark_engineering</span>
-<span class="sd">        # TODO: dark_observation</span>
-<span class="sd">        # TODO: detector_dark</span>
-<span class="sd">        self.integration = \</span>
-<span class="sd">            Integration(self._get_structures(&#39;integration&#39;))</span>
-<span class="sd">        # TODO: engineering</span>
-<span class="sd">        self.binning = \</span>
-<span class="sd">            Binning(self._get_structures(&#39;binning&#39;))</span>
-<span class="sd">        self.spacecraft_geometry = \</span>
-<span class="sd">            SpacecraftGeometry(self._get_structures(&#39;spacecraftgeometry&#39;))</span>
-<span class="sd">        self.pixel_geometry = \</span>
-<span class="sd">            PixelGeometry(self._get_structures(&#39;pixelgeometry&#39;))</span>
-<span class="sd">        self.observation = \</span>
-<span class="sd">            Observation(self._get_structures(&#39;observation&#39;))</span>
-
-<span class="sd">        self._flip = self.is_app_flipped()</span>
-
-<span class="sd">        self.pixel_geometry.set_flip(self._flip)</span>
-
-<span class="sd">        del self.hdul</span>
-
-<span class="sd">    @property</span>
-<span class="sd">    def flip(self):</span>
-<span class="sd">        return self._flip</span>
-
-<span class="sd">    @property</span>
-<span class="sd">    @app_flip</span>
-<span class="sd">    @add_integration_dimension</span>
-<span class="sd">    def primary(self):</span>
-<span class="sd">        return self._primary</span>
-
-<span class="sd">    @property</span>
-<span class="sd">    @app_flip</span>
-<span class="sd">    @add_integration_dimension</span>
-<span class="sd">    def random_uncertainty_dn(self):</span>
-<span class="sd">        return self._random_dn_unc</span>
-
-<span class="sd">    @property</span>
-<span class="sd">    @app_flip</span>
-<span class="sd">    @add_integration_dimension</span>
-<span class="sd">    def detector_dark_subtracted(self):</span>
-<span class="sd">        return self._detector_dark_subtracted</span>
-
-<span class="sd">    def _get_structures(self, name: str) -&gt; fits.fitsrec.FITS_rec:</span>
-<span class="sd">        # or it returns np.ndarray</span>
-<span class="sd">        return self.hdul[name].data</span>
-
-<span class="sd">    def is_app_flipped(self) -&gt; bool:</span>
-<span class="sd">        &quot;&quot;&quot;Determine if the APP was flipped.</span>
+<div class="viewcode-block" id="L1bFile.is_app_flipped"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.is_app_flipped">[docs]</a>    <span class="k">def</span> <span class="nf">is_app_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the APP was flipped.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1461,13 +1408,15 @@
 <span class="sd">            True if the APP was flipped; False otherwise.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-<span class="sd">        dot_product = np.dot(</span>
-<span class="sd">            self.spacecraft_geometry.inertial_frame_instrument_x_unit_vector[-1],</span>
-<span class="sd">            self.spacecraft_geometry.inertial_frame_spacecraft_velocity_vector[-1])</span>
-<span class="sd">        return np.sign(dot_product) &gt; 0</span>
+        <span class="n">dot_product</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spacecraft_geometry</span><span class="o">.</span><span class="n">inertial_frame_instrument_x_unit_vector</span><span class="p">[</span>
+                <span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spacecraft_geometry</span><span class="o">.</span><span class="n">inertial_frame_spacecraft_velocity_vector</span><span class="p">[</span>
+                <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">dot_product</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
 
-<span class="sd">    def is_dayside_file(self) -&gt; bool:</span>
-<span class="sd">        &quot;&quot;&quot;Determine if the input file is a file taken with dayside settings.</span>
+<div class="viewcode-block" id="L1bFile.is_dayside_file"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.is_dayside_file">[docs]</a>    <span class="k">def</span> <span class="nf">is_dayside_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the input file is a file taken with dayside settings.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1475,22 +1424,10 @@
 <span class="sd">            True if the file is a dayside file; False otherwise.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-<span class="sd">        return self.observation.mcp_voltage &lt; day_night_voltage_boundary</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">voltage</span> <span class="o">&lt;</span> <span class="n">day_night_voltage_boundary</span></div>
 
-<span class="sd">    def positive_mirror_scan_direction(self) -&gt; bool:</span>
-<span class="sd">        &quot;&quot;&quot;Determine if the mirror is scanning in a positive direction.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        True if the mirror angle is increasing each integration; False</span>
-<span class="sd">        otherwise.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-<span class="sd">        return self.integration.mirror_angle[-1] - \</span>
-<span class="sd">            self.integration.mirror_angle[0] &gt; 0</span>
-
-<span class="sd">    def is_relay_file(self) -&gt; bool:</span>
-<span class="sd">        &quot;&quot;&quot;Determine if the input file is a relay file.</span>
+<div class="viewcode-block" id="L1bFile.is_relay_file"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.L1bFile.is_relay_file">[docs]</a>    <span class="k">def</span> <span class="nf">is_relay_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Determine if the input file is a relay file.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1498,89 +1435,224 @@
 <span class="sd">            True if the file is a relay file; False otherwise.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-<span class="sd">        return np.amin(self.integration.mirror_angle) == minimum_mirror_angle \</span>
-<span class="sd">            and np.amax(self.integration.mirror_angle) == maximum_mirror_angle&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">integration</span><span class="o">.</span><span class="n">mirror_angle_degree</span><span class="p">)</span> <span class="o">==</span> <span class="n">minimum_mirror_angle</span> \
+               <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">integration</span><span class="o">.</span><span class="n">mirror_angle_degree</span><span class="p">)</span> <span class="o">==</span> <span class="n">maximum_mirror_angle</span></div></div>
 
 
+<div class="viewcode-block" id="stack_daynight_calibrated_detector_image"><a class="viewcode-back" href="../../rst/api/data_files/stack_daynight_calibrated_detector_image.html#pyuvs.data_files.stack_daynight_calibrated_detector_image">[docs]</a><span class="k">def</span> <span class="nf">stack_daynight_calibrated_detector_image</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the calibrated detector image that matches the given daynight</span>
+<span class="sd">    settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked calibrated detector images.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">detector_image</span><span class="o">.</span><span class="n">calibrated</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span>
+                      <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span></div>
 
 
+<div class="viewcode-block" id="stack_daynight_solar_zenith_angle"><a class="viewcode-back" href="../../rst/api/data_files/stack_daynight_solar_zenith_angle.html#pyuvs.data_files.stack_daynight_solar_zenith_angle">[docs]</a><span class="k">def</span> <span class="nf">stack_daynight_solar_zenith_angle</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the solar zenith angles that matches the given daynight</span>
+<span class="sd">    settings.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
 
-<span class="k">def</span> <span class="nf">add_additional_axis</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked solar zenith angles.</span>
 
-
-<span class="k">def</span> <span class="nf">cast_array_to_3d</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">add_additional_axis</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">array</span>
-
-
-<span class="k">def</span> <span class="nf">stack_daynight_primary</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">primary</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span>
-
-
-<span class="k">def</span> <span class="nf">stack_daynight_solar_zenith_angle</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">solar_zenith_angle</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span>
-                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span>
+                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">stack_daynight_emission_angle</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="stack_daynight_emission_angle"><a class="viewcode-back" href="../../rst/api/data_files/stack_daynight_emission_angle.html#pyuvs.data_files.stack_daynight_emission_angle">[docs]</a><span class="k">def</span> <span class="nf">stack_daynight_emission_angle</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the emission angles that matches the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked emission angles.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">emission_angle</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span>
-                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span>
+                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">stack_daynight_phase_angle</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="stack_daynight_phase_angle"><a class="viewcode-back" href="../../rst/api/data_files/stack_daynight_phase_angle.html#pyuvs.data_files.stack_daynight_phase_angle">[docs]</a><span class="k">def</span> <span class="nf">stack_daynight_phase_angle</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the phase angles that matches the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked phase angles.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">phase_angle</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span>
-                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span>
+                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">stack_daynight_local_time</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="stack_daynight_local_time"><a class="viewcode-back" href="../../rst/api/data_files/stack_daynight_local_time.html#pyuvs.data_files.stack_daynight_local_time">[docs]</a><span class="k">def</span> <span class="nf">stack_daynight_local_time</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the local times that matches the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked local times.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">local_time</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span>
-                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span>
+                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">stack_mirror_angles</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">]):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">integration</span><span class="o">.</span><span class="n">mirror_angle</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span>
+<div class="viewcode-block" id="stack_field_of_view"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.stack_field_of_view">[docs]</a><span class="k">def</span> <span class="nf">stack_field_of_view</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the field of view arrays that match the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked fields of view.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">integration</span><span class="o">.</span><span class="n">field_of_view</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">stack_daynight_altitude_center</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">tangent_altitude</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span>
+<div class="viewcode-block" id="stack_daynight_altitude_center"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.stack_daynight_altitude_center">[docs]</a><span class="k">def</span> <span class="nf">stack_daynight_altitude_center</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Stack the pixel center altitudes that match the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the stacked center altitudes.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">pixel_geometry</span><span class="o">.</span><span class="n">tangent_altitude</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span>
+                      <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">make_daynight_on_disk_mask</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-    <span class="n">altitudes</span> <span class="o">=</span> <span class="n">stack_daynight_altitude_center</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">dayside</span><span class="o">=</span><span class="n">dayside</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">altitudes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="make_daynight_on_disk_mask"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.make_daynight_on_disk_mask">[docs]</a><span class="k">def</span> <span class="nf">make_daynight_on_disk_mask</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Make a mask of pixels that match the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the on-disk mask.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stack_daynight_altitude_center</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">dayside</span><span class="o">=</span><span class="n">dayside</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
 
-<span class="k">def</span> <span class="nf">make_dayside_integration_mask</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">]):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">(),</span> <span class="n">f</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span>
+<div class="viewcode-block" id="make_daynight_integration_mask"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.make_daynight_integration_mask">[docs]</a><span class="k">def</span> <span class="nf">make_daynight_integration_mask</span><span class="p">(</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">L1bFile</span><span class="p">],</span> <span class="n">dayside</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Make a mask of integrations that match the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the integration mask.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">is_dayside_file</span><span class="p">()</span> <span class="o">==</span> <span class="n">dayside</span><span class="p">,</span>
+                   <span class="n">f</span><span class="o">.</span><span class="n">detector_image</span><span class="o">.</span><span class="n">calibrated</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span></div>
 
 
-<span class="k">def</span> <span class="nf">set_off_disk_pixels_to_nan</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">on_disk_mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">on_disk_mask</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<div class="viewcode-block" id="set_off_disk_pixels_to_nan"><a class="viewcode-back" href="../../rst/api/data_files/data_files.html#pyuvs.data_files.set_off_disk_pixels_to_nan">[docs]</a><span class="k">def</span> <span class="nf">set_off_disk_pixels_to_nan</span><span class="p">(</span>
+        <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">on_disk_mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Make a mask of integrations that match the given daynight settings.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files</span>
+<span class="sd">        List of a collection of L1bFiles.</span>
+<span class="sd">    dayside</span>
+<span class="sd">        True if dayside; False if nightside.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the integration mask.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">on_disk_mask</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pyuvs.data_files0.path</span> <span class="kn">import</span> <span class="n">find_latest_apoapse_muv_file_paths_from_block</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/media/kyle/Samsung_T5/IUVS_Data&#39;</span><span class="p">)</span>
-    <span class="n">files</span> <span class="o">=</span> <span class="n">find_latest_apoapse_muv_file_paths_from_block</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">3453</span><span class="p">)</span>
-    <span class="n">hdul</span> <span class="o">=</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="c1">#a = hdul[&#39;detector_raw&#39;].data - hdul[&#39;background_dark&#39;].data</span>
-    <span class="c1">#dds = hdul[&#39;detector_dark_subtracted&#39;].data</span>
-    <span class="c1">#print(np.array_equal(a, dds))</span>
-    <span class="c1">#raise SystemExit(9)</span>
-
-    <span class="n">hdul</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-    <span class="c1">#a = hdul[&#39;primary&#39;]</span>
-    <span class="c1">#print(a.header)</span>
-    <span class="c1">#print(a.data.columns)</span>
-    <span class="c1">#print(a.data[&#39;utc&#39;].shape)</span>
-    <span class="c1">#print(hdul[&#39;binning&#39;].data.columns)</span>
-    <span class="c1">#print(hdul[&#39;binning&#39;].header)</span>
-    <span class="c1">#print(hdul[&#39;binning&#39;].data[&#39;bintablename&#39;])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">hdul</span><span class="p">[</span><span class="s1">&#39;observation&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="c1">#l = L1bFile(files[0])</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">find_latest_apoapse_muv_file_paths_from_block</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">5675</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">L1bFile</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">flip</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">is_relay_file</span><span class="p">())</span>
 </pre></div>
 
               </div>

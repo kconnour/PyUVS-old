@@ -7,6 +7,13 @@ data. You can find more info on them here.
    :maxdepth: 1
    :caption: PyUVS modules:
 
-   api/anc/anc
-   api/data_files/data_files
-   api/sphx
+   api/anc
+   api/constants
+   api/swath
+
+.. toctree::
+   :maxdepth: 1
+   :caption: PyUVS subpackages:
+
+   api/data_files
+   api/graphics

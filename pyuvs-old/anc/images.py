@@ -11,7 +11,7 @@ class SurfaceGeographyMap(_AncillaryArray):
 
     """
     def __new__(cls):
-        anc = _AncillaryFileLoader('mars_surface_map.npy')
+        anc = _AncillaryFileLoader('mars_surface.npy')
         array = anc.load_array()
         return super().__new__(cls, array, anc.path)
 
@@ -24,7 +24,7 @@ class ClosedMagneticFieldMap(_AncillaryArray):
 
     """
     def __new__(cls):
-        anc = _AncillaryFileLoader('magnetic_field_closed_probability_map.npy')
+        anc = _AncillaryFileLoader('magnetic_field_closed_probability.npy')
         array = anc.load_array()
         return super().__new__(cls, array, anc.path)
 
@@ -37,6 +37,6 @@ class OpenMagneticFieldMap(_AncillaryArray):
 
     """
     def __new__(cls):
-        anc = _AncillaryFileLoader('magnetic_field_open_probability_map.npy')
+        anc = _AncillaryFileLoader('magnetic_field_open_probability.npy')
         array = anc.load_array()
         return super().__new__(cls, array, anc.path)

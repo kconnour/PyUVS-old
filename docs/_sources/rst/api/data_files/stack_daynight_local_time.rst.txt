@@ -1,0 +1,4 @@
+stack_daynight_local_time()
+===========================
+
+.. autofunction:: pyuvs.data_files.stack_daynight_local_time

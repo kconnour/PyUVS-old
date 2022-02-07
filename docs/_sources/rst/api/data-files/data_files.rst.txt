@@ -1,5 +1,21 @@
 data_files
 ==========
-
-.. autoclass:: pyuvs.data_files.NewL1bFile
+.. automodule:: pyuvs.data_files
    :members:
+
+..
+    .. toctree::
+       :maxdepth: 1
+       :caption: Classes:
+
+       L1bFile
+
+    .. toctree::
+       :maxdepth: 1
+       :caption: Functions:
+
+       stack_daynight_calibrated_detector_image
+       stack_daynight_solar_zenith_angle
+       stack_daynight_emission_angle
+       stack_daynight_phase_angle
+       stack_daynight_local_time

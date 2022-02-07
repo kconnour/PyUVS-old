@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'PyUVS'
-copyright = '2021, kconnour'
-author = 'kconnour'
+copyright = '2021, kconnour and zachariahmilby'
+author = 'kconnour and zachariahmilby'
 
 
 # -- General configuration ---------------------------------------------------

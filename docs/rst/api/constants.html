@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>constants &#8212; PyUVS  documentation</title>
+    
+    <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    
+    <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="swath" href="swath.html" />
+    <link rel="prev" title="anc" href="anc.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../index.html">
+<p class="title">PyUVS</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../graphics.html">
+  Graphics
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../tools.html">
+  Tools
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../tutorials.html">
+  Tutorials
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/kconnour/PyUVS" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PyUVS modules:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="anc.html">
+   anc
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   constants
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="swath.html">
+   swath
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PyUVS subpackages:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="data_files.html">
+   data_files
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="graphics.html">
+   graphics
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-pyuvs.constants">
+<span id="constants"></span><h1>constants<a class="headerlink" href="#module-pyuvs.constants" title="Permalink to this headline">¶</a></h1>
+<p>This module contains constants and conversions factors relevant to IUVS.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.angular_slit_width">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">angular_slit_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10.64</span></em><a class="headerlink" href="#pyuvs.constants.angular_slit_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Width of the slit [degrees].</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.spatial_slit_width">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">spatial_slit_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#pyuvs.constants.spatial_slit_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Width of the slit [mm].</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.cmos_pixel_well_depth">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">cmos_pixel_well_depth</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3400</span></em><a class="headerlink" href="#pyuvs.constants.cmos_pixel_well_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saturation level of an IUVS CMOS detector pixel [DN].</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.day_night_voltage_boundary">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">day_night_voltage_boundary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">790</span></em><a class="headerlink" href="#pyuvs.constants.day_night_voltage_boundary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Voltage defining the boundary between dayside and nightside settings.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.minimum_mirror_angle">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">minimum_mirror_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30.2508544921875</span></em><a class="headerlink" href="#pyuvs.constants.minimum_mirror_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum angle [degrees] the scan mirror can be.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.maximum_mirror_angle">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">maximum_mirror_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">59.6502685546875</span></em><a class="headerlink" href="#pyuvs.constants.maximum_mirror_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum angle [degrees] the scan mirror can be.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.telescope_focal_length">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">telescope_focal_length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#pyuvs.constants.telescope_focal_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Focal length of the IUVS telescope mirror [mm].</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.pixel_size">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">pixel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.023438</span></em><a class="headerlink" href="#pyuvs.constants.pixel_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of an IUVS detector pixel [mm].</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.pixel_omega">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">pixel_omega</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.3438e-07</span></em><a class="headerlink" href="#pyuvs.constants.pixel_omega" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detector pixel angular dispersion along the slit.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.muv_wavelength_width">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">muv_wavelength_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16367098</span></em><a class="headerlink" href="#pyuvs.constants.muv_wavelength_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Docstring.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyuvs.constants.kR">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.constants.</span></span><span class="sig-name descname"><span class="pre">kR</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">795774715.4594767</span></em><a class="headerlink" href="#pyuvs.constants.kR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Definition of the kilorayleigh [photons/second/m**2/steradian].</p>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="anc.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">anc</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="swath.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">swath</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, kconnour.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+stack_daynight_emission_angle()
+===============================
+
+.. autofunction:: pyuvs.data_files.stack_daynight_emission_angle

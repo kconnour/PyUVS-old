@@ -1,7 +1,10 @@
+"""This module provides functions to help colorize images.
+"""
 import numpy as np
 
 
-def histogram_equalize_grayscale_image(image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
+def histogram_equalize_grayscale_image(
+        image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
     """Histogram equalize a grayscale image.
 
     This applies a histogram equalization algorithm to the input image. The
@@ -45,7 +48,8 @@ def histogram_equalize_grayscale_image(image: np.ndarray, mask: np.ndarray = Non
     return np.floor(np.interp(image, left_cutoffs, rgb))
 
 
-def histogram_equalize_rgb_image(image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
+def histogram_equalize_rgb_image(
+        image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
     """Histogram equalize an RGB image.
 
     This applies a histogram equalization algorithm to the input image. The
@@ -79,15 +83,44 @@ def histogram_equalize_rgb_image(image: np.ndarray, mask: np.ndarray = None) -> 
     return np.dstack([red, green, blue])
 
 
-def make_cutoff_indices(n_wavelengths: int) -> tuple[int, int]:
+def make_spectral_cutoff_indices(n_wavelengths: int) -> tuple[int, int]:
+    """Make the cutoff indices so that the spectral dimension can be
+    downsampled to 3 color channels.
+
+    Parameters
+    ----------
+    n_wavelengths: int
+        The number of wavelengths.
+
+    Returns
+    -------
+    tuple[int, int]
+        The blue-green and the green-red cutoff indices.
+
+    """
     blue_green_cutoff = int(n_wavelengths / 3)
     green_red_cutoff = int(n_wavelengths * 2 / 3)
     return blue_green_cutoff, green_red_cutoff
 
 
-def turn_primary_to_3_channels(image: np.ndarray) -> np.ndarray:
+def turn_detector_image_to_3_channels(image: np.ndarray) -> np.ndarray:
+    """Turn a detector image into 3 channels by coadding over the spectral
+    dimension.
+
+    Parameters
+    ----------
+    image: np.ndarray
+        Any 3D detector image (n_integrations, n_spatial_bins, n_wavelengths).
+
+    Returns
+    -------
+    np.ndarray
+        A co-added detector image (n_integrations, n_spatial_bins, 3).
+
+    """
     n_wavelengths = image.shape[2]
-    blue_green_cutoff, green_red_cutoff = make_cutoff_indices(n_wavelengths)
+    blue_green_cutoff, green_red_cutoff = \
+        make_spectral_cutoff_indices(n_wavelengths)
     red = np.sum(image[..., green_red_cutoff:], axis=-1)
     green = np.sum(image[..., blue_green_cutoff:green_red_cutoff], axis=-1)
     blue = np.sum(image[..., :blue_green_cutoff], axis=-1)

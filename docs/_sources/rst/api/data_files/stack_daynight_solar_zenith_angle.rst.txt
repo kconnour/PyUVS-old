@@ -1,0 +1,4 @@
+stack_daynight_solar_zenith_angle()
+===================================
+
+.. autofunction:: pyuvs.data_files.stack_daynight_solar_zenith_angle

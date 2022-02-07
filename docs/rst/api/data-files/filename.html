@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>filename &#8212; PyUVS  documentation</title>
+    
+    <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="path" href="path.html" />
+    <link rel="prev" title="contents" href="contents.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">PyUVS</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../../api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../graphics.html">
+  Graphics
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tools.html">
+  Tools
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tutorials.html">
+  Tutorials
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/kconnour/PyUVS" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PyUVS modules:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../anc.html">
+   anc
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../constants.html">
+   constants
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../swath.html">
+   swath
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  PyUVS subpackages:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="../data_files.html">
+   data_files
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="contents.html">
+     contents
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     filename
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="path.html">
+     path
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../graphics.html">
+   graphics
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="module-pyuvs.data_files.filename">
+<span id="filename"></span><h1>filename<a class="headerlink" href="#module-pyuvs.data_files.filename" title="Permalink to this headline">¶</a></h1>
+<p>This module provides objects for parsing filenames.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyuvs.data_files.filename.</span></span><span class="sig-name descname"><span class="pre">DataFilename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyuvs/data_files/filename.html#DataFilename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename" title="Permalink to this definition">¶</a></dt>
+<dd><p>A data structure containing info from a single IUVS filename.</p>
+<p>It ensures the input filename represents an IUVS filename and extracts all
+information related to the observation and processing pipeline from the
+input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em><em> | </em><em>Path</em>) – The absolute path of an IUVS data product.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the input absolute path.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.filename">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the filename from the absolute path.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.spacecraft">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spacecraft</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.spacecraft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the spacecraft code from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.instrument">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instrument</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.instrument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the instrument code from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.level">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data product level from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.description">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the description from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.segment">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">segment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the observation segment from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.orbit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orbit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.orbit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the orbit number from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.channel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the observation channel from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.timestamp">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timestamp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the timestamp of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.date">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the date of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.year">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">year</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the year of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.month">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">month</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.month" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the month of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.day">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">day</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.day" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the day of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.time">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the time of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.hour">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hour</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.hour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the hour of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.minute">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">minute</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.minute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the minute of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.second">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">second</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.second" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the second of the observation from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.version">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the version code from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.revision">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">revision</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the revision code from the filename.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyuvs.data_files.filename.DataFilename.extension">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extension</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyuvs.data_files.filename.DataFilename.extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the extension of filename.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="contents.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">contents</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="path.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">path</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, kconnour.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

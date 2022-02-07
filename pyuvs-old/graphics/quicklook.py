@@ -341,7 +341,7 @@ class Quicklook:
 
     def fill_context_map(self, spice_directory):
         Spice().load_spice(spice_directory)
-        sfc_map = np.load('/pyuvs-old/anc/mars_surface_map.npy')
+        sfc_map = np.load('/pyuvs-old/anc/mars_surface.npy')
         for c, f in enumerate(self.__files.filenames):
             hdul = fits.open(f.path)
             lat, lon, sza, ea, pa, lt, x, y, cx, cy, cm = \
@@ -358,7 +358,7 @@ class Quicklook:
                        rasterized=True).set_array(None)
 
     def magnetic_field_map(self, cmap, norm):
-        field = np.load('/pyuvs-old/anc/magnetic_field_closed_probability_map.npy')
+        field = np.load('/pyuvs-old/anc/magnetic_field_closed_probability.npy')
         field = np.flipud(self.__resize_map(field))
         return cmap(norm(field))
 

@@ -1,5 +1,4 @@
-"""Collection of constants and conversion factors relevant to the instrument.
-
+"""This module contains constants and conversions factors relevant to IUVS.
 """
 import numpy as np
 

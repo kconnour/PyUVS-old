@@ -1,6 +1,0 @@
-sphx
-====
-
-.. autoclass:: pyuvs.sphx.A.B
-   :members:
-   :member-order: bysource

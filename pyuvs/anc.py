@@ -1,7 +1,6 @@
 """This module provides functions to load in standard dictionaries and arrays
 for working with IUVS data."""
 from pathlib import Path
-
 import numpy as np
 
 
@@ -55,7 +54,7 @@ def load_flatfield_mid_hi_res_pipeline() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       fig, ax = plt.subplots(figsize=(6, 2))
+       fig, ax = plt.subplots()
 
        flatfield = pu.load_flatfield_mid_hi_res_pipeline()
        ax.imshow(flatfield.T, cmap='inferno')
@@ -68,6 +67,7 @@ def load_flatfield_mid_hi_res_pipeline() -> np.ndarray:
                    'mid-hi-res-flatfield-pipeline.npy'))
 
 
+# TODO: fix the tight layout in the graphics of documentation
 def load_flatfield_mid_hi_res_my34gds() -> np.ndarray:
     """Load mid-hi-resolution flatfield created from data taken during the
     Mars year 34 global dust storm.
@@ -93,7 +93,7 @@ def load_flatfield_mid_hi_res_my34gds() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       fig, ax = plt.subplots(figsize=(6, 2))
+       fig, ax = plt.subplots()
 
        flatfield = pu.load_flatfield_mid_hi_res_my34gds()
        ax.imshow(flatfield.T, cmap='inferno')
@@ -106,6 +106,7 @@ def load_flatfield_mid_hi_res_my34gds() -> np.ndarray:
                    'mid-hi-res-flatfield-my34gds.npy'))
 
 
+# TODO: fix the tight layout in the graphics of documentation
 def load_flatfield_hi_res() -> np.ndarray:
     """Load hi-resolution flatfield created from data taken during outdisk.
 
@@ -130,7 +131,7 @@ def load_flatfield_hi_res() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       fig, ax = plt.subplots(figsize=(6, 2))
+       fig, ax = plt.subplots()
 
        flatfield = pu.load_flatfield_hi_res()
        ax.imshow(flatfield.T, cmap='inferno')
@@ -143,6 +144,7 @@ def load_flatfield_hi_res() -> np.ndarray:
                    'hi-res-flatfield.npy'))
 
 
+# TODO: fix the tight layout in the graphics of documentation
 def load_flatfield_mid_res_app_flip() -> np.ndarray:
     """Load mid-resolution flatfield created from data taken when the APP was
     flipped.
@@ -168,7 +170,7 @@ def load_flatfield_mid_res_app_flip() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       fig, ax = plt.subplots(figsize=(6, 2))
+       fig, ax = plt.subplots()
 
        flatfield = pu.load_flatfield_mid_res_app_flip()
        ax.imshow(flatfield.T, cmap='inferno')
@@ -181,6 +183,7 @@ def load_flatfield_mid_res_app_flip() -> np.ndarray:
                    'mid-res-flatfield-APP-flip.npy'))
 
 
+# TODO: fix the tight layout in the graphics of documentation
 def load_flatfield_mid_res_no_app_flip() -> np.ndarray:
     """Load mid-resolution flatfield created from data taken when the APP was
     not flipped.
@@ -206,7 +209,7 @@ def load_flatfield_mid_res_no_app_flip() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       fig, ax = plt.subplots(figsize=(6, 2))
+       fig, ax = plt.subplots()
 
        flatfield = pu.load_flatfield_mid_res_no_app_flip()
        ax.imshow(flatfield.T, cmap='inferno')
@@ -425,6 +428,7 @@ def load_muv_wavelength_center() -> np.ndarray:
 
 
 # Maps
+# TODO: fix the tight layout in the graphics of documentation
 def load_map_magnetic_field_closed_probability() -> np.ndarray:
     """Load the map denoting the probability of a closed magnetic field line.
 
@@ -461,10 +465,11 @@ def load_map_magnetic_field_closed_probability() -> np.ndarray:
 
     """
     file_path = _get_maps_directory() / \
-        'magnetic_field_closed_probability_map.npy'
+        'magnetic_field_closed_probability.npy'
     return np.load(str(file_path))
 
 
+# TODO: fix the tight layout in the graphics of documentation
 def load_map_magnetic_field_open_probability() -> np.ndarray:
     """Load the map denoting the probability of an open magnetic field line.
 
@@ -501,10 +506,11 @@ def load_map_magnetic_field_open_probability() -> np.ndarray:
 
     """
     file_path = _get_maps_directory() / \
-        'magnetic_field_open_probability_map.npy'
+        'magnetic_field_open_probability.npy'
     return np.load(str(file_path))
 
 
+# TODO: fix the tight layout in the graphics of documentation
 def load_map_mars_surface() -> np.ndarray:
     """Load the Mars surface map.
 
@@ -540,7 +546,7 @@ def load_map_mars_surface() -> np.ndarray:
        plt.show()
 
     """
-    file_path = _get_maps_directory() / 'mars_surface_map.npy'
+    file_path = _get_maps_directory() / 'mars_surface.npy'
     return np.load(str(file_path))
 
 
@@ -581,7 +587,80 @@ def load_template_co_cameron_bands() -> np.ndarray:
     return np.load(str(_get_templates_directory() / 'co_cameron_bands.npy'))
 
 
-def load_template_co2p_uvd() -> np.ndarray:
+def load_template_co_plus_1st_negative() -> np.ndarray:
+    """Load the MUV CO :sup:`+` 1NG (first negative) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_co_plus_1st_negative()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return np.load(str(_get_templates_directory() / 'co+_first_negative.npy'))
+
+
+def load_template_co2_plus_fdb() -> np.ndarray:
+    """Load the MUV CO :sub:`2` :sup:`+` FDB (Fox-Duffendack-Barker) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_co2_plus_fdb()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return np.load(str(_get_templates_directory() /
+                       'co2+_fox_duffendack_barker.npy'))
+
+
+def load_template_co2_plus_uvd() -> np.ndarray:
     """Load the MUV CO :sub:`2` :sup:`+` UVD (ultraviolet doublet) template.
 
     Returns
@@ -605,7 +684,7 @@ def load_template_co2p_uvd() -> np.ndarray:
 
        fig, ax = plt.subplots()
 
-       template = pu.anc.load_template_co2p_uvd()
+       template = pu.anc.load_template_co2_plus_uvd()
        wavelengths = pu.anc.load_muv_wavelength_center()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
@@ -614,7 +693,45 @@ def load_template_co2p_uvd() -> np.ndarray:
        plt.show()
 
     """
-    return np.load(str(_get_templates_directory() / 'ultraviolet_doublet.npy'))
+    return np.load(str(_get_templates_directory() /
+                       'co2+_ultraviolet_doublet.npy'))
+
+
+def load_template_n2_vk() -> np.ndarray:
+    """Load the MUV N :sub:`2` VK (Vegard-Kaplan) template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_n2_vk()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return np.load(str(_get_templates_directory() /
+                       'nitrogen_vegard_kaplan.npy'))
 
 
 def load_template_no_nightglow() -> np.ndarray:
@@ -651,6 +768,42 @@ def load_template_no_nightglow() -> np.ndarray:
     return np.load(str(_get_templates_directory() / 'no_nightglow.npy'))
 
 
+def load_template_oxygen_2972() -> np.ndarray:
+    """Load the MUV oxygen 297.2 nm template.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the template.
+
+    Notes
+    -----
+    The shape of this array is (1024,).
+
+    Examples
+    --------
+    Visualize this array.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots()
+
+       template = pu.anc.load_template_oxygen_2972()
+       wavelengths = pu.anc.load_muv_wavelength_center()
+       ax.plot(wavelengths, template)
+       ax.set_xlim(wavelengths[0], wavelengths[-1])
+       ax.set_xlabel('Wavelength [nm]')
+       ax.set_ylabel('Relative brightness')
+       plt.show()
+
+    """
+    return np.load(str(_get_templates_directory() / 'oxygen_2972.npy'))
+
+
 def load_template_solar_continuum() -> np.ndarray:
     """Load the MUV solar continuum template.
 
@@ -685,223 +838,3 @@ def load_template_solar_continuum() -> np.ndarray:
 
     """
     return np.load(str(_get_templates_directory() / 'solar_continuum.npy'))
-
-'''
-
-
-def load_co2p_fdb_template() -> np.ndarray:
-    """Load the MUV CO :sub:`2` :sup:`+` FDB (Fox-Duffendack-Barker) template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_co2p_fdb_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['co2p_fdb']
-
-def load_cop_1ng_template() -> np.ndarray:
-    """Load the MUV CO :sup:`+` 1NG (first negative) template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_cop_1ng_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['cop_1ng']
-
-
-def load_n2_vk_template() -> np.ndarray:
-    """Load the MUV N :sub:`2` VK (Vegard-Kaplan) template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_n2_vk_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['n2_vk']
-
-
-
-def load_oxygen_2972_template() -> np.ndarray:
-    """Load the MUV oxygen 297.2 nm template.
-
-    Returns
-    -------
-    np.ndarray
-        Array of the template.
-
-    Notes
-    -----
-    The shape of this array is (1024,).
-
-    Examples
-    --------
-    Visualize this array.
-
-    .. plot::
-       :include-source:
-
-       import matplotlib.pyplot as plt
-       import pyuvs as pu
-
-       fig, ax = plt.subplots()
-
-       template = pu.anc.load_oxygen_2972_template()
-       wavelengths = pu.anc.load_muv_wavelength_center()
-       ax.plot(wavelengths, template)
-       ax.set_xlim(wavelengths[0], wavelengths[-1])
-       ax.set_xlabel('Wavelength [nm]')
-       ax.set_ylabel('Relative brightness')
-       plt.show()
-
-    """
-    return load_muv_templates()['o2972']
-
-
-
-
-'''
-
-
-if __name__ == '__main__':
-
-    import matplotlib.pyplot as plt
-    import matplotlib.colors as colors
-
-    def make_scalar_mappable(cmap, vmin, vmax):
-        norm = colors.Normalize(vmin=vmin, vmax=vmax)
-        scalar_mappable = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-        scalar_mappable.set_array([])
-        return scalar_mappable, norm
-
-
-    master = load_flatfield_mid_hi_res_pipeline()
-    before = load_flatfield_mid_res_no_app_flip()
-    after = load_flatfield_mid_res_app_flip()
-    gds = load_flatfield_mid_hi_res_my34gds()
-    hires = load_flatfield_hi_res()
-
-    # REscale FF
-    master50 = np.zeros((50, 19))
-    gds50 = np.zeros((50, 19))
-    hires50 = np.zeros((50, 15))
-    for i in range(19):
-        foo = np.linspace(0, 132, num=50)
-        bar = np.linspace(0, 132, num=133)
-        master50[:, i] = np.interp(foo, bar, master[:, i])
-        gds50[:, i] = np.interp(foo, bar, gds[:, i])
-        if i < 15:
-            hires50[:, i] = np.interp(np.linspace(0, 199, num=50), np.linspace(0, 199, num=200), hires[:, i])
-
-    cmap = 'inferno'
-    font = {'size': 5}
-    plt.rc('font', **font)
-    plt.rc({'xtick.labelsize': 5})
-
-    fig, ax = plt.subplots(2, 6, figsize=(8, 5))
-
-    ax[0, 0].imshow(after/before, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
-    ax[0, 0].set_title('after/before')
-    ax[0, 1].imshow(before/master50, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
-    ax[0, 1].set_title('before/master50')
-    ax[0, 2].imshow(after/master50, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
-    ax[0, 2].set_title('after/master50')
-    ax[0, 3].imshow(gds50/master50, cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
-    ax[0, 3].set_title('MY34 GDS50/master50')
-    ax[0, 4].imshow(hires50/master50[:, :15], cmap=cmap, vmin=0.9, vmax=1.1, origin='lower')
-    ax[0, 4].set_title('Hi-res50/master50')
-    sm, _ = make_scalar_mappable(cmap, vmin=0.9, vmax=1.1)
-    plt.colorbar(sm, cax=ax[0, 5], aspect=50)
-
-    cmap = 'inferno'
-    font = {'size': 5}
-    plt.rc('font', **font)
-    ax[1, 0].imshow(after - before, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
-    ax[1, 0].set_title('after - before')
-    ax[1, 1].imshow(before - master50, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
-    ax[1, 1].set_title('before - master50')
-    ax[1, 2].imshow(after - master50, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
-    ax[1, 2].set_title('after - master50')
-    ax[1, 3].imshow(gds50 - master50, cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
-    ax[1, 3].set_title('MY34 GDS50 - master50')
-    ax[1, 4].imshow(hires50 - master50[:, :15], cmap=cmap, vmin=-0.08, vmax=0.08, origin='lower')
-    ax[1, 4].set_title('MY34 GDS50 - master50')
-    sm, _ = make_scalar_mappable(cmap, vmin=-0.08, vmax=0.08)
-    plt.colorbar(sm, cax=ax[1, 5], aspect=0.5)
-
-    plt.savefig('/home/kyle/ql_testing/ff_ratio1.png', dpi=300)
