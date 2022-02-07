@@ -1,0 +1,655 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pyuvs.graphics.templates &#8212; PyUVS  documentation</title>
+    
+    <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/pydata-sphinx-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    
+    <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">PyUVS</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../rst/installation.html">
+  Installation
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../rst/api.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../rst/graphics.html">
+  Graphics
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../rst/tools.html">
+  Tools
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../rst/tutorials.html">
+  Tutorials
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/kconnour/PyUVS" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for pyuvs.graphics.templates</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides templates for creating graphics.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">colors</span>
+<span class="kn">import</span> <span class="nn">matplotlib.gridspec</span> <span class="k">as</span> <span class="nn">gridspec</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">ticker</span>
+<span class="kn">from</span> <span class="nn">pyuvs.constants</span> <span class="kn">import</span> <span class="n">angular_slit_width</span><span class="p">,</span> <span class="n">minimum_mirror_angle</span><span class="p">,</span> \
+    <span class="n">maximum_mirror_angle</span>
+
+
+<span class="c1"># TODO: this renders oddly online..</span>
+<div class="viewcode-block" id="SegmentDetectorImage"><a class="viewcode-back" href="../../../rst/api/graphics/templates.html#pyuvs.graphics.templates.SegmentDetectorImage">[docs]</a><span class="k">class</span> <span class="nc">SegmentDetectorImage</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Make a template of a detector image containing all data from a</span>
+<span class="sd">    segment. This is broadcast into angular space so that the pixels are</span>
+<span class="sd">    not warped. The data axis spans the figure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_swaths</span>
+<span class="sd">        The number of swaths present in the data.</span>
+<span class="sd">    height</span>
+<span class="sd">        The desired figure height [inches].</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this template.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       from pyuvs.graphics.templates import SegmentDetectorImage</span>
+
+<span class="sd">       SegmentDetectorImage(6, 4)</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_swaths</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_swaths</span> <span class="o">=</span> <span class="n">n_swaths</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_width</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_figure</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_data_axis</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_compute_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_swaths</span> <span class="o">*</span> <span class="n">angular_slit_width</span> <span class="o">/</span> \
+                       <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">maximum_mirror_angle</span> <span class="o">-</span> <span class="n">minimum_mirror_angle</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">aspect_ratio</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span>
+
+    <span class="k">def</span> <span class="nf">_setup_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_add_data_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">figure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the figure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        plt.Figure</span>
+<span class="sd">            The figure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the data axis, which spans the entire figure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        plt.Axes</span>
+<span class="sd">            The data axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_axis</span></div>
+
+
+<div class="viewcode-block" id="ApoapseMUVQuicklook"><a class="viewcode-back" href="../../../rst/api/graphics/templates.html#pyuvs.graphics.templates.ApoapseMUVQuicklook">[docs]</a><span class="k">class</span> <span class="nc">ApoapseMUVQuicklook</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class that creates a blank apoapse MUV quicklook.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    figure_width: float</span>
+<span class="sd">        The desired output figure width.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The figure width can theoretically be any value, but values less than</span>
+<span class="sd">    14 will compress the text in such a way that it&#39;s unreadable.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this template.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       from pyuvs.graphics.templates import ApoapseMUVQuicklook</span>
+
+<span class="sd">       ApoapseMUVQuicklook()</span>
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figure_width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">14</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_figure</span><span class="p">(</span><span class="n">figure_width</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_gridspecs</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_text_axes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_data_axes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_map_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_map_axes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angle_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_angle_axes</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_colorbars</span><span class="p">()</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span>
+
+    <span class="k">def</span> <span class="nf">_make_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">figure_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_rc_params</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figure_width</span><span class="p">,</span> <span class="n">figure_width</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">/</span> <span class="mi">16</span><span class="p">),</span>
+                          <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_rc_params</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;apoapse_muv_quicklook.mplstyle&#39;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_gridspecs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">row_gridspec</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="p">)</span>
+        <span class="n">text_gridspec</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span>
+            <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">subplot_spec</span><span class="o">=</span><span class="n">row_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">data_gridspec</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span>
+            <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span>
+            <span class="n">subplot_spec</span><span class="o">=</span><span class="n">row_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span>
+            <span class="n">width_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">])</span>
+        <span class="n">angle_gridspec</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpecFromSubplotSpec</span><span class="p">(</span>
+            <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">subplot_spec</span><span class="o">=</span><span class="n">row_gridspec</span><span class="p">[</span><span class="mi">5</span><span class="p">:],</span>
+            <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">text_gridspec</span><span class="p">,</span>
+                <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data_gridspec</span><span class="p">,</span>
+                <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="n">angle_gridspec</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_make_text_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">text_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+        <span class="n">left_text_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">text_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">center_text_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">text_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">right_text_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">text_gridspec</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="n">left_text_axis</span><span class="p">,</span>
+                <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="n">center_text_axis</span><span class="p">,</span>
+                <span class="s1">&#39;right&#39;</span><span class="p">:</span> <span class="n">right_text_axis</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_make_data_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">data_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">no_swath_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">no_globe_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">aurora_swath_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">aurora_globe_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+        <span class="n">no_globe_axis</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+        <span class="n">aurora_globe_axis</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;no_swath&#39;</span><span class="p">:</span> <span class="n">no_swath_axis</span><span class="p">,</span>
+                <span class="s1">&#39;no_globe&#39;</span><span class="p">:</span> <span class="n">no_globe_axis</span><span class="p">,</span>
+                <span class="s1">&#39;aurora_swath&#39;</span><span class="p">:</span> <span class="n">aurora_swath_axis</span><span class="p">,</span>
+                <span class="s1">&#39;aurora_globe&#39;</span><span class="p">:</span> <span class="n">aurora_globe_axis</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_make_map_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">data_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">surface_map_swath_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">surface_map_globe_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">magnetic_field_map_swath_axis</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">magnetic_field_map_globe_axis</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+        <span class="n">surface_map_globe_axis</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+        <span class="n">magnetic_field_map_globe_axis</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;surface_swath&#39;</span><span class="p">:</span> <span class="n">surface_map_swath_axis</span><span class="p">,</span>
+                <span class="s1">&#39;surface_globe&#39;</span><span class="p">:</span> <span class="n">surface_map_globe_axis</span><span class="p">,</span>
+                <span class="s1">&#39;magnetic_field_swath&#39;</span><span class="p">:</span> <span class="n">magnetic_field_map_swath_axis</span><span class="p">,</span>
+                <span class="s1">&#39;magnetic_field_globe&#39;</span><span class="p">:</span> <span class="n">magnetic_field_map_globe_axis</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_make_angle_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">angle_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+        <span class="n">solar_zenith_angle_axis</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">emission_angle_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">phase_angle_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">local_time_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;solar_zenith_angle&#39;</span><span class="p">:</span> <span class="n">solar_zenith_angle_axis</span><span class="p">,</span>
+                <span class="s1">&#39;emission_angle&#39;</span><span class="p">:</span> <span class="n">emission_angle_axis</span><span class="p">,</span>
+                <span class="s1">&#39;phase_angle&#39;</span><span class="p">:</span> <span class="n">phase_angle_axis</span><span class="p">,</span>
+                <span class="s1">&#39;local_time&#39;</span><span class="p">:</span> <span class="n">local_time_axis</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_add_colorbars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_no_data_colorbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_aurora_data_colorbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_magnetic_field_map_colorbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_solar_zenith_angle_colorbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_emission_angle_colorbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_phase_angle_colorbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_local_time_colorbar</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_add_no_data_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_vertical_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;NO Nightglow Brightness [kR]&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;no&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span>
+
+    <span class="k">def</span> <span class="nf">_add_aurora_data_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;magma&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_vertical_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Aurora Brightness [kR]&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mf">0.125</span><span class="p">)</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;aurora&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span>
+
+    <span class="k">def</span> <span class="nf">_add_magnetic_field_map_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">data_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_vertical_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Probability of Open Magnetic Field Line&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;magnetic_field&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span>
+
+    <span class="k">def</span> <span class="nf">_add_solar_zenith_angle_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">angle_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;cividis_r&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_horizontal_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Solar Zenith Angle [degrees]&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;angle&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span>
+
+    <span class="k">def</span> <span class="nf">_add_emission_angle_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">angle_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;cividis_r&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_horizontal_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Emission Angle [degrees]&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_phase_angle_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">angle_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;cividis_r&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_horizontal_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Phase Angle [degrees]&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_local_time_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">angle_gridspec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridspec</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;twilight_shifted&#39;</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">angle_gridspec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">sm</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_place_horizontal_colorbar</span><span class="p">(</span>
+            <span class="n">sm</span><span class="p">,</span>
+            <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Dayside Local Time [hours]&#39;</span><span class="p">,</span>
+            <span class="n">major_tick_spacing</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;local_time&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+        <span class="n">scalar_mappable</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+        <span class="n">scalar_mappable</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span>
+        <span class="k">return</span> <span class="n">scalar_mappable</span><span class="p">,</span> <span class="n">norm</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_place_vertical_colorbar</span><span class="p">(</span><span class="n">scalar_mappable</span><span class="p">,</span> <span class="n">cax</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span>
+                                 <span class="n">major_tick_spacing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">scalar_mappable</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_rasterized</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">major_tick_spacing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">major_tick_spacing</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">minor_tick_spacing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">minor_tick_spacing</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cbar</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_place_horizontal_colorbar</span><span class="p">(</span><span class="n">scalar_mappable</span><span class="p">,</span> <span class="n">cax</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span>
+                                   <span class="n">major_tick_spacing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">minor_tick_spacing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">scalar_mappable</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                            <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_rasterized</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">major_tick_spacing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">major_tick_spacing</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">minor_tick_spacing</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span>
+                <span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">minor_tick_spacing</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cbar</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">figure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_figure</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">left_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_axes</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">center_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_axes</span><span class="p">[</span><span class="s1">&#39;center&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">right_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_axes</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">no_data_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_axes</span><span class="p">[</span><span class="s1">&#39;no_swath&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">no_data_globe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_axes</span><span class="p">[</span><span class="s1">&#39;no_globe&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">aurora_data_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_axes</span><span class="p">[</span><span class="s1">&#39;aurora_swath&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">aurora_data_globe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_axes</span><span class="p">[</span><span class="s1">&#39;aurora_globe&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">surface_map_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_axes</span><span class="p">[</span><span class="s1">&#39;surface_swath&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">surface_map_globe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_axes</span><span class="p">[</span><span class="s1">&#39;surface_globe&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">magnetic_field_map_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_axes</span><span class="p">[</span><span class="s1">&#39;magnetic_field_swath&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">magnetic_field_map_globe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_axes</span><span class="p">[</span><span class="s1">&#39;magnetic_field_globe&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">solar_zenith_angle_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle_axes</span><span class="p">[</span><span class="s1">&#39;solar_zenith_angle&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">emission_angle_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle_axes</span><span class="p">[</span><span class="s1">&#39;emission_angle&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phase_angle_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle_axes</span><span class="p">[</span><span class="s1">&#39;phase_angle&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">local_time_swath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle_axes</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angle_colormap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angle_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">local_time_colormap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">local_time_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="s1">&#39;local_time&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">no_colormap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">no_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="s1">&#39;no&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">aurora_colormap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="s1">&#39;aurora&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">aurora_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="s1">&#39;aurora&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">magnetic_field_colormap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color_maps</span><span class="p">[</span><span class="s1">&#39;magnetic_field&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">magnetic_field_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norms</span><span class="p">[</span><span class="s1">&#39;magnetic_field&#39;</span><span class="p">]</span></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, kconnour and zachariahmilby.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

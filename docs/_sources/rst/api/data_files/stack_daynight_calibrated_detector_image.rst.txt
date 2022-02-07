@@ -1,4 +1,0 @@
-stack_daynight_calibrated_detector_image()
-==========================================
-
-.. autofunction:: pyuvs.data_files.stack_daynight_calibrated_detector_image

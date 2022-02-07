@@ -1,29 +1,42 @@
-"""The :code:`templates` module provides templates for creating graphics."""
+"""This module provides templates for creating graphics."""
 
 from pathlib import Path
 import matplotlib.colors as colors
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
-from matplotlib.gridspec import GridSpecFromSubplotSpec
 from pyuvs.constants import angular_slit_width, minimum_mirror_angle, \
     maximum_mirror_angle
 
 
+# TODO: this renders oddly online..
 class SegmentDetectorImage:
+    """Make a template of a detector image containing all data from a
+    segment. This is broadcast into angular space so that the pixels are
+    not warped. The data axis spans the figure.
+
+    Parameters
+    ----------
+    n_swaths
+        The number of swaths present in the data.
+    height
+        The desired figure height [inches].
+
+    Examples
+    --------
+    Visualize this template.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       from pyuvs.graphics.templates import SegmentDetectorImage
+
+       SegmentDetectorImage(6, 4)
+       plt.show()
+
+    """
     def __init__(self, n_swaths: int, height: float):
-        """Make a template of a detector image containing all data from a
-        segment. This is broadcast into angular space so that the pixels are
-        not warped. The data axis spans the figure.
-
-        Parameters
-        ----------
-        n_swaths
-            The number of swaths present in the data.
-        height
-            The desired figure height [inches].
-
-        """
         self._n_swaths = n_swaths
         self._height = height
         self._width = self._compute_width()
@@ -68,7 +81,34 @@ class SegmentDetectorImage:
 
 
 class ApoapseMUVQuicklook:
+    """A class that creates a blank apoapse MUV quicklook.
+
+    Parameters
+    ----------
+    figure_width: float
+        The desired output figure width.
+
+    Notes
+    -----
+    The figure width can theoretically be any value, but values less than
+    14 will compress the text in such a way that it's unreadable.
+
+    Examples
+    --------
+    Visualize this template.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       from pyuvs.graphics.templates import ApoapseMUVQuicklook
+
+       ApoapseMUVQuicklook()
+       plt.show()
+
+    """
     def __init__(self, figure_width: float = 14):
+
         self._figure = self._make_figure(figure_width)
 
         self._gridspec = self._make_gridspecs()
@@ -419,8 +459,3 @@ class ApoapseMUVQuicklook:
     @property
     def magnetic_field_norm(self):
         return self._norms['magnetic_field']
-
-
-if __name__ == '__main__':
-    ApoapseMUVQuicklook()
-    plt.savefig('/home/kyle/apoapse_template.pdf')

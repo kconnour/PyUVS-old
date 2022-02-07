@@ -11,3 +11,4 @@ graphics, and general utility routines.
    :caption: pyuvs.graphics modules:
 
    graphics/colorize
+   graphics/templates
