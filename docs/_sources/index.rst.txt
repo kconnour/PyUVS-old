@@ -9,7 +9,7 @@ working with MAVEN/IUVS data suck less.
 
    rst/installation
    rst/api
-   rst/graphics
+   rst/examples/index
    rst/tools
    rst/tutorials
 

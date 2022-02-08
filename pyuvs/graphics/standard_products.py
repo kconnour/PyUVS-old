@@ -173,11 +173,3 @@ def make_apoapse_muv_quicklook(orbit: int, data_location: Path, saveloc: str) ->
         ax.set_xticks([])
         ax.set_yticks([])
     plt.savefig(saveloc)
-
-
-if __name__ == '__main__':
-    import time
-    o = 5738
-    p = Path('/media/kyle/Samsung_T5/IUVS_data')
-    sl = f'/home/kyle/ql_testing/segment-quicklook-orbit{o}.pdf'
-    make_dayside_segment_detector_image(o, p, sl)

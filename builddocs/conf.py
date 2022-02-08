@@ -32,7 +32,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'matplotlib.sphinxext.mathmpl',
-    'matplotlib.sphinxext.plot_directive'
+    'matplotlib.sphinxext.plot_directive',
+    'sphinx_gallery.gen_gallery'
 ]
 
 # Add any paths that contain graphics here, relative to this directory.
@@ -70,4 +71,10 @@ autodoc_member_order = 'bysource'  # Document properties in order
 # This displays "ArrayLike" instead of "numpy.typing.ArrayLike"
 autodoc_type_aliases = {
     'ArrayLike': 'ArrayLike'
+}
+
+# Sphinx gallery stuff
+sphinx_gallery_conf = {
+    'examples_dirs': '../examples',
+    'gallery_dirs': '../builddocs/rst/examples'
 }
