@@ -9,11 +9,19 @@ from pyuvs.constants import minimum_mirror_angle, maximum_mirror_angle, \
 
 
 # TODO: this should go in L1bFile since it only applies there
-def add_integration_dimension(func):
+def add_3d_integration_dimension(func):
     @wraps(func)
     def wrapper(*args):
         f = func(*args)
         return f[None, :] if np.ndim(f) == 2 else f
+    return wrapper
+
+
+def add_2d_integration_dimension(func):
+    @wraps(func)
+    def wrapper(*args):
+        f = func(*args)
+        return f[None, :] if np.ndim(f) == 1 else f
     return wrapper
 
 
@@ -109,7 +117,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def raw(self) -> np.ndarray:
             """Get the detector image without any corrections [DN].
 
@@ -123,7 +131,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def random_uncertainty_dn(self) -> np.ndarray:
             """Get the random uncertainty [DN] of the detector image.
 
@@ -140,7 +148,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def dark_current(self) -> np.ndarray:
             """Get the dark current in detector image [DN].
 
@@ -151,11 +159,11 @@ class L1bFile:
 
             """
 
-            return self._background_dark
+            return self._background_dark.data
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def dark_subtracted(self) -> np.ndarray:
             """Get the detector image with dark current subtracted [DN].
 
@@ -170,11 +178,11 @@ class L1bFile:
 
             """
 
-            return self._detector_dark_subtracted
+            return self._detector_dark_subtracted.data
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def calibrated(self) -> np.ndarray:
             """Get the calibrated detector image [kR/nm].
 
@@ -193,7 +201,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def random_uncertainty_physical(self) -> np.ndarray:
             """Get the random uncertainty [kR/nm] of the detector image.
 
@@ -207,7 +215,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def total_uncertainty_physical(self) -> np.ndarray:
             """Get the combined random and systematic uncertainty [kR/nm] of
             the detector image.
@@ -222,7 +230,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def detector_dark(self) -> np.ndarray:
             """Get the detector dark
 
@@ -236,7 +244,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def quality_flag(self) -> np.ndarray:
             """Get the quality flag.
 
@@ -247,7 +255,7 @@ class L1bFile:
 
             """
 
-            return self._quality_flag
+            return self._quality_flag.data
 
         @property
         def disclaimer(self) -> str:
@@ -546,7 +554,7 @@ class L1bFile:
             small keyhole.
 
             """
-            return self._binning['spabinwidth']
+            return self._binning['spabinwidth'][0]
 
         @property
         def spatial_pixel_low(self) -> np.ndarray:
@@ -632,7 +640,7 @@ class L1bFile:
             small keyhole.
 
             """
-            return self._binning['spebinwidth']
+            return self._binning['spebinwidth'][0]
 
         @property
         def spectral_pixel_low(self) -> np.ndarray:
@@ -878,7 +886,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def right_ascension(self) -> np.ndarray:
             """Get the right ascension [degrees] of each spatial pixel corner.
 
@@ -892,7 +900,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def declination(self) -> np.ndarray:
             """Get the declination [degrees] of each spatial pixel corner.
 
@@ -906,7 +914,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def latitude(self) -> np.ndarray:
             """Get the latitude [degrees] of each spatial pixel corner.
 
@@ -920,7 +928,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def longitude(self) -> np.ndarray:
             """Get the longitude [degrees] of each spatial pixel corner.
 
@@ -934,7 +942,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def tangent_altitude(self) -> np.ndarray:
             """Get the altitude [km] of each spatial pixel corner.
 
@@ -948,7 +956,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def altitude_rate(self) -> np.ndarray:
             """Get the altitude rate [km/s] of each spatial pixel corner.
 
@@ -962,7 +970,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_3d_integration_dimension
         def line_of_sight(self) -> np.ndarray:
             """Get the line of sight [km] of each spatial pixel corner.
 
@@ -976,7 +984,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_2d_integration_dimension
         def solar_zenith_angle(self) -> np.ndarray:
             """Get the solar zenith angle [degrees] of each spatial pixel.
 
@@ -990,7 +998,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_2d_integration_dimension
         def emission_angle(self) -> np.ndarray:
             """Get the emission angle [degrees] of each spatial pixel.
 
@@ -1004,7 +1012,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_2d_integration_dimension
         def phase_angle(self) -> np.ndarray:
             """Get the phase angle [degrees] of each spatial pixel.
 
@@ -1018,7 +1026,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_2d_integration_dimension
         def zenith_angle(self) -> np.ndarray:
             """Get the zenith angle [degrees] of each spatial pixel.
 
@@ -1032,7 +1040,7 @@ class L1bFile:
 
         @property
         @app_flip
-        @add_integration_dimension
+        @add_2d_integration_dimension
         def local_time(self) -> np.ndarray:
             """Get the local time [hours] of each spatial pixel.
 
@@ -1054,7 +1062,7 @@ class L1bFile:
 
         """
         def __init__(self, observation):
-            self._observation = observation
+            self._observation = observation.data
 
         @property
         def integration_time(self) -> np.float32:
@@ -1407,25 +1415,17 @@ class L1bFileCollection:
             [np.repeat(f.is_dayside_file() == self.dayside,
                        f.detector_image.calibrated.shape[0]) for f in self._files])
 
+    def stack_detector_image_dark_subtracted(self) -> np.ndarray:
+        return np.vstack([f.detector_image.dark_subtracted for f in self._files
+                          if f.is_dayside_file() == self.dayside])
 
-def set_off_disk_pixels_to_nan(
-        array: np.ndarray, on_disk_mask: np.ndarray) -> np.ndarray:
-    """Make a mask of integrations that match the given daynight settings.
+    def stack_detector_image_random_uncertainty_dn(self) -> np.ndarray:
+        return np.vstack([f.detector_image.random_uncertainty_dn for f in self._files
+                          if f.is_dayside_file() == self.dayside])
 
-    Parameters
-    ----------
-    array: np.ndarray
-        Any array.
-    on_disk_mask
-        Maks of on-disk pixels. Must be the same shape as array.
-
-    Returns
-    -------
-    np.ndarray
-        Array, where the off disk pixels are np.nans.
-
-    """
-    return np.where(on_disk_mask, array, np.nan)
+    def get_first_nightside_file(self) -> L1bFile:
+        dayside = [f.is_dayside_file() for f in self._files]
+        return self._files[dayside.index(False)]
 
 
 if __name__ == '__main__':

@@ -125,3 +125,18 @@ def turn_detector_image_to_3_channels(image: np.ndarray) -> np.ndarray:
     green = np.sum(image[..., blue_green_cutoff:green_red_cutoff], axis=-1)
     blue = np.sum(image[..., :blue_green_cutoff], axis=-1)
     return np.dstack([red, green, blue])
+
+
+def histogram_equalize_detector_image(image: np.ndarray, mask=None) -> np.ndarray:
+    """
+
+    Parameters
+    ----------
+    image
+
+    Returns
+    -------
+
+    """
+    coadded_image = turn_detector_image_to_3_channels(image)
+    return histogram_equalize_rgb_image(coadded_image, mask=mask)

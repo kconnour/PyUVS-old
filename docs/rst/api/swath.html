@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="data_files" href="data_files.html" />
-    <link rel="prev" title="constants" href="constants.html" />
+    <link rel="prev" title="spectra" href="spectra.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -151,6 +151,11 @@
    constants
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="spectra.html">
+   spectra
+  </a>
+ </li>
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    swath
@@ -239,6 +244,26 @@ belong to swath 1). Then take the floor of these to get the integer swath
 number.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pyuvs.swath.set_off_disk_pixels_to_nan">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.swath.</span></span><span class="sig-name descname"><span class="pre">set_off_disk_pixels_to_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_disk_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/swath.html#set_off_disk_pixels_to_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.swath.set_off_disk_pixels_to_nan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a mask of integrations that match the given daynight settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.ndarray</em>) – Any array.</p></li>
+<li><p><strong>on_disk_mask</strong> – Maks of on-disk pixels. Must be the same shape as array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array, where the off disk pixels are np.nans.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -247,11 +272,11 @@ number.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="constants.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="spectra.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">constants</p>
+            <p class="prev-next-title">spectra</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="data_files.html" title="next page">

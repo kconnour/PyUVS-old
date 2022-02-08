@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>templates &#8212; PyUVS  documentation</title>
+    <title>standard_products &#8212; PyUVS  documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,8 +35,8 @@
     <script src="../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Graphics" href="../../graphics.html" />
-    <link rel="prev" title="standard_products" href="standard_products.html" />
+    <link rel="next" title="templates" href="templates.html" />
+    <link rel="prev" title="detector_image" href="detector_image.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -193,13 +193,13 @@
      detector_image
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="standard_products.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      standard_products
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="templates.html">
      templates
     </a>
    </li>
@@ -244,91 +244,40 @@
               
               <div>
                 
-  <section id="module-pyuvs.graphics.templates">
-<span id="templates"></span><h1>templates<a class="headerlink" href="#module-pyuvs.graphics.templates" title="Permalink to this headline">¶</a></h1>
-<p>This module provides templates for creating graphics.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyuvs.graphics.templates.SegmentDetectorImage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.templates.</span></span><span class="sig-name descname"><span class="pre">SegmentDetectorImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_swaths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyuvs/graphics/templates.html#SegmentDetectorImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.templates.SegmentDetectorImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a template of a detector image containing all data from a
-segment. This is broadcast into angular space so that the pixels are
-not warped. The data axis spans the figure.</p>
+  <section id="module-pyuvs.graphics.standard_products">
+<span id="standard-products"></span><h1>standard_products<a class="headerlink" href="#module-pyuvs.graphics.standard_products" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyuvs.graphics.standard_products.make_dayside_segment_detector_image">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.standard_products.</span></span><span class="sig-name descname"><span class="pre">make_dayside_segment_detector_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveloc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figheight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyuvs/graphics/standard_products.html#make_dayside_segment_detector_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.standard_products.make_dayside_segment_detector_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an image of a dayside detector image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_swaths</strong> – The number of swaths present in the data.</p></li>
-<li><p><strong>height</strong> – The desired figure height [inches].</p></li>
+<li><p><strong>orbit</strong> – </p></li>
+<li><p><strong>data_location</strong> – </p></li>
+<li><p><strong>saveloc</strong> – </p></li>
+<li><p><strong>figheight</strong> – </p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>Visualize this template.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">pyuvs.graphics.templates</span> <span class="kn">import</span> <span class="n">SegmentDetectorImage</span>
-
-<span class="n">SegmentDetectorImage</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../../../rst/api/graphics/templates-1.py">Source code</a>, <a class="reference external" href="../../../rst/api/graphics/templates-1.png">png</a>, <a class="reference external" href="../../../rst/api/graphics/templates-1.hires.png">hires.png</a>, <a class="reference external" href="../../../rst/api/graphics/templates-1.pdf">pdf</a>)</p>
-<figure class="align-default">
-<img alt="../../../_images/templates-1.png" class="plot-directive" src="../../../_images/templates-1.png" />
-</figure>
-<dl class="py property">
-<dt class="sig sig-object py" id="pyuvs.graphics.templates.SegmentDetectorImage.figure">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">figure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">matplotlib.figure.Figure</span></em><a class="headerlink" href="#pyuvs.graphics.templates.SegmentDetectorImage.figure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the figure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The figure.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>plt.Figure</p>
-</dd>
-</dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="pyuvs.graphics.templates.SegmentDetectorImage.data_axis">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_axis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">matplotlib.axes._axes.Axes</span></em><a class="headerlink" href="#pyuvs.graphics.templates.SegmentDetectorImage.data_axis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data axis, which spans the entire figure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The data axis.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>plt.Axes</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyuvs.graphics.templates.ApoapseMUVQuicklook">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.templates.</span></span><span class="sig-name descname"><span class="pre">ApoapseMUVQuicklook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyuvs/graphics/templates.html#ApoapseMUVQuicklook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.templates.ApoapseMUVQuicklook" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class that creates a blank apoapse MUV quicklook.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyuvs.graphics.standard_products.make_apoapse_muv_quicklook">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.standard_products.</span></span><span class="sig-name descname"><span class="pre">make_apoapse_muv_quicklook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveloc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/graphics/standard_products.html#make_apoapse_muv_quicklook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.standard_products.make_apoapse_muv_quicklook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the standard apoapse MUV quicklook.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>figure_width</strong> (<em>float</em>) – The desired output figure width.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbit</strong> – </p></li>
+<li><p><strong>data_location</strong> – </p></li>
+<li><p><strong>saveloc</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<p>The figure width can theoretically be any value, but values less than
-14 will compress the text in such a way that it’s unreadable.</p>
-<p class="rubric">Examples</p>
-<p>Visualize this template.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">pyuvs.graphics.templates</span> <span class="kn">import</span> <span class="n">ApoapseMUVQuicklook</span>
-
-<span class="n">ApoapseMUVQuicklook</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>(<a class="reference external" href="../../../rst/api/graphics/templates-2.py">Source code</a>, <a class="reference external" href="../../../rst/api/graphics/templates-2.png">png</a>, <a class="reference external" href="../../../rst/api/graphics/templates-2.hires.png">hires.png</a>, <a class="reference external" href="../../../rst/api/graphics/templates-2.pdf">pdf</a>)</p>
-<figure class="align-default">
-<img alt="../../../_images/templates-2.png" class="plot-directive" src="../../../_images/templates-2.png" />
-</figure>
 </dd></dl>
 
 </section>
@@ -339,17 +288,17 @@ not warped. The data axis spans the figure.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="standard_products.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="detector_image.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">standard_products</p>
+            <p class="prev-next-title">detector_image</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../../graphics.html" title="next page">
+    <a class='right-next' id="next-link" href="templates.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Graphics</p>
+        <p class="prev-next-title">templates</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

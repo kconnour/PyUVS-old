@@ -9,6 +9,7 @@ data. You can find more info on them here.
 
    api/anc
    api/constants
+   api/spectra
    api/swath
 
 .. toctree::
