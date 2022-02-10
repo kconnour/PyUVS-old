@@ -322,6 +322,7 @@ class ApoapseMUVQuicklook:
 
     @staticmethod
     def _make_scalar_mappable(cmap, vmin, vmax):
+        #norm = colors.LogNorm(vmin=vmin, vmax=vmax)  # for log scaling
         norm = colors.Normalize(vmin=vmin, vmax=vmax)
         scalar_mappable = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         scalar_mappable.set_array([])

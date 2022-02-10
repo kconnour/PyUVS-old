@@ -85,7 +85,7 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../../rst/graphics.html">
+ <a class="reference internal nav-link" href="../../../rst/examples/index.html">
   Graphics
  </a>
 </li>
@@ -269,7 +269,7 @@
     <span class="n">slit_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">angular_slit_width</span> <span class="o">*</span> <span class="n">swath_number</span><span class="p">,</span>
                               <span class="n">angular_slit_width</span> <span class="o">*</span> <span class="p">(</span><span class="n">swath_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
                               <span class="n">num</span><span class="o">=</span><span class="n">n_positions</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">mean_angle_difference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">field_of_view</span><span class="p">))</span>
+    <span class="n">mean_angle_difference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">field_of_view</span><span class="p">)))</span>
     <span class="n">field_of_view</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">field_of_view</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean_angle_difference</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
                                 <span class="n">field_of_view</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">mean_angle_difference</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
                                 <span class="n">num</span><span class="o">=</span><span class="n">n_integrations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>

@@ -162,8 +162,18 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#general-installation">
+   General Installation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#subpackages">
+   Subpackages
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#optional-dependencies">
-   Optional dependencies
+   Optional Dependencies
   </a>
  </li>
 </ul>
@@ -189,34 +199,100 @@
                 
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<section id="general-installation">
+<h2>General Installation<a class="headerlink" href="#general-installation" title="Permalink to this headline">¶</a></h2>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>I recommend using virtual environments when installing PyUVS (or any Python
-library).</p>
+<p>We recommend using virtual environments when installing PyUVS.</p>
 </div>
-<p>To install the latest version of PyUVS simply clone the repository from Github
-(using <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/kconnour/PyUVS.git</span></code> from Terminal,
-or clone using your favorite GUI). You can then install it with
-<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;</span></code>. This
-command will install PyUVS along with all of its dependencies.</p>
+<p>To install the latest version of PyUVS, simply clone the repository from Github
+(using the command <code class="code docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/kconnour/PyUVS.git</span></code>
+in Terminal, or clone using your favorite GUI). You can then install it with
+the command
+<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">PyUVS&gt;</span></code>. This
+command will install PyUVS along with all of its subpackages.</p>
 <p>You can now import PyUVS with <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyuvs</span></code>.</p>
+</section>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<p>PyUVS comes a number of subpackages for specialized tasks that require
+specialized libraries. By default PyUVS requires minimal dependencies but
+most (if not all) of the subpackages require additional libraries. These are
+not installed by default to reduce package clutter.</p>
+<p>The following lists the subpackages and the optional dependencies needed (a
+complete list and installation instructions are in the next section):</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>database</strong></dt><dd><p>A subpackage for working with a PostgreSQL database. If you just want to
+query an already created database, you just need the <code class="code docutils literal notranslate"><span class="pre">database</span></code>
+dependency. If you want to create a database from data files, you also need
+the <code class="code docutils literal notranslate"><span class="pre">datafiles</span></code> dependency.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>datafiles</strong></dt><dd><p>A subpackage for working with data (.fits) files. This requires the
+<code class="code docutils literal notranslate"><span class="pre">datafiles</span></code> dependency.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>graphics</strong></dt><dd><p>A subpackage for working with graphics. Most graphics just require the
+<code class="code docutils literal notranslate"><span class="pre">graphics-basic</span></code> dependency. Some more advanced graphics like globe
+projections require the <code class="code docutils literal notranslate"><span class="pre">graphics-advanced</span></code> dependency.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
 <section id="optional-dependencies">
-<h2>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>PyUVS will install some standard libraries needed to work with IUVS data.
-For specialized usage, it needs additional libraries.The following lists the
-options available.</p>
+<h2>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The following lists all available optional dependencies.</p>
 <ul>
+<li><dl>
+<dt><strong>all</strong></dt><dd><p>Install all libraries needed for the whole project.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This requires GEOS and PROJ to already be installed on the system.</p>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><strong>database</strong></dt><dd><p>Install all libraries needed to work with PyUVS data via a database.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is a work in progress and currently has no effect.</p>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>datafiles</strong></dt><dd><p>Install all libraries needed to with with PyUVS data via data (.fits) files.</p>
+</dd>
+</dl>
+</li>
 <li><dl class="simple">
 <dt><strong>docs</strong></dt><dd><p>Install all libraries needed to build the documentation.</p>
 </dd>
 </dl>
 </li>
 <li><dl>
-<dt><strong>graphics</strong></dt><dd><p>Install all libraries needed to create specialized graphical products.</p>
+<dt><strong>graphics-advanced</strong></dt><dd><p>Install all libraries needed to create all specialized graphical products.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This requires GEOS and PROJ to already be installed on the system.</p>
 </div>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>graphics-basic</strong></dt><dd><p>Install all libraries needed to create most of the basic graphical products.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>spice</strong></dt><dd><p>Install all libraries needed to work with SPICE.</p>
 </dd>
 </dl>
 </li>
@@ -226,8 +302,13 @@ options available.</p>
 </dl>
 </li>
 </ul>
-<p>For example, to install the docs dependencies simply use
-<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[docs]</span></code>.</p>
+<p>To install optional dependencies, simply execute this command in Terminal:
+<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[&lt;option&gt;]</span></code>.</p>
+<p>For example, to install the datafiles dependencies simply use
+<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[datafiles]</span></code>.
+You can install multiple of these dependencies at once by putting the
+dependencies in square brackets <em>without spaces between them</em> like so:
+<code class="code docutils literal notranslate"><span class="pre">[option0,option1,option2,...]</span></code>.</p>
 </section>
 </section>
 

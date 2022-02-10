@@ -85,7 +85,7 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../../rst/graphics.html">
+ <a class="reference internal nav-link" href="../../../rst/examples/index.html">
   Graphics
  </a>
 </li>
@@ -485,6 +485,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_make_scalar_mappable</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="c1">#norm = colors.LogNorm(vmin=vmin, vmax=vmax)  # for log scaling</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
         <span class="n">scalar_mappable</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
         <span class="n">scalar_mappable</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span>

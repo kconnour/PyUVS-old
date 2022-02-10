@@ -1,7 +1,7 @@
 PyUVS Documentation
 ===================
-Welcome to the PyUVS documentation site. PyUVS is a Python package that makes
-working with MAVEN/IUVS data suck less.
+Welcome to the PyUVS documentation. PyUVS is a Python package that makes
+working with MAVEN/IUVS data suck less hard. It is the ultimate.
 
 .. toctree::
    :maxdepth: 1
@@ -13,9 +13,12 @@ working with MAVEN/IUVS data suck less.
    rst/tools
    rst/tutorials
 
-******************
-Indices and tables
-******************
+If you used this package in your work, please consider citing it using the
+info found in the `citation file
+<https://github.com/kconnour/PyUVS/blob/main/CITATION.cff>`_.
+
+Indices and Tables
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
