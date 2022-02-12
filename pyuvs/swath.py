@@ -35,7 +35,7 @@ def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
 
     >>> import pyuvs as pu
     >>> mirror_angles = np.array([40, 45, 50, 35, 40, 45, 50])
-    >>> pu.swath.swath_number(mirror_angles)
+    >>> pu.swath_number(mirror_angles)
     array([0, 0, 0, 1, 1, 1, 1])
 
     Get the number of integrations in swath 1, where there are an unequal
@@ -45,7 +45,7 @@ def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
     >>> mirror_angles = np.concatenate([np.linspace(35, 40, num=50),
     ...                                 np.linspace(32, 42, num=100),
     ...                                 np.linspace(33, 53, num=200)])
-    >>> sn = pu.swath.swath_number(mirror_angles)
+    >>> sn = pu.swath_number(mirror_angles)
     >>> np.sum(sn==1)
     100
 

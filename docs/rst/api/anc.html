@@ -272,12 +272,13 @@ for working with IUVS data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">flatfield</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">load_flatfield_mid_hi_res_pipeline</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Spatial bin&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Spectral bin&#39;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -436,7 +437,7 @@ not flipped.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_fuv_sensitivity_curve_manufacturer">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_fuv_sensitivity_curve_manufacturer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_fuv_sensitivity_curve_manufacturer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_fuv_sensitivity_curve_manufacturer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the FUV factory sensitivity curve as reported by manufacturer.</p>
+<dd><p>Load the FUV detector factory sensitivity curve as reported by manufacturer.</p>
 <p>This array has a shape of (101, 2). Index 0 of the first axis is the
 wavelength corresponding to the sensitivity curve; index 1 is the
 sensitivity curve.</p>
@@ -487,6 +488,8 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The shape of this array is best characterized by a Voigt profile.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -496,9 +499,9 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">psf</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">load_muv_point_spread_function</span><span class="p">()</span>
-<span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">181</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">psf</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Angle [degrees]&#39;</span><span class="p">)</span>
+<span class="n">detector_pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">181</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">detector_pixels</span><span class="p">,</span> <span class="n">psf</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Detector pixels&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Point spread function&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -512,7 +515,7 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_sensitivity_curve_manufacturer">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_sensitivity_curve_manufacturer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_sensitivity_curve_manufacturer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_sensitivity_curve_manufacturer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV factory sensitivity curve as reported by manufacturer.</p>
+<dd><p>Load the MUV detector factory sensitivity curve as reported by manufacturer.</p>
 <p>This array has a shape of (101, 2). Index 0 of the first axis is the
 wavelength corresponding to the sensitivity curve; index 1 is the
 sensitivity curve.</p>
@@ -560,7 +563,7 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_sensitivity_curve_observational">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_sensitivity_curve_observational</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_sensitivity_curve_observational"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_sensitivity_curve_observational" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV factory sensitivity curve derived from observations.</p>
+<dd><p>Load the MUV detector sensitivity curve derived from observations.</p>
 <p>This array has a shape of (512, 2). Index 0 of the first axis is the
 wavelength corresponding to the sensitivity curve; index 1 is the
 sensitivity curve.</p>
@@ -606,9 +609,9 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.anc.load_muv_wavelength_edge">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_wavelength_edge</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_wavelength_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_wavelength_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV wavelength edge.</p>
+<dt class="sig sig-object py" id="pyuvs.anc.load_muv_wavelength_edges">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_wavelength_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_wavelength_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_wavelength_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the MUV wavelength pixel edges.</p>
 <p>This array has a shape of (1025,).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -621,9 +624,9 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.anc.load_muv_wavelength_center">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_wavelength_center</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_wavelength_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_wavelength_center" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV wavelength center.</p>
+<dt class="sig sig-object py" id="pyuvs.anc.load_muv_wavelength_centers">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_wavelength_centers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_wavelength_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_wavelength_centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the MUV wavelength pixel centers.</p>
 <p>This array has a shape of (1024,).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -652,7 +655,7 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This map comes from MGS data.</p>
+<p>This map comes from <a class="reference external" href="https://doi.org/10.1029/2007JA012435">MGS data</a>.</p>
 <ul class="simple">
 <li><p>The 0 <sup>th</sup> axis corresponds to latitude and spans -90 to 90 degrees.</p></li>
 <li><p>The 1 <sup>st</sup> axis corresponds to east longitude and spans 0 to 360
@@ -661,12 +664,18 @@ degrees.</p></li>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">ticker</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">b_field</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_magnetic_field_closed_probability</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -690,7 +699,7 @@ degrees.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This map comes from MGS data.</p>
+<p>This map comes from <a class="reference external" href="https://doi.org/10.1029/2007JA012435">MGS data</a>.</p>
 <ul class="simple">
 <li><p>The 0 <sup>th</sup> axis corresponds to latitude and spans -90 to 90 degrees.</p></li>
 <li><p>The 1 <sup>st</sup> axis corresponds to east longitude and spans 0 to 360
@@ -699,12 +708,18 @@ degrees.</p></li>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">ticker</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">b_field</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_magnetic_field_open_probability</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -737,12 +752,18 @@ degrees.</p></li>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">ticker</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">surface_map</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_mars_surface</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">surface_map</span><span class="p">)</span>
+<span class="n">sfc</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_mars_surface</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sfc</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -758,7 +779,7 @@ degrees.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_template_co_cameron_bands">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_template_co_cameron_bands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_template_co_cameron_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_template_co_cameron_bands" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV CO Cameron band template.</p>
+<dd><p>Load the MUV CO Cameron bands template.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the template.</p>
@@ -777,7 +798,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_co_cameron_bands</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -813,7 +834,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_co_plus_1st_negative</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -849,7 +870,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_co2_plus_fdb</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -885,7 +906,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_co2_plus_uvd</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -921,7 +942,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_n2_vk</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -956,7 +977,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_no_nightglow</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -992,7 +1013,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_oxygen_2972</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -1028,7 +1049,7 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
 <span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_template_solar_continuum</span><span class="p">()</span>
-<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_center</span><span class="p">()</span>
+<span class="n">wavelengths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wavelengths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Wavelength [nm]&#39;</span><span class="p">)</span>
@@ -1079,7 +1100,7 @@ degrees.</p></li>
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2021, kconnour and zachariahmilby.<br>
+    &copy; Copyright 2022, kconnour and zachariahmilby.<br>
 </p>
     </div>
     

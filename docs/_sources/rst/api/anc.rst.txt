@@ -17,8 +17,8 @@ Instrument
 .. autofunction:: pyuvs.anc.load_muv_point_spread_function
 .. autofunction:: pyuvs.anc.load_muv_sensitivity_curve_manufacturer
 .. autofunction:: pyuvs.anc.load_muv_sensitivity_curve_observational
-.. autofunction:: pyuvs.anc.load_muv_wavelength_edge
-.. autofunction:: pyuvs.anc.load_muv_wavelength_center
+.. autofunction:: pyuvs.anc.load_muv_wavelength_edges
+.. autofunction:: pyuvs.anc.load_muv_wavelength_centers
 
 Maps
 ----

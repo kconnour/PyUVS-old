@@ -13,12 +13,15 @@ the command
 :code:`<path to python interpreter> -m pip install <path to PyUVS>`. This
 command will install PyUVS along with all of its subpackages.
 
-You can now import PyUVS with :code:`import pyuvs`.
+You can now import PyUVS with :code:`import pyuvs`. We recommend the syntax
+:code:`import pyuvs as pu`.
 
 Subpackages
 -----------
-PyUVS comes a number of subpackages for specialized tasks that require
-specialized libraries. By default PyUVS requires minimal dependencies but
+PyUVS comes with a number of subpackages for specialized tasks that require
+specialized libraries. We anticipate
+
+By default PyUVS requires minimal dependencies but
 most (if not all) of the subpackages require additional libraries. These are
 not installed by default to reduce package clutter.
 

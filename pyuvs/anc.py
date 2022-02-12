@@ -54,12 +54,13 @@ def load_flatfield_mid_hi_res_pipeline() -> np.ndarray:
        import matplotlib.pyplot as plt
        import pyuvs as pu
 
-       fig, ax = plt.subplots()
+       fig, ax = plt.subplots(1, 1, figsize=(8, 2), constrained_layout=True)
 
        flatfield = pu.load_flatfield_mid_hi_res_pipeline()
-       ax.imshow(flatfield.T, cmap='inferno')
+       ax.pcolormesh(flatfield.T, cmap='inferno', rasterized=True)
        ax.set_xlabel('Spatial bin')
        ax.set_ylabel('Spectral bin')
+
        plt.show()
 
     """
@@ -224,7 +225,7 @@ def load_flatfield_mid_res_no_app_flip() -> np.ndarray:
 
 # Instrument
 def load_fuv_sensitivity_curve_manufacturer() -> np.ndarray:
-    """Load the FUV factory sensitivity curve as reported by manufacturer.
+    """Load the FUV detector factory sensitivity curve as reported by manufacturer.
 
     This array has a shape of (101, 2). Index 0 of the first axis is the
     wavelength corresponding to the sensitivity curve; index 1 is the
@@ -276,6 +277,10 @@ def load_muv_point_spread_function() -> np.ndarray:
     np.ndarray
         Array of the point spread function.
 
+    Notes
+    -----
+    The shape of this array is best characterized by a Voigt profile.
+
     Examples
     --------
     Visualize this array.
@@ -290,9 +295,9 @@ def load_muv_point_spread_function() -> np.ndarray:
        fig, ax = plt.subplots()
 
        psf = pu.load_muv_point_spread_function()
-       angles = np.linspace(0, 180, num=181)
-       ax.plot(angles, psf)
-       ax.set_xlabel('Angle [degrees]')
+       detector_pixels = np.linspace(0, 180, num=181)
+       ax.plot(detector_pixels, psf)
+       ax.set_xlabel('Detector pixels')
        ax.set_ylabel('Point spread function')
        plt.show()
 
@@ -302,7 +307,7 @@ def load_muv_point_spread_function() -> np.ndarray:
 
 
 def load_muv_sensitivity_curve_manufacturer() -> np.ndarray:
-    """Load the MUV factory sensitivity curve as reported by manufacturer.
+    """Load the MUV detector factory sensitivity curve as reported by manufacturer.
 
     This array has a shape of (101, 2). Index 0 of the first axis is the
     wavelength corresponding to the sensitivity curve; index 1 is the
@@ -350,7 +355,7 @@ def load_muv_sensitivity_curve_manufacturer() -> np.ndarray:
 
 
 def load_muv_sensitivity_curve_observational() -> np.ndarray:
-    """Load the MUV factory sensitivity curve derived from observations.
+    """Load the MUV detector sensitivity curve derived from observations.
 
     This array has a shape of (512, 2). Index 0 of the first axis is the
     wavelength corresponding to the sensitivity curve; index 1 is the
@@ -397,8 +402,8 @@ def load_muv_sensitivity_curve_observational() -> np.ndarray:
                        'muv_sensitivity_curve_observational.npy'))
 
 
-def load_muv_wavelength_edge() -> np.ndarray:
-    """Load the MUV wavelength edge.
+def load_muv_wavelength_edges() -> np.ndarray:
+    """Load the MUV wavelength pixel edges.
 
     This array has a shape of (1025,).
 
@@ -412,8 +417,8 @@ def load_muv_wavelength_edge() -> np.ndarray:
                        'muv_wavelength_edges.npy'))
 
 
-def load_muv_wavelength_center() -> np.ndarray:
-    """Load the MUV wavelength center.
+def load_muv_wavelength_centers() -> np.ndarray:
+    """Load the MUV wavelength pixel centers.
 
     This array has a shape of (1024,).
 
@@ -428,7 +433,6 @@ def load_muv_wavelength_center() -> np.ndarray:
 
 
 # Maps
-# TODO: fix the tight layout in the graphics of documentation
 def load_map_magnetic_field_closed_probability() -> np.ndarray:
     """Load the map denoting the probability of a closed magnetic field line.
 
@@ -441,7 +445,7 @@ def load_map_magnetic_field_closed_probability() -> np.ndarray:
 
     Notes
     -----
-    This map comes from MGS data.
+    This map comes from `MGS data <https://doi.org/10.1029/2007JA012435>`_.
 
     * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.
     * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
@@ -455,12 +459,18 @@ def load_map_magnetic_field_closed_probability() -> np.ndarray:
        :include-source:
 
        import matplotlib.pyplot as plt
+       import matplotlib.ticker as ticker
        import pyuvs as pu
 
-       fig, ax = plt.subplots()
+       fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
 
        b_field = pu.anc.load_map_magnetic_field_closed_probability()
-       ax.imshow(b_field, cmap='Blues_r', origin='lower')
+       ax.imshow(b_field, cmap='Blues_r', extent=[0, 360, -90, 90], origin='lower', rasterized=True)
+       ax.set_xlabel('Longitude [degrees]')
+       ax.set_ylabel('Latitude [degrees]')
+       ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
+       ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+
        plt.show()
 
     """
@@ -469,7 +479,6 @@ def load_map_magnetic_field_closed_probability() -> np.ndarray:
     return np.load(str(file_path))
 
 
-# TODO: fix the tight layout in the graphics of documentation
 def load_map_magnetic_field_open_probability() -> np.ndarray:
     """Load the map denoting the probability of an open magnetic field line.
 
@@ -482,7 +491,7 @@ def load_map_magnetic_field_open_probability() -> np.ndarray:
 
     Notes
     -----
-    This map comes from MGS data.
+    This map comes from `MGS data <https://doi.org/10.1029/2007JA012435>`_.
 
     * The 0 :sup:`th` axis corresponds to latitude and spans -90 to 90 degrees.
     * The 1 :sup:`st` axis corresponds to east longitude and spans 0 to 360
@@ -496,12 +505,18 @@ def load_map_magnetic_field_open_probability() -> np.ndarray:
        :include-source:
 
        import matplotlib.pyplot as plt
+       import matplotlib.ticker as ticker
        import pyuvs as pu
 
-       fig, ax = plt.subplots()
+       fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
 
        b_field = pu.anc.load_map_magnetic_field_open_probability()
-       ax.imshow(b_field, cmap='Blues_r', origin='lower')
+       ax.imshow(b_field, cmap='Blues_r', extent=[0, 360, -90, 90], origin='lower', rasterized=True)
+       ax.set_xlabel('Longitude [degrees]')
+       ax.set_ylabel('Latitude [degrees]')
+       ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
+       ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+
        plt.show()
 
     """
@@ -510,7 +525,6 @@ def load_map_magnetic_field_open_probability() -> np.ndarray:
     return np.load(str(file_path))
 
 
-# TODO: fix the tight layout in the graphics of documentation
 def load_map_mars_surface() -> np.ndarray:
     """Load the Mars surface map.
 
@@ -537,12 +551,18 @@ def load_map_mars_surface() -> np.ndarray:
        :include-source:
 
        import matplotlib.pyplot as plt
+       import matplotlib.ticker as ticker
        import pyuvs as pu
 
-       fig, ax = plt.subplots()
+       fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
 
-       surface_map = pu.anc.load_map_mars_surface()
-       ax.imshow(surface_map)
+       sfc = pu.anc.load_map_mars_surface()
+       ax.imshow(sfc, extent=[0, 360, -90, 90], origin='lower', rasterized=True)
+       ax.set_xlabel('Longitude [degrees]')
+       ax.set_ylabel('Latitude [degrees]')
+       ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
+       ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+
        plt.show()
 
     """
@@ -551,8 +571,8 @@ def load_map_mars_surface() -> np.ndarray:
 
 
 # Templates
-def load_template_co_cameron_bands() -> np.ndarray:
-    """Load the MUV CO Cameron band template.
+def load_template_co_cameron() -> np.ndarray:
+    """Load the normalized MUV CO Cameron bands template in uncalibrated DNs.
 
     Returns
     -------
@@ -575,12 +595,13 @@ def load_template_co_cameron_bands() -> np.ndarray:
 
        fig, ax = plt.subplots()
 
-       template = pu.anc.load_template_co_cameron_bands()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       template = pu.anc.load_template_co_cameron()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
        ax.set_ylabel('Relative brightness')
+
        plt.show()
 
     """
@@ -588,7 +609,7 @@ def load_template_co_cameron_bands() -> np.ndarray:
 
 
 def load_template_co_plus_1st_negative() -> np.ndarray:
-    """Load the MUV CO :sup:`+` 1NG (first negative) template.
+    """Load the normalized MUV CO :sup:`+` 1NG (first negative) bands template in uncalibrated DNs.
 
     Returns
     -------
@@ -612,11 +633,12 @@ def load_template_co_plus_1st_negative() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_co_plus_1st_negative()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
        ax.set_ylabel('Relative brightness')
+
        plt.show()
 
     """
@@ -648,11 +670,12 @@ def load_template_co2_plus_fdb() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_co2_plus_fdb()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
        ax.set_ylabel('Relative brightness')
+
        plt.show()
 
     """
@@ -685,11 +708,12 @@ def load_template_co2_plus_uvd() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_co2_plus_uvd()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
        ax.set_ylabel('Relative brightness')
+
        plt.show()
 
     """
@@ -722,11 +746,12 @@ def load_template_n2_vk() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_n2_vk()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
        ax.set_ylabel('Relative brightness')
+
        plt.show()
 
     """
@@ -757,7 +782,7 @@ def load_template_no_nightglow() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_no_nightglow()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
@@ -793,7 +818,7 @@ def load_template_oxygen_2972() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_oxygen_2972()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
@@ -829,7 +854,7 @@ def load_template_solar_continuum() -> np.ndarray:
        fig, ax = plt.subplots()
 
        template = pu.anc.load_template_solar_continuum()
-       wavelengths = pu.anc.load_muv_wavelength_center()
+       wavelengths = pu.anc.load_muv_wavelength_centers()
        ax.plot(wavelengths, template)
        ax.set_xlim(wavelengths[0], wavelengths[-1])
        ax.set_xlabel('Wavelength [nm]')
@@ -838,3 +863,24 @@ def load_template_solar_continuum() -> np.ndarray:
 
     """
     return np.load(str(_get_templates_directory() / 'solar_continuum.npy'))
+
+
+if __name__ == '__main__':
+
+    #b = np.load('/home/kyle/repos/PyUVS/pyuvs/anc/maps/mars_surface.npy')
+    #b = np.flipud(b)
+    #np.save('/home/kyle/repos/PyUVS/pyuvs/anc/maps/mars_surface.npy', b)
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as ticker
+    import pyuvs as pu
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
+
+    sfc = pu.anc.load_map_mars_surface()
+    ax.imshow(sfc, extent=[0, 360, -90, 90], origin='lower', rasterized=True)
+    ax.set_xlabel('Longitude [degrees]')
+    ax.set_ylabel('Latitude [degrees]')
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+
+    plt.savefig('/home/kyle/ffs.png')
