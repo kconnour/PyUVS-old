@@ -85,7 +85,7 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../rst/graphics.html">
+ <a class="reference internal nav-link" href="../../rst/examples/index.html">
   Graphics
  </a>
 </li>
@@ -161,13 +161,18 @@
               <div>
                 
   <h1>Source code for pyuvs.swath</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;This module provides functions to work with swaths.</span>
+<span></span><span class="sd">&quot;&quot;&quot;This module provides functions to work with IUVS data swaths.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="swath_number"><a class="viewcode-back" href="../../rst/api/swath.html#pyuvs.swath.swath_number">[docs]</a><span class="k">def</span> <span class="nf">swath_number</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get the swath number associated with each integration.</span>
+    <span class="sd">&quot;&quot;&quot;Make the swath number associated with each mirror angle.</span>
+
+<span class="sd">    This function assumes the input is all the mirror angles (or, equivalently,</span>
+<span class="sd">    the field of view) from an orbital segment. Omitting some mirror angles</span>
+<span class="sd">    may result in nonsensical results. Adding additional mirror angles from</span>
+<span class="sd">    multiple segments or orbits will certainly result in nonsensical results.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -177,45 +182,48 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
-<span class="sd">        Swath number associated with each mirror angle.</span>
+<span class="sd">        The swath number associated with each mirror angle.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    This algorithm gets the angular difference between swaths. The mirror does</span>
-<span class="sd">    not always move in equal step sizes, so this finds the indices where the</span>
-<span class="sd">    jumps occur. To turn these into swath numbers, it interpolates between the</span>
-<span class="sd">    indices (for instance, indices 412 to 920 are all 1.x because they all</span>
-<span class="sd">    belong to swath 1). Then take the floor of these to get the integer swath</span>
+<span class="sd">    This algorithm assumes the mirror in roughly constant step sizes except</span>
+<span class="sd">    when making a swath jump. It finds the median step size and then uses</span>
+<span class="sd">    this number to find swath discontinuities. It interpolates between these</span>
+<span class="sd">    indices and takes the floor of these values to get the integer swath</span>
 <span class="sd">    number.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mirror_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">)</span>
-    <span class="n">threshhold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mirror_diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">mirror_discontinuities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mirror_diff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshhold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">n_swaths</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mirror_discontinuities</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">interp_swaths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">)),</span> <span class="n">mirror_discontinuities</span><span class="p">,</span>
-                              <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_swaths</span><span class="p">),</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">interp_swaths</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Get the swath number from a set of test mirror angles.</span>
 
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; mirror_angles = np.array([40, 45, 50, 35, 40, 45, 50])</span>
+<span class="sd">    &gt;&gt;&gt; pu.swath.swath_number(mirror_angles)</span>
+<span class="sd">    array([0, 0, 0, 1, 1, 1, 1])</span>
 
-<div class="viewcode-block" id="set_off_disk_pixels_to_nan"><a class="viewcode-back" href="../../rst/api/swath.html#pyuvs.swath.set_off_disk_pixels_to_nan">[docs]</a><span class="k">def</span> <span class="nf">set_off_disk_pixels_to_nan</span><span class="p">(</span>
-        <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">on_disk_mask</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Make a mask of integrations that match the given daynight settings.</span>
+<span class="sd">    Get the number of integrations in swath 1, where there are an unequal</span>
+<span class="sd">    number of integrations in each swath.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    array: np.ndarray</span>
-<span class="sd">        Any array.</span>
-<span class="sd">    on_disk_mask</span>
-<span class="sd">        Maks of on-disk pixels. Must be the same shape as array.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    np.ndarray</span>
-<span class="sd">        Array, where the off disk pixels are np.nans.</span>
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; mirror_angles = np.concatenate([np.linspace(35, 40, num=50),</span>
+<span class="sd">    ...                                 np.linspace(32, 42, num=100),</span>
+<span class="sd">    ...                                 np.linspace(33, 53, num=200)])</span>
+<span class="sd">    &gt;&gt;&gt; sn = pu.swath.swath_number(mirror_angles)</span>
+<span class="sd">    &gt;&gt;&gt; np.sum(sn==1)</span>
+<span class="sd">    100</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">on_disk_mask</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
+    <span class="n">mirror_change</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">)</span>
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">mirror_change</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">mirror_discontinuities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mirror_change</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">mirror_discontinuities</span><span class="p">):</span>
+        <span class="n">n_swaths</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mirror_discontinuities</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">integrations</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">))</span>
+        <span class="n">interp_swaths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">integrations</span><span class="p">,</span> <span class="n">mirror_discontinuities</span><span class="p">,</span>
+                                  <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_swaths</span><span class="p">),</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">interp_swaths</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mirror_angles</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 </pre></div>
 
               </div>
