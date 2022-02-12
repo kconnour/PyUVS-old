@@ -1,9 +1,11 @@
 Installation
 ============
+Now that you have a bit of info on the structure of PyUVS, you can now install
+it.
 
 General Installation
 --------------------
-.. hint::
+.. tip::
    We recommend using virtual environments when installing PyUVS.
 
 To install the latest version of PyUVS, simply clone the repository from Github
@@ -14,16 +16,16 @@ the command
 command will install PyUVS along with all of its subpackages.
 
 You can now import PyUVS with :code:`import pyuvs`. We recommend the syntax
-:code:`import pyuvs as pu`.
+:code:`import pyuvs as pu` so your hopes aren't too high.
+
+Recall that subpackages will need further libraries in addition to the base
+dependencies of PyUVS. Those are described below.
 
 Subpackages
 -----------
-PyUVS comes with a number of subpackages for specialized tasks that require
-specialized libraries. We anticipate
-
-By default PyUVS requires minimal dependencies but
-most (if not all) of the subpackages require additional libraries. These are
-not installed by default to reduce package clutter.
+As previously noted, PyUVS comes with a number of subpackages for specialized
+tasks that require specialized libraries. These are not installed by default to
+reduce package clutter.
 
 The following lists the subpackages and the optional dependencies needed (a
 complete list and installation instructions are in the next section):
@@ -80,9 +82,14 @@ The following lists all available optional dependencies.
 
 To install optional dependencies, simply execute this command in Terminal:
 :code:`<path to python interpreter> -m pip install <path to pyuvs>[<option>]`.
-
-For example, to install the datafiles dependencies simply use
-:code:`<path to python interpreter> -m pip install <path to pyuvs>[datafiles]`.
 You can install multiple of these dependencies at once by putting the
 dependencies in square brackets *without spaces between them* like so:
 :code:`[option0,option1,option2,...]`.
+
+For example, to install the datafiles dependencies I would simply use:
+:code:`/home/kyle/repos/PyUVS/venv/bin/python -m pip install
+/home/kyle/repos/PyUVS/.[datafiles]`.
+If I wanted to create a database that I will populate with IUVS data files and
+information derived from SPICE kernels I would use
+:code:`/home/kyle/repos/PyUVS/venv/bin/python -m pip install
+/home/kyle/repos/PyUVS/.[database,datafiles,spice]`.

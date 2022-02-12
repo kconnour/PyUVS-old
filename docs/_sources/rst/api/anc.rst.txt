@@ -28,7 +28,7 @@ Maps
 
 Templates
 ---------
-.. autofunction:: pyuvs.anc.load_template_co_cameron_bands
+.. autofunction:: pyuvs.anc.load_template_co_cameron
 .. autofunction:: pyuvs.anc.load_template_co_plus_1st_negative
 .. autofunction:: pyuvs.anc.load_template_co2_plus_fdb
 .. autofunction:: pyuvs.anc.load_template_co2_plus_uvd

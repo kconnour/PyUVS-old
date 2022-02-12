@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="API Reference" href="api.html" />
-    <link rel="prev" title="PyUVS Documentation" href="../index.html" />
+    <link rel="prev" title="Getting Started" href="getting-started.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -75,7 +75,13 @@
       
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 current active nav-item">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="getting-started.html">
+  Getting Started
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
  <a class="current reference internal nav-link" href="#">
   Installation
  </a>
@@ -102,6 +108,24 @@
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="tutorials.html">
   Tutorials
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="release-notes.html">
+  Release Notes
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="about-iuvs.html">
+  About IUVS
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="about-pyuvs.html">
+  About PyUVS
  </a>
 </li>
 
@@ -199,10 +223,12 @@
                 
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Now that you have a bit of info on the structure of PyUVS, you can now install
+it.</p>
 <section id="general-installation">
 <h2>General Installation<a class="headerlink" href="#general-installation" title="Permalink to this headline">¶</a></h2>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <p>We recommend using virtual environments when installing PyUVS.</p>
 </div>
 <p>To install the latest version of PyUVS, simply clone the repository from Github
@@ -212,15 +238,15 @@ the command
 <code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">PyUVS&gt;</span></code>. This
 command will install PyUVS along with all of its subpackages.</p>
 <p>You can now import PyUVS with <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyuvs</span></code>. We recommend the syntax
-<code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyuvs</span> <span class="pre">as</span> <span class="pre">pu</span></code>.</p>
+<code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyuvs</span> <span class="pre">as</span> <span class="pre">pu</span></code> so your hopes aren’t too high.</p>
+<p>Recall that subpackages will need further libraries in addition to the base
+dependencies of PyUVS. Those are described below.</p>
 </section>
 <section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<p>PyUVS comes with a number of subpackages for specialized tasks that require
-specialized libraries. We anticipate</p>
-<p>By default PyUVS requires minimal dependencies but
-most (if not all) of the subpackages require additional libraries. These are
-not installed by default to reduce package clutter.</p>
+<p>As previously noted, PyUVS comes with a number of subpackages for specialized
+tasks that require specialized libraries. These are not installed by default to
+reduce package clutter.</p>
 <p>The following lists the subpackages and the optional dependencies needed (a
 complete list and installation instructions are in the next section):</p>
 <ul class="simple">
@@ -305,12 +331,17 @@ projections require the <code class="code docutils literal notranslate"><span cl
 </li>
 </ul>
 <p>To install optional dependencies, simply execute this command in Terminal:
-<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[&lt;option&gt;]</span></code>.</p>
-<p>For example, to install the datafiles dependencies simply use
-<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[datafiles]</span></code>.
+<code class="code docutils literal notranslate"><span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">python</span> <span class="pre">interpreter&gt;</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&lt;path</span> <span class="pre">to</span> <span class="pre">pyuvs&gt;[&lt;option&gt;]</span></code>.
 You can install multiple of these dependencies at once by putting the
 dependencies in square brackets <em>without spaces between them</em> like so:
 <code class="code docutils literal notranslate"><span class="pre">[option0,option1,option2,...]</span></code>.</p>
+<p>For example, to install the datafiles dependencies I would simply use:
+<code class="code docutils literal notranslate"><span class="pre">/home/kyle/repos/PyUVS/venv/bin/python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span>
+<span class="pre">/home/kyle/repos/PyUVS/.[datafiles]</span></code>.
+If I wanted to create a database that I will populate with IUVS data files and
+information derived from SPICE kernels I would use
+<code class="code docutils literal notranslate"><span class="pre">/home/kyle/repos/PyUVS/venv/bin/python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span>
+<span class="pre">/home/kyle/repos/PyUVS/.[database,datafiles,spice]</span></code>.</p>
 </section>
 </section>
 
@@ -320,11 +351,11 @@ dependencies in square brackets <em>without spaces between them</em> like so:
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="getting-started.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">PyUVS Documentation</p>
+            <p class="prev-next-title">Getting Started</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="api.html" title="next page">

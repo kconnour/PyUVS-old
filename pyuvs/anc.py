@@ -866,21 +866,37 @@ def load_template_solar_continuum() -> np.ndarray:
 
 
 if __name__ == '__main__':
-
-    #b = np.load('/home/kyle/repos/PyUVS/pyuvs/anc/maps/mars_surface.npy')
-    #b = np.flipud(b)
-    #np.save('/home/kyle/repos/PyUVS/pyuvs/anc/maps/mars_surface.npy', b)
     import matplotlib.pyplot as plt
-    import matplotlib.ticker as ticker
-    import pyuvs as pu
+    import statsmodels.api as sm
+    wavelength_center = load_muv_wavelength_centers()
 
-    fig, ax = plt.subplots(1, 1, figsize=(6, 3), constrained_layout=True)
+    # Here we just made a clean NO template that I no longer have to make every time
+    gross_template = np.genfromtxt('/home/kyle/Downloads/no_nightglow_detector_1024-bins.dat')
 
-    sfc = pu.anc.load_map_mars_surface()
-    ax.imshow(sfc, extent=[0, 360, -90, 90], origin='lower', rasterized=True)
-    ax.set_xlabel('Longitude [degrees]')
-    ax.set_ylabel('Latitude [degrees]')
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(30))
-    ax.yaxis.set_major_locator(ticker.MultipleLocator(30))
+    v0 = np.genfromtxt('/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_gamma_bands-v0_detector_1024-bins.dat')
+    v3 = np.genfromtxt(
+        '/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_gamma_bands-v3_detector_1024-bins.dat')
+    delta = np.genfromtxt(
+        '/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_delta_bands_detector_1024-bins.dat')
+    ep = np.genfromtxt(
+        '/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_epsilon_bands_detector_1024-bins.dat')
 
-    plt.savefig('/home/kyle/ffs.png')
+    no_templates = np.vstack([v0, v3, delta, ep])
+
+    no_templates = sm.add_constant(no_templates.T)
+    results = sm.OLS(gross_template, no_templates).fit()
+    coeff = results.params
+    foo = ['constant', 'gammav0', 'gammav3', 'delta', 'epsilon']
+    print(results.summary(xname=foo))
+    #plt.plot(wavelength_center, gross_template, color='gray')
+    #plt.plot(wavelength_center, results.predict(no_templates), color='r', linewidth=0.5, linestyle='--')
+    #plt.savefig('/home/kyle/junk.png')
+    nt = np.zeros((1024,))
+    for i in range(1, 5):
+        nt += no_templates[:, i] * coeff[i]
+
+    foo = np.sum(nt*np.diff(load_muv_wavelength_centers())[0])
+    nt = nt / foo
+    np.save('/home/kyle/repos/PyUVS/pyuvs/anc/templates/no_nightglow.npy', nt)
+
+    #np.save('/home/kyle/repos/PyUVS/pyuvs/anc/templates/no_nightglow_template_detector_from_zac_the_ultimate.npy', pred_template)

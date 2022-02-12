@@ -1,4 +1,4 @@
-cff-version: "1.2.0"
+cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
   - family-names: Connour
@@ -10,6 +10,5 @@ authors:
     orcid: "https://orcid.org/0000-0001-5683-0095"
     affiliation: "Division of Geological and Planetary Sciences, California Institute of Technology"
 title: "PyUVS: A package that makes working with MAVEN/IUVS data suck less hard. It is the ultimate.
-version: "0.1.1"
-license: "BSD-3-Clause"
+version: 0.1.0
 url: "https://github.com/kconnour/PyUVS"

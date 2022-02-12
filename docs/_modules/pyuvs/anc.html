@@ -734,8 +734,8 @@
 
 
 <span class="c1"># Templates</span>
-<div class="viewcode-block" id="load_template_co_cameron_bands"><a class="viewcode-back" href="../../rst/api/anc.html#pyuvs.anc.load_template_co_cameron_bands">[docs]</a><span class="k">def</span> <span class="nf">load_template_co_cameron_bands</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load the MUV CO Cameron bands template.</span>
+<span class="k">def</span> <span class="nf">load_template_co_cameron</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the normalized MUV CO Cameron bands template in uncalibrated DNs.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -758,20 +758,21 @@
 
 <span class="sd">       fig, ax = plt.subplots()</span>
 
-<span class="sd">       template = pu.anc.load_template_co_cameron_bands()</span>
+<span class="sd">       template = pu.anc.load_template_co_cameron()</span>
 <span class="sd">       wavelengths = pu.anc.load_muv_wavelength_centers()</span>
 <span class="sd">       ax.plot(wavelengths, template)</span>
 <span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
 <span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
 <span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;co_cameron_bands.npy&#39;</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_templates_directory</span><span class="p">()</span> <span class="o">/</span> <span class="s1">&#39;co_cameron_bands.npy&#39;</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="load_template_co_plus_1st_negative"><a class="viewcode-back" href="../../rst/api/anc.html#pyuvs.anc.load_template_co_plus_1st_negative">[docs]</a><span class="k">def</span> <span class="nf">load_template_co_plus_1st_negative</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load the MUV CO :sup:`+` 1NG (first negative) template.</span>
+    <span class="sd">&quot;&quot;&quot;Load the normalized MUV CO :sup:`+` 1NG (first negative) bands template in uncalibrated DNs.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -800,6 +801,7 @@
 <span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
 <span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
 <span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -836,6 +838,7 @@
 <span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
 <span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
 <span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -873,6 +876,7 @@
 <span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
 <span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
 <span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -910,6 +914,7 @@
 <span class="sd">       ax.set_xlim(wavelengths[0], wavelengths[-1])</span>
 <span class="sd">       ax.set_xlabel(&#39;Wavelength [nm]&#39;)</span>
 <span class="sd">       ax.set_ylabel(&#39;Relative brightness&#39;)</span>
+
 <span class="sd">       plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1024,24 +1029,40 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-
-    <span class="c1">#b = np.load(&#39;/home/kyle/repos/PyUVS/pyuvs/anc/maps/mars_surface.npy&#39;)</span>
-    <span class="c1">#b = np.flipud(b)</span>
-    <span class="c1">#np.save(&#39;/home/kyle/repos/PyUVS/pyuvs/anc/maps/mars_surface.npy&#39;, b)</span>
     <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">ticker</span>
-    <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
+    <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+    <span class="n">wavelength_center</span> <span class="o">=</span> <span class="n">load_muv_wavelength_centers</span><span class="p">()</span>
 
-    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Here we just made a clean NO template that I no longer have to make every time</span>
+    <span class="n">gross_template</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="s1">&#39;/home/kyle/Downloads/no_nightglow_detector_1024-bins.dat&#39;</span><span class="p">)</span>
 
-    <span class="n">sfc</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_mars_surface</span><span class="p">()</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sfc</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
+    <span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="s1">&#39;/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_gamma_bands-v0_detector_1024-bins.dat&#39;</span><span class="p">)</span>
+    <span class="n">v3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span>
+        <span class="s1">&#39;/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_gamma_bands-v3_detector_1024-bins.dat&#39;</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span>
+        <span class="s1">&#39;/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_delta_bands_detector_1024-bins.dat&#39;</span><span class="p">)</span>
+    <span class="n">ep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span>
+        <span class="s1">&#39;/home/kyle/Downloads/MUV Nightside Spectrum Templates/no_nightglow_epsilon_bands_detector_1024-bins.dat&#39;</span><span class="p">)</span>
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/home/kyle/ffs.png&#39;</span><span class="p">)</span>
+    <span class="n">no_templates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v0</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">ep</span><span class="p">])</span>
+
+    <span class="n">no_templates</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">no_templates</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">gross_template</span><span class="p">,</span> <span class="n">no_templates</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">params</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="s1">&#39;gammav0&#39;</span><span class="p">,</span> <span class="s1">&#39;gammav3&#39;</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">,</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">xname</span><span class="o">=</span><span class="n">foo</span><span class="p">))</span>
+    <span class="c1">#plt.plot(wavelength_center, gross_template, color=&#39;gray&#39;)</span>
+    <span class="c1">#plt.plot(wavelength_center, results.predict(no_templates), color=&#39;r&#39;, linewidth=0.5, linestyle=&#39;--&#39;)</span>
+    <span class="c1">#plt.savefig(&#39;/home/kyle/junk.png&#39;)</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1024</span><span class="p">,))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">nt</span> <span class="o">+=</span> <span class="n">no_templates</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">coeff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">nt</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">load_muv_wavelength_centers</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">nt</span> <span class="o">=</span> <span class="n">nt</span> <span class="o">/</span> <span class="n">foo</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;/home/kyle/repos/PyUVS/pyuvs/anc/templates/no_nightglow.npy&#39;</span><span class="p">,</span> <span class="n">nt</span><span class="p">)</span>
+
+    <span class="c1">#np.save(&#39;/home/kyle/repos/PyUVS/pyuvs/anc/templates/no_nightglow_template_detector_from_zac_the_ultimate.npy&#39;, pred_template)</span>
 </pre></div>
 
               </div>
