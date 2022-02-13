@@ -9,6 +9,6 @@ authors:
     given-names: Zachariah
     orcid: "https://orcid.org/0000-0001-5683-0095"
     affiliation: "Division of Geological and Planetary Sciences, California Institute of Technology"
-title: "PyUVS: A package that makes working with MAVEN/IUVS data suck less hard. It is the ultimate.
+title: "PyUVS: A package that makes working with MAVEN/IUVS data suck less hard. It is the ultimate."
 version: 0.1.0
 url: "https://github.com/kconnour/PyUVS"

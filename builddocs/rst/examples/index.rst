@@ -7,7 +7,9 @@
 Graphics
 ========
 
-These are the PyUVS standard graphics.
+These are the PyUVS standard and example graphics. At some point I hope to
+split this page into standard graphics (graphics generated once / orbit) and
+example graphics (on-demand graphics). For now they are all mixed together.
 
 
 
@@ -52,6 +54,48 @@ These are the PyUVS standard graphics.
    :hidden:
 
    /rst/examples/plot_apoapse_dayside_detector_image
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot the FUV and MUV sensitivity curves.">
+
+.. only:: html
+
+ .. figure:: /rst/examples/images/thumb/sphx_glr_plot_sensitivity_curves_thumb.png
+     :alt: Sensitivity Curves
+
+     :ref:`sphx_glr_rst_examples_plot_sensitivity_curves.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /rst/examples/plot_sensitivity_curves
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot the MUV pointspread function.">
+
+.. only:: html
+
+ .. figure:: /rst/examples/images/thumb/sphx_glr_plot_muv_pointspread_function_thumb.png
+     :alt: MUV Pointspread Function
+
+     :ref:`sphx_glr_rst_examples_plot_muv_pointspread_function.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /rst/examples/plot_muv_pointspread_function
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
