@@ -39,8 +39,6 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="constants" href="constants.html" />
-    <link rel="prev" title="API Reference" href="../api.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -87,7 +85,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 current active nav-item">
+<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../api.html">
   API Reference
  </a>
@@ -163,51 +161,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  PyUVS modules:
- </span>
-</p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   anc
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="constants.html">
-   constants
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="spectra.html">
-   spectra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="swath.html">
-   swath
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  PyUVS subpackages:
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="data_files.html">
-   data_files
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="graphics.html">
-   graphics
-  </a>
- </li>
-</ul>
-
+    
   </div>
 </nav>
               </div>
@@ -279,8 +233,7 @@ for working with IUVS data.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_flatfield_mid_hi_res_pipeline">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_flatfield_mid_hi_res_pipeline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_flatfield_mid_hi_res_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_flatfield_mid_hi_res_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load mid-hi-resolution flatfield used in the pipeline.</p>
-<p>This array has a shape of (133, 19).</p>
+<dd><p>Load the standard mid-hi-resolution flatfield.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the flatfield.</p>
@@ -290,7 +243,8 @@ for working with IUVS data.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This flatfield was made from orbits XXXX to YYYY.</p>
+<p>This array has a shape of (133, 19). This flatfield was made from orbits
+XXXX to YYYY.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this flatfield.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -315,9 +269,8 @@ for working with IUVS data.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_flatfield_mid_hi_res_my34gds">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_flatfield_mid_hi_res_my34gds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_flatfield_mid_hi_res_my34gds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_flatfield_mid_hi_res_my34gds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load mid-hi-resolution flatfield created from data taken during the
+<dd><p>Load the mid-hi-resolution flatfield created from data taken during the
 Mars year 34 global dust storm.</p>
-<p>This array has a shape of (133, 19).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the flatfield.</p>
@@ -327,18 +280,20 @@ Mars year 34 global dust storm.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This flatfield was made from orbits XXXX to YYYY.</p>
+<p>This array has a shape of (133, 19). This flatfield was made from orbits
+XXXX to YYYY.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this flatfield.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">flatfield</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">load_flatfield_mid_hi_res_my34gds</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Spatial bin&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Spectral bin&#39;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -351,8 +306,7 @@ Mars year 34 global dust storm.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_flatfield_hi_res">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_flatfield_hi_res</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_flatfield_hi_res"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_flatfield_hi_res" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load hi-resolution flatfield created from data taken during outdisk.</p>
-<p>This array has a shape of (200, 19).</p>
+<dd><p>Load the hi-resolution flatfield created from data taken during outdisk.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the flatfield.</p>
@@ -362,18 +316,20 @@ Mars year 34 global dust storm.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This flatfield was made from orbits XXXX to YYYY.</p>
+<p>This array has a shape of (200, 19). This flatfield was made from orbits
+XXXX to YYYY.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this flatfield.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">flatfield</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">load_flatfield_hi_res</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Spatial bin&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Spectral bin&#39;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -386,9 +342,8 @@ Mars year 34 global dust storm.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_flatfield_mid_res_app_flip">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_flatfield_mid_res_app_flip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_flatfield_mid_res_app_flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_flatfield_mid_res_app_flip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load mid-resolution flatfield created from data taken when the APP was
-flipped.</p>
-<p>This array has a shape of (50, 19).</p>
+<dd><p>Load the mid-resolution flatfield created from data taken when the APP
+was flipped.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the flatfield.</p>
@@ -398,18 +353,20 @@ flipped.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This flatfield was made from orbits 3744 to 3750.</p>
+<p>This array has a shape of (50, 19). This flatfield was made from orbits
+3744 to 3750.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this flatfield.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">flatfield</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">load_flatfield_mid_res_app_flip</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Spatial bin&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Spectral bin&#39;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -424,7 +381,6 @@ flipped.</p>
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_flatfield_mid_res_no_app_flip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_flatfield_mid_res_no_app_flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_flatfield_mid_res_no_app_flip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load mid-resolution flatfield created from data taken when the APP was
 not flipped.</p>
-<p>This array has a shape of (50, 19).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the flatfield.</p>
@@ -434,18 +390,20 @@ not flipped.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This flatfield was made from orbits 3733 to 3739.</p>
+<p>This array has a shape of (50, 19). This flatfield was made from orbits
+3733 to 3739.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this flatfield.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">flatfield</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">load_flatfield_mid_res_no_app_flip</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">flatfield</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Spatial bin&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Spectral bin&#39;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -461,10 +419,7 @@ not flipped.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_fuv_sensitivity_curve_manufacturer">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_fuv_sensitivity_curve_manufacturer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_fuv_sensitivity_curve_manufacturer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_fuv_sensitivity_curve_manufacturer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the FUV detector factory sensitivity curve as reported by manufacturer.</p>
-<p>This array has a shape of (101, 2). Index 0 of the first axis is the
-wavelength corresponding to the sensitivity curve; index 1 is the
-sensitivity curve.</p>
+<dd><p>Load the manufacturer’s FUV detector factory sensitivity curve.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the FUV sensitivity curve.</p>
@@ -474,12 +429,21 @@ sensitivity curve.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
+<p>This array has a shape of (101, 2). Index 0 of the first axis is the
+wavelength corresponding to the sensitivity curve; index 1 is the
+sensitivity curve.</p>
 <p>This is the detector sensitivity in DN / (photons / cm <sup>2</sup>) at
 gain = 1. The manufacturer reported this curve June 9, 2014.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#pyuvs.anc.load_muv_sensitivity_curve_manufacturer" title="pyuvs.anc.load_muv_sensitivity_curve_manufacturer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_muv_sensitivity_curve_manufacturer</span></code></a></dt><dd><p>The MUV analogue to this curve.</p>
+</dd>
+</dl>
+</div>
 <p class="rubric">Examples</p>
 <p>Plot the sensitivity curve.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -490,6 +454,7 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Detector Sensitivity&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -503,7 +468,6 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_point_spread_function">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_point_spread_function</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_point_spread_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_point_spread_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the MUV point spread function.</p>
-<p>This array has a shape of (181,).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the point spread function.</p>
@@ -513,7 +477,8 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>The shape of this array is best characterized by a Voigt profile.</p>
+<p>This array has a shape of (181,). The shape of this array is best
+characterized by a Voigt profile.</p>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -527,6 +492,7 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">detector_pixels</span><span class="p">,</span> <span class="n">psf</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Detector pixels&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Point spread function&#39;</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -539,10 +505,7 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_sensitivity_curve_manufacturer">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_sensitivity_curve_manufacturer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_sensitivity_curve_manufacturer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_sensitivity_curve_manufacturer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV detector factory sensitivity curve as reported by manufacturer.</p>
-<p>This array has a shape of (101, 2). Index 0 of the first axis is the
-wavelength corresponding to the sensitivity curve; index 1 is the
-sensitivity curve.</p>
+<dd><p>Load the manufacturer’s MUV detector factory sensitivity curve.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the MUV sensitivity curve.</p>
@@ -552,11 +515,16 @@ sensitivity curve.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
+<p>This array has a shape of (101, 2). Index 0 of the first axis is the
+wavelength corresponding to the sensitivity curve; index 1 is the
+sensitivity curve.</p>
 <p>This is the detector sensitivity in DN / (photons / cm <sup>2</sup>) at
 gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
+<dt><a class="reference internal" href="#pyuvs.anc.load_fuv_sensitivity_curve_manufacturer" title="pyuvs.anc.load_fuv_sensitivity_curve_manufacturer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_fuv_sensitivity_curve_manufacturer</span></code></a></dt><dd><p>The FUV analogue to this curve.</p>
+</dd>
 <dt><a class="reference internal" href="#pyuvs.anc.load_muv_sensitivity_curve_observational" title="pyuvs.anc.load_muv_sensitivity_curve_observational"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_muv_sensitivity_curve_observational</span></code></a></dt><dd><p>This curve created from observational data.</p>
 </dd>
 </dl>
@@ -564,7 +532,6 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <p class="rubric">Examples</p>
 <p>Plot the sensitivity curve.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -575,6 +542,7 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Detector Sensitivity&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -588,9 +556,6 @@ gain = 1. The manufacturer reported this curve June 9, 2014.</p>
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_sensitivity_curve_observational">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_sensitivity_curve_observational</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_sensitivity_curve_observational"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_sensitivity_curve_observational" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the MUV detector sensitivity curve derived from observations.</p>
-<p>This array has a shape of (512, 2). Index 0 of the first axis is the
-wavelength corresponding to the sensitivity curve; index 1 is the
-sensitivity curve.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the MUV sensitivity curve.</p>
@@ -600,6 +565,9 @@ sensitivity curve.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
+<p>This array has a shape of (512, 2). Index 0 of the first axis is the
+wavelength corresponding to the sensitivity curve; index 1 is the
+sensitivity curve.</p>
 <p>This is the detector sensitivity in DN / (photons / cm <sup>2</sup>) at
 gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <div class="admonition seealso">
@@ -612,7 +580,6 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <p class="rubric">Examples</p>
 <p>Plot the sensitivity curve.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
@@ -623,6 +590,7 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Detector Sensitivity&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">)</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -635,8 +603,7 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_wavelength_edges">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_wavelength_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_wavelength_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_wavelength_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV wavelength pixel edges.</p>
-<p>This array has a shape of (1025,).</p>
+<dd><p>Load the MUV wavelength detector pixel edges.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the edge MUV wavelengths.</p>
@@ -645,13 +612,14 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This array has a shape of (1025,).</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyuvs.anc.load_muv_wavelength_centers">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_muv_wavelength_centers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_muv_wavelength_centers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_muv_wavelength_centers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load the MUV wavelength pixel centers.</p>
-<p>This array has a shape of (1024,).</p>
+<dd><p>Load the MUV wavelength detector pixel centers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the center MUV wavelengths.</p>
@@ -660,6 +628,8 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <dd class="field-even"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This array has a shape of (1025,).</p>
 </dd></dl>
 
 </section>
@@ -669,7 +639,6 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 <dt class="sig sig-object py" id="pyuvs.anc.load_map_magnetic_field_closed_probability">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_map_magnetic_field_closed_probability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_map_magnetic_field_closed_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_map_magnetic_field_closed_probability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the map denoting the probability of a closed magnetic field line.</p>
-<p>This array has a shape of (180, 360).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the image.</p>
@@ -679,11 +648,11 @@ gain = 1. Justin Deighan reported this curve October 19, 2018.</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This map comes from <a class="reference external" href="https://doi.org/10.1029/2007JA012435">MGS data</a>.</p>
+<p>This map comes from <a class="reference external" href="https://doi.org/10.1029/2007JA012435">MGS data</a>. It
+has a shape of (180, 360).</p>
 <ul class="simple">
-<li><p>The 0 <sup>th</sup> axis corresponds to latitude and spans -90 to 90 degrees.</p></li>
-<li><p>The 1 <sup>st</sup> axis corresponds to east longitude and spans 0 to 360
-degrees.</p></li>
+<li><p>The zeroth axis corresponds to latitude and spans -90 to 90 degrees.</p></li>
+<li><p>The first axis corresponds to east longitude and spans 0 to 360 degrees.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
@@ -694,7 +663,8 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">b_field</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_magnetic_field_closed_probability</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+                   <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
@@ -713,7 +683,6 @@ degrees.</p></li>
 <dt class="sig sig-object py" id="pyuvs.anc.load_map_magnetic_field_open_probability">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_map_magnetic_field_open_probability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_map_magnetic_field_open_probability"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_map_magnetic_field_open_probability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the map denoting the probability of an open magnetic field line.</p>
-<p>This array has a shape of (180, 360).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the image.</p>
@@ -723,11 +692,11 @@ degrees.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>This map comes from <a class="reference external" href="https://doi.org/10.1029/2007JA012435">MGS data</a>.</p>
+<p>This map comes from <a class="reference external" href="https://doi.org/10.1029/2007JA012435">MGS data</a>. It
+has a shape of (180, 360).</p>
 <ul class="simple">
-<li><p>The 0 <sup>th</sup> axis corresponds to latitude and spans -90 to 90 degrees.</p></li>
-<li><p>The 1 <sup>st</sup> axis corresponds to east longitude and spans 0 to 360
-degrees.</p></li>
+<li><p>The zeroth axis corresponds to latitude and spans -90 to 90 degrees.</p></li>
+<li><p>The first axis corresponds to east longitude and spans 0 to 360 degrees.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
@@ -738,7 +707,8 @@ degrees.</p></li>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">b_field</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_magnetic_field_open_probability</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">b_field</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Blues_r&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+                   <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
@@ -757,7 +727,6 @@ degrees.</p></li>
 <dt class="sig sig-object py" id="pyuvs.anc.load_map_mars_surface">
 <span class="sig-prename descclassname"><span class="pre">pyuvs.anc.</span></span><span class="sig-name descname"><span class="pre">load_map_mars_surface</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/anc.html#load_map_mars_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.anc.load_map_mars_surface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the Mars surface map.</p>
-<p>The shape of this array is (1800, 3600, 4).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Array of the image.</p>
@@ -767,11 +736,11 @@ degrees.</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
+<p>The shape of this array is (1800, 3600, 4).</p>
 <ul class="simple">
-<li><p>The 0 <sup>th</sup> axis corresponds to latitude and spans 90 to -90 degrees.</p></li>
-<li><p>The 1 <sup>st</sup> axis corresponds to east longitude and spans 0 to 360
-degrees.</p></li>
-<li><p>The 2 <sup>nd</sup> axis is the RGBA channel.</p></li>
+<li><p>The zeroth axis corresponds to latitude and spans 90 to -90 degrees.</p></li>
+<li><p>The first axis corresponds to east longitude and spans 0 to 360 degrees.</p></li>
+<li><p>The second axis is the RGBA channel.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>Visualize this array.</p>
@@ -781,8 +750,8 @@ degrees.</p></li>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">sfc</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_mars_surface</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sfc</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">anc</span><span class="o">.</span><span class="n">load_map_mars_surface</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">rasterized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Longitude [degrees]&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Latitude [degrees]&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
@@ -1101,20 +1070,6 @@ degrees.</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="../api.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">API Reference</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="constants.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">constants</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
 </div>
               
           </main>
@@ -1129,7 +1084,7 @@ degrees.</p></li>
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2022, kconnour and zachariahmilby.<br>
+    &copy; Copyright 2022, kconnour and zachariahmilby &#34;The dream team&#34;.<br>
 </p>
     </div>
     

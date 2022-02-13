@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'PyUVS'
-copyright = '2022, kconnour and zachariahmilby'
+copyright = '2022, kconnour and zachariahmilby "The dream team"'
 author = 'kconnour and zachariahmilby'
 
 
