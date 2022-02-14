@@ -253,6 +253,46 @@
                    <span class="s1">&#39;mid-hi-res-flatfield-pipeline.npy&#39;</span><span class="p">))</span></div>
 
 
+<span class="k">def</span> <span class="nf">load_flatfield_mid_hi_res_update</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the standard mid-hi-resolution flatfield update.</span>
+
+<span class="sd">    Justin Deighan created this flatfield using data from the decay phase</span>
+<span class="sd">    of the MY 34 GDS.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Array of the flatfield.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This array has a shape of (133, 19). This flatfield was made from orbits</span>
+<span class="sd">    XXXX to YYYY.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Visualize this flatfield.</span>
+
+<span class="sd">    .. plot::</span>
+<span class="sd">       :include-source:</span>
+
+<span class="sd">       import matplotlib.pyplot as plt</span>
+<span class="sd">       import pyuvs as pu</span>
+
+<span class="sd">       fig, ax = plt.subplots(1, 1, figsize=(8, 2), constrained_layout=True)</span>
+
+<span class="sd">       flatfield = pu.load_flatfield_mid_hi_res_update()</span>
+<span class="sd">       ax.pcolormesh(flatfield.T, cmap=&#39;inferno&#39;, rasterized=True)</span>
+<span class="sd">       ax.set_xlabel(&#39;Spatial bin&#39;)</span>
+<span class="sd">       ax.set_ylabel(&#39;Spectral bin&#39;)</span>
+
+<span class="sd">       plt.show()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_get_flatfield_directory</span><span class="p">()</span> <span class="o">/</span>
+                   <span class="s1">&#39;mid-hi-res-flatfield-update.npy&#39;</span><span class="p">))</span>
+
+
 <span class="c1"># TODO: Fill in the orbit range</span>
 <div class="viewcode-block" id="load_flatfield_mid_hi_res_my34gds"><a class="viewcode-back" href="../../rst/api/flatfields/load_flatfield_mid_hi_res_my34gds.html#pyuvs.load_flatfield_mid_hi_res_my34gds">[docs]</a><span class="k">def</span> <span class="nf">load_flatfield_mid_hi_res_my34gds</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Load the mid-hi-resolution flatfield created from data taken during the</span>

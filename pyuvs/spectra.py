@@ -3,12 +3,11 @@
 import warnings
 import numpy as np
 import statsmodels.api as sm
-from pyuvs.anc import load_muv_wavelength_center, \
-    load_muv_sensitivity_curve_observational, load_template_no_nightglow, \
-    load_template_co2_plus_uvd, load_template_co_cameron_bands, \
-    load_template_solar_continuum
-from pyuvs.constants import pixel_omega, kR
-from pyuvs.data_files.contents import L1bFile, L1bFileCollection
+from pyuvs import kR, load_muv_sensitivity_curve_observational, \
+    load_muv_wavelength_centers, load_template_co_cameron, \
+    load_template_co2_plus_uvd, load_template_no_nightglow, \
+    load_template_solar_continuum, pixel_omega
+#from pyuvs.data_files.contents import L1bFileCollection
 
 
 with warnings.catch_warnings():
@@ -16,18 +15,31 @@ with warnings.catch_warnings():
 
 
 def load_standard_fit_templates() -> np.ndarray:
-    """Load the standard fit templates (NO, aurora, solar)
+    """Load the standard fit templates.
+
+    The standard fit templates are:
+
+    0. NO nightglow
+    1. CO Cameron bands
+    2. Ultraviolet doublet
+    3. Solar continuum
+
+    and correspond to the first axis.
 
     Returns
     -------
     np.ndarray
         The fit templates.
 
+    Notes
+    -----
+    This array has shape (4, 1024).
+
     """
-    return np.vstack(
-        [load_template_no_nightglow(),
-         load_template_co_cameron_bands() + load_template_co2_plus_uvd(),
-         load_template_solar_continuum()])
+    return np.vstack([load_template_no_nightglow(),
+                      load_template_co_cameron(),
+                      load_template_co2_plus_uvd(),
+                      load_template_solar_continuum()])
 
 
 def rebin_templates(template, spectral_pixel_bin_width) -> np.ndarray:
@@ -131,7 +143,7 @@ def calculate_calibration_curve(
         detector_sensitivity_curve * bin_omega
 
 
-def fit_templates_to_nightside_data(fc: L1bFileCollection) -> np.ndarray:
+def fit_templates_to_nightside_data(fc):#: L1bFileCollection) -> np.ndarray:
     """Use multiple linear regression (MLR) to fit templates to nightside data.
 
     Parameters
@@ -160,7 +172,7 @@ def fit_templates_to_nightside_data(fc: L1bFileCollection) -> np.ndarray:
     integration_time = file.observation.integration_time
 
     # Load in miscellaneous info
-    wavelength_center = load_muv_wavelength_center()
+    wavelength_center = load_muv_wavelength_centers()
     rebinned_wavelengths = rebin_wavelengths(wavelength_center,
                                              spectral_pixel_bin_width)
     rebinned_sensitivity_curve = np.interp(rebinned_wavelengths,
@@ -199,3 +211,8 @@ def fit_templates_to_nightside_data(fc: L1bFileCollection) -> np.ndarray:
             brightnesses[1, f, g] = aurora_brightness
 
     return brightnesses
+
+
+if __name__ == '__main__':
+    ft = load_standard_fit_templates()
+    print(ft.shape)

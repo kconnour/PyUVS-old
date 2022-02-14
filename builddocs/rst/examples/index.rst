@@ -78,6 +78,27 @@ example graphics (on-demand graphics). For now they are all mixed together.
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Plot MUV flatfield ratios">
+
+.. only:: html
+
+ .. figure:: /rst/examples/images/thumb/sphx_glr_plot_flatfield_differences_thumb.png
+     :alt: MUV Flatfield Comparison
+
+     :ref:`sphx_glr_rst_examples_plot_flatfield_differences.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /rst/examples/plot_flatfield_differences
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Plot the MUV pointspread function.">
 
 .. only:: html

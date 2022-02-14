@@ -66,6 +66,46 @@ def load_flatfield_mid_hi_res_pipeline() -> np.ndarray:
                    'mid-hi-res-flatfield-pipeline.npy'))
 
 
+def load_flatfield_mid_hi_res_update() -> np.ndarray:
+    """Load the standard mid-hi-resolution flatfield update.
+
+    Justin Deighan created this flatfield using data from the decay phase
+    of the MY 34 GDS.
+
+    Returns
+    -------
+    np.ndarray
+        Array of the flatfield.
+
+    Notes
+    -----
+    This array has a shape of (133, 19). This flatfield was made from orbits
+    XXXX to YYYY.
+
+    Examples
+    --------
+    Visualize this flatfield.
+
+    .. plot::
+       :include-source:
+
+       import matplotlib.pyplot as plt
+       import pyuvs as pu
+
+       fig, ax = plt.subplots(1, 1, figsize=(8, 2), constrained_layout=True)
+
+       flatfield = pu.load_flatfield_mid_hi_res_update()
+       ax.pcolormesh(flatfield.T, cmap='inferno', rasterized=True)
+       ax.set_xlabel('Spatial bin')
+       ax.set_ylabel('Spectral bin')
+
+       plt.show()
+
+    """
+    return np.load(str(_get_flatfield_directory() /
+                   'mid-hi-res-flatfield-update.npy'))
+
+
 # TODO: Fill in the orbit range
 def load_flatfield_mid_hi_res_my34gds() -> np.ndarray:
     """Load the mid-hi-resolution flatfield created from data taken during the
