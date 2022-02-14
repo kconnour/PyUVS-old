@@ -1,21 +1,34 @@
 import numpy as np
 
 
-def set_off_disk_pixels_to_nan(
-        array: np.ndarray, on_disk_mask: np.ndarray) -> np.ndarray:
-    """Make a mask of integrations that match the given daynight settings.
+def set_bad_pixels_to_nan(array: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    """Set The pixels in an array to NaNs given a mask.
 
     Parameters
     ----------
     array: np.ndarray
         Any array.
-    on_disk_mask
-        Maks of on-disk pixels. Must be the same shape as array.
+    mask
+        Maks of desired pixels. Must be the same shape as array.
 
     Returns
     -------
     np.ndarray
-        Array, where the off disk pixels are np.nans.
+        Array, where the True values in :code:`mask` are left alone and False
+        values in :code:`mask` are set to NaNs.
+
+    Examples
+    --------
+    Make a test set of data and a mask.
+
+    >>> import numpy as np
+    >>> import pyuvs as pu
+    >>> test_array = np.ones((3, 3))
+    >>> diag_mask = np.eye(3, 3).astype('bool')
+    >>> pu.set_bad_pixels_to_nan(test_array, diag_mask)
+    array([[ 1., nan, nan],
+           [nan,  1., nan],
+           [nan, nan,  1.]])
 
     """
-    return np.where(on_disk_mask, array, np.nan)
+    return np.where(mask, array, np.nan)

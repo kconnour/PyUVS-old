@@ -11,3 +11,10 @@ These are the utilities in PyUVS, grouped by functionality.
    api/instrument
    api/maps
    api/templates
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Routines
+
+   api/swath
+   api/miscellaneous

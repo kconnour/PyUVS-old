@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>swath &#8212; PyUVS  documentation</title>
+    <title>Swath &#8212; PyUVS  documentation</title>
     
     <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -39,6 +39,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="swath_number" href="swath/swath_number.html" />
+    <link rel="prev" title="load_template_solar_continuum" href="templates/load_template_solar_continuum.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -85,7 +87,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 nav-item">
+<li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="../api.html">
   API Reference
  </a>
@@ -161,7 +163,68 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Constants and Data
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="constants.html">
+   Constants
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="flatfields.html">
+   Flatfields
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="instrument.html">
+   Instrument
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="maps.html">
+   Maps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="templates.html">
+   Templates
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Routines
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
+   Swath
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="swath/swath_number.html">
+     swath_number
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="miscellaneous.html">
+   Miscellaneous
+  </a>
+ </li>
+</ul>
+
   </div>
 </nav>
               </div>
@@ -199,55 +262,15 @@
               
               <div>
                 
-  <section id="module-pyuvs.swath">
-<span id="swath"></span><h1>swath<a class="headerlink" href="#module-pyuvs.swath" title="Permalink to this headline">¶</a></h1>
-<p>This module provides functions to work with IUVS data swaths.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.swath.swath_number">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.swath.</span></span><span class="sig-name descname"><span class="pre">swath_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mirror_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../_modules/pyuvs/swath.html#swath_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.swath.swath_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make the swath number associated with each mirror angle.</p>
-<p>This function assumes the input is all the mirror angles (or, equivalently,
-the field of view) from an orbital segment. Omitting some mirror angles
-may result in nonsensical results. Adding additional mirror angles from
-multiple segments or orbits will certainly result in nonsensical results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mirror_angles</strong> (<em>np.ndarray</em>) – 1D array of the mirror angles from an orbital segment.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The swath number associated with each mirror angle.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>This algorithm assumes the mirror in roughly constant step sizes except
-when making a swath jump. It finds the median step size and then uses
-this number to find swath discontinuities. It interpolates between these
-indices and takes the floor of these values to get the integer swath
-number.</p>
-<p class="rubric">Examples</p>
-<p>Get the swath number from a set of test mirror angles.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mirror_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">40</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pu</span><span class="o">.</span><span class="n">swath_number</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">)</span>
-<span class="go">array([0, 0, 0, 1, 1, 1, 1])</span>
-</pre></div>
+  <section id="swath">
+<h1>Swath<a class="headerlink" href="#swath" title="Permalink to this headline">¶</a></h1>
+<p>These are a collection of functions to work with IUVS swaths.</p>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Swath</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="swath/swath_number.html">swath_number</a></li>
+</ul>
 </div>
-<p>Get the number of integrations in swath 1, where there are an unequal
-number of integrations in each swath.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mirror_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">50</span><span class="p">),</span>
-<span class="gp">... </span>                                <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>
-<span class="gp">... </span>                                <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">200</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sn</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">swath_number</span><span class="p">(</span><span class="n">mirror_angles</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sn</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">100</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 
 
@@ -256,6 +279,20 @@ number of integrations in each swath.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="templates/load_template_solar_continuum.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">load_template_solar_continuum</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="swath/swath_number.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">swath_number</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
               
           </main>
