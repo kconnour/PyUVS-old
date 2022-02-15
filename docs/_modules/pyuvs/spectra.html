@@ -73,6 +73,12 @@
       <div class="navbar-center-item">
         <ul id="navbar-main-elements" class="navbar-nav">
     <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/getting-started.html">
+  Getting Started
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../../rst/installation.html">
   Installation
  </a>
@@ -85,7 +91,7 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="../../rst/graphics.html">
+ <a class="reference internal nav-link" href="../../rst/examples/index.html">
   Graphics
  </a>
 </li>
@@ -99,6 +105,24 @@
 <li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="../../rst/tutorials.html">
   Tutorials
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/release-notes.html">
+  Release Notes
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/about-iuvs.html">
+  About IUVS
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../rst/about-pyuvs.html">
+  About PyUVS
  </a>
 </li>
 
@@ -163,120 +187,212 @@
   <h1>Source code for pyuvs.spectra</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module provides functions to work with spectra.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
-<span class="kn">from</span> <span class="nn">pyuvs.anc</span> <span class="kn">import</span> <span class="n">load_muv_wavelength_center</span><span class="p">,</span> \
-    <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">,</span> <span class="n">load_template_no_nightglow</span><span class="p">,</span> \
-    <span class="n">load_template_co2_plus_uvd</span><span class="p">,</span> <span class="n">load_template_co_cameron_bands</span><span class="p">,</span> \
-    <span class="n">load_template_solar_continuum</span>
-<span class="kn">from</span> <span class="nn">pyuvs.constants</span> <span class="kn">import</span> <span class="n">pixel_omega</span><span class="p">,</span> <span class="n">kR</span>
-<span class="kn">from</span> <span class="nn">pyuvs.data_files.contents</span> <span class="kn">import</span> <span class="n">L1bFile</span><span class="p">,</span> <span class="n">L1bFileCollection</span>
+<span class="kn">from</span> <span class="nn">pyuvs</span> <span class="kn">import</span> <span class="n">kR</span><span class="p">,</span> <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">,</span> \
+    <span class="n">load_muv_wavelength_centers</span><span class="p">,</span> <span class="n">load_template_co_cameron</span><span class="p">,</span> \
+    <span class="n">load_template_co2_plus_uvd</span><span class="p">,</span> <span class="n">load_template_no_nightglow</span><span class="p">,</span> \
+    <span class="n">load_template_solar_continuum</span><span class="p">,</span> <span class="n">pixel_omega</span>
 
 
-<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="load_standard_fit_templates"><a class="viewcode-back" href="../../rst/api/spectra/load_standard_fit_templates.html#pyuvs.load_standard_fit_templates">[docs]</a><span class="k">def</span> <span class="nf">load_standard_fit_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Load the standard fit templates.</span>
 
+<span class="sd">    The standard fit templates are:</span>
 
-<div class="viewcode-block" id="load_standard_fit_templates"><a class="viewcode-back" href="../../rst/api/spectra.html#pyuvs.spectra.load_standard_fit_templates">[docs]</a><span class="k">def</span> <span class="nf">load_standard_fit_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Load the standard fit templates (NO, aurora, solar)</span>
+<span class="sd">    0. NO nightglow</span>
+<span class="sd">    1. CO Cameron bands</span>
+<span class="sd">    2. Ultraviolet doublet</span>
+<span class="sd">    3. Solar continuum.</span>
+
+<span class="sd">    These correspond to the first axis.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The fit templates.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This array has shape (4, 1024).</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">load_template_no_nightglow</span><span class="p">(),</span>
-         <span class="n">load_template_co_cameron_bands</span><span class="p">()</span> <span class="o">+</span> <span class="n">load_template_co2_plus_uvd</span><span class="p">(),</span>
-         <span class="n">load_template_solar_continuum</span><span class="p">()])</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">load_template_no_nightglow</span><span class="p">(),</span>
+                      <span class="n">load_template_co_cameron</span><span class="p">(),</span>
+                      <span class="n">load_template_co2_plus_uvd</span><span class="p">(),</span>
+                      <span class="n">load_template_solar_continuum</span><span class="p">()])</span></div>
 
 
-<div class="viewcode-block" id="rebin_templates"><a class="viewcode-back" href="../../rst/api/spectra.html#pyuvs.spectra.rebin_templates">[docs]</a><span class="k">def</span> <span class="nf">rebin_templates</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">spectral_pixel_bin_width</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Rebin a 1024 pixel template to match a given spectral bin width.</span>
+<div class="viewcode-block" id="rebin_templates"><a class="viewcode-back" href="../../rst/api/spectra/rebin_templates.html#pyuvs.rebin_templates">[docs]</a><span class="k">def</span> <span class="nf">rebin_templates</span><span class="p">(</span><span class="n">template</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spectral_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Rebin N spectral templates to match a given spectral bin width.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    template</span>
-<span class="sd">    spectral_pixel_bin_width</span>
+<span class="sd">    template: np.ndarray</span>
+<span class="sd">        The spectral template to rebin. Must have a shape of (number of</span>
+<span class="sd">        templates, spectral bins per template).</span>
+<span class="sd">    spectral_pixel_bin_width: int</span>
+<span class="sd">        The number of IUVS detector spectral pixels to rebin the template to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        Rebinned spectral template.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Rebin the NO nightglow template to use the 256 spectral bin scheme. This</span>
+<span class="sd">    uses 4 pixels / spectral bin.</span>
+
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; no_template = pu.load_template_no_nightglow()</span>
+<span class="sd">    &gt;&gt;&gt; rebin = pu.rebin_templates(no_template[None, :], 4)</span>
+<span class="sd">    &gt;&gt;&gt; rebin.shape</span>
+<span class="sd">    (1, 256)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">reshaped_templates</span> <span class="o">=</span> \
-        <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="nb">int</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">spectral_pixel_bin_width</span><span class="p">),</span>
-                              <span class="n">spectral_pixel_bin_width</span><span class="p">))</span>
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                 <span class="n">template</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">//</span><span class="n">spectral_pixel_bin_width</span><span class="p">,</span>
+                 <span class="n">spectral_pixel_bin_width</span><span class="p">)</span>
+    <span class="n">reshaped_templates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">reshaped_templates</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="pad_spectral_axis_with_nan"><a class="viewcode-back" href="../../rst/api/spectra.html#pyuvs.spectra.pad_spectral_axis_with_nan">[docs]</a><span class="k">def</span> <span class="nf">pad_spectral_axis_with_nan</span><span class="p">(</span>
-        <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">start_ind</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">n_wavelengths</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Pad the spectral axis with NaNs.</span>
+<div class="viewcode-block" id="pad_spectral_image_with_nan"><a class="viewcode-back" href="../../rst/api/spectra/pad_spectral_image_with_nan.html#pyuvs.pad_spectral_image_with_nan">[docs]</a><span class="k">def</span> <span class="nf">pad_spectral_image_with_nan</span><span class="p">(</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_wavelengths</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">starting_spectral_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> \
+        <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Pad the spectral axis of an image with NaNs.</span>
 
-<span class="sd">    This is best described with an example. IUVS often takes data with 4</span>
-<span class="sd">    bins/pixel, so it uses the 256 binning scheme. However, it only had the</span>
-<span class="sd">    bandwidth to transmit 40 spectral bins within the range. This places the</span>
-<span class="sd">    40 bins of data within a 256 bin array.</span>
+<span class="sd">    The spectral axis is assumed to be the last axis, consistent with the IUVS</span>
+<span class="sd">    standard.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    array: np.ndarray</span>
-<span class="sd">        The spectral array (probably a detector image)</span>
-<span class="sd">    start_ind: int</span>
-<span class="sd">        The starting index of the</span>
+<span class="sd">    image: np.ndarray</span>
+<span class="sd">        The image to pad with NaNs. This is assumed to be 3-dimensional with</span>
+<span class="sd">        the last axis corresponding to wavelength.</span>
 <span class="sd">    n_wavelengths: int</span>
-<span class="sd">        The number of wavelengths.</span>
+<span class="sd">        The number of wavelengths IUVS took data with.</span>
+<span class="sd">    starting_spectral_index: int</span>
+<span class="sd">        The starting index of the</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The input array with NaNs padded on the ends.</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    IUVS takes data with different spectral binning schemes. Frequently, it</span>
+<span class="sd">    doesn&#39;t have the bandwidth to transmit all the spectral data, so it only</span>
+<span class="sd">    transmits a fraction of that data. This function puts the image in the</span>
+<span class="sd">    place of a hypothetical array where it transmitted all data.</span>
+
+<span class="sd">    This is particularly useful when fitting spectral templates to data.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Fit an image of shape (200, 50, 40) into a 256 spectral bin array that</span>
+<span class="sd">    transmitted data starting at the 60th spectral bin.</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; dummy_data = np.ones((200, 50, 40))</span>
+<span class="sd">    &gt;&gt;&gt; padded_data = pu.pad_spectral_image_with_nan(dummy_data, 256, 60)</span>
+<span class="sd">    &gt;&gt;&gt; padded_data.shape</span>
+<span class="sd">    (200, 50, 256)</span>
+<span class="sd">    &gt;&gt;&gt; padded_data[0, 0, 59], padded_data[0, 0, 60]</span>
+<span class="sd">    (nan, 1.0)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">temp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_wavelengths</span><span class="p">))</span>\
-                 <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="n">temp_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">start_ind</span><span class="p">:</span><span class="n">start_ind</span><span class="o">+</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">array</span>
+    <span class="n">temp_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_wavelengths</span><span class="p">),</span>
+                         <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="n">temp_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">starting_spectral_index</span><span class="p">:</span>
+                    <span class="n">starting_spectral_index</span><span class="o">+</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">image</span>
     <span class="k">return</span> <span class="n">temp_array</span></div>
 
 
-<div class="viewcode-block" id="rebin_wavelengths"><a class="viewcode-back" href="../../rst/api/spectra.html#pyuvs.spectra.rebin_wavelengths">[docs]</a><span class="k">def</span> <span class="nf">rebin_wavelengths</span><span class="p">(</span>
-        <span class="n">wavelengths</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spectral_pix_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Rebin the wavelengths to a given bin width.</span>
+<div class="viewcode-block" id="rebin_wavelengths"><a class="viewcode-back" href="../../rst/api/spectra/rebin_wavelengths.html#pyuvs.rebin_wavelengths">[docs]</a><span class="k">def</span> <span class="nf">rebin_wavelengths</span><span class="p">(</span>
+        <span class="n">wavelengths</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spectral_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Rebin the wavelengths to a given spectral pixel bin width.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    wavelengths: np.ndarray</span>
-<span class="sd">        The wavelengths</span>
-<span class="sd">    spectral_pix_bin_width: int</span>
-<span class="sd">        The spectral bin width</span>
+<span class="sd">        The wavelengths to rebin.</span>
+<span class="sd">    spectral_pixel_bin_width: int</span>
+<span class="sd">        The spectral bin width.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        Rebinned wavelengths.</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    rebin_muv_wavelengths: Identical to this function but with pre-populated</span>
+<span class="sd">                           MUV wavelengths.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Rebin the MUV wavelengths to use 2 bins / spectral pixel.</span>
+
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; muv_wavelengths = pu.load_muv_wavelength_centers()</span>
+<span class="sd">    &gt;&gt;&gt; rebin = pu.rebin_wavelengths(muv_wavelengths, 2)</span>
+<span class="sd">    &gt;&gt;&gt; rebin.shape</span>
+<span class="sd">    (512,)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">wavelengths</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">wavelengths</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">spectral_pix_bin_width</span><span class="p">),</span>
-                                <span class="n">spectral_pix_bin_width</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">wavelengths</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="n">spectral_pixel_bin_width</span><span class="p">,</span>
+                 <span class="n">spectral_pixel_bin_width</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wavelengths</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">new_shape</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calculate_calibration_curve"><a class="viewcode-back" href="../../rst/api/spectra.html#pyuvs.spectra.calculate_calibration_curve">[docs]</a><span class="k">def</span> <span class="nf">calculate_calibration_curve</span><span class="p">(</span>
-        <span class="n">spatial_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">detector_sensitivity_curve</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<div class="viewcode-block" id="rebin_muv_wavelengths"><a class="viewcode-back" href="../../rst/api/spectra/rebin_muv_wavelengths.html#pyuvs.rebin_muv_wavelengths">[docs]</a><span class="k">def</span> <span class="nf">rebin_muv_wavelengths</span><span class="p">(</span><span class="n">spectral_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Rebin the MUV wavelengths to a given spectral pixel bin width.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spectral_pixel_bin_width: int</span>
+<span class="sd">        The spectral bin width.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        Rebinned wavelengths.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    rebin_wavelengths: This function generalized to any input wavelengths.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Rebin the MUV wavelengths to use 2 bins / spectral pixel.</span>
+
+<span class="sd">    &gt;&gt;&gt; import pyuvs as pu</span>
+<span class="sd">    &gt;&gt;&gt; rebin = pu.rebin_muv_wavelengths(2)</span>
+<span class="sd">    &gt;&gt;&gt; rebin.shape</span>
+<span class="sd">    (512,)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">rebin_wavelengths</span><span class="p">(</span><span class="n">load_muv_wavelength_centers</span><span class="p">(),</span>
+                             <span class="n">spectral_pixel_bin_width</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_calibration_curve"><a class="viewcode-back" href="../../rst/api/spectra/calculate_calibration_curve.html#pyuvs.calculate_calibration_curve">[docs]</a><span class="k">def</span> <span class="nf">calculate_calibration_curve</span><span class="p">(</span>
+        <span class="n">detector_sensitivity_curve</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spatial_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">wavelength_width</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">voltage_gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">integration_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculate the calibration curve [DN/kR].</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    spatial_bin_width: int</span>
-<span class="sd">        The spatial bin width [pixels].</span>
 <span class="sd">    detector_sensitivity_curve: np.ndarray</span>
 <span class="sd">        The detector sensitivity curve.</span>
+<span class="sd">    spatial_bin_width: int</span>
+<span class="sd">        The spatial bin width [pixels].</span>
 <span class="sd">    wavelength_width: np.ndarray</span>
 <span class="sd">        The wavelength width.</span>
 <span class="sd">    voltage_gain: float</span>
@@ -288,14 +404,72 @@
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
 <span class="sd">        The calibration curve.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    calculate_muv_observational_calibration_curve: Identical to this function but</span>
+<span class="sd">                                                 with pre-populated with the</span>
+<span class="sd">                                                 observational MUV sensitivity</span>
+<span class="sd">                                                 curve.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bin_omega</span> <span class="o">=</span> <span class="n">pixel_omega</span> <span class="o">*</span> <span class="n">spatial_bin_width</span>
     <span class="k">return</span> <span class="n">wavelength_width</span> <span class="o">*</span> <span class="n">voltage_gain</span> <span class="o">*</span> <span class="n">integration_time</span> <span class="o">*</span> <span class="n">kR</span> <span class="o">*</span> \
         <span class="n">detector_sensitivity_curve</span> <span class="o">*</span> <span class="n">bin_omega</span></div>
 
 
-<div class="viewcode-block" id="fit_templates_to_nightside_data"><a class="viewcode-back" href="../../rst/api/spectra.html#pyuvs.spectra.fit_templates_to_nightside_data">[docs]</a><span class="k">def</span> <span class="nf">fit_templates_to_nightside_data</span><span class="p">(</span><span class="n">fc</span><span class="p">:</span> <span class="n">L1bFileCollection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Use multiple linear regression (MLR) to fit templates to nightside data.</span>
+<div class="viewcode-block" id="calculate_muv_observational_calibration_curve"><a class="viewcode-back" href="../../rst/api/spectra/calculate_muv_observational_calibration_curve.html#pyuvs.calculate_muv_observational_calibration_curve">[docs]</a><span class="k">def</span> <span class="nf">calculate_muv_observational_calibration_curve</span><span class="p">(</span>
+        <span class="n">spatial_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wavelength_width</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">voltage_gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">integration_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the calibration curve [DN/kR].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spatial_bin_width: int</span>
+<span class="sd">        The spatial bin width [pixels].</span>
+<span class="sd">    wavelength_width: np.ndarray</span>
+<span class="sd">        The wavelength width.</span>
+<span class="sd">    voltage_gain: float</span>
+<span class="sd">        The voltage gain [V]</span>
+<span class="sd">    integration_time: float</span>
+<span class="sd">        The integration time.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.ndarray</span>
+<span class="sd">        The calibration curve.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    calculate_calibration_curve: This function generalized to any calibration</span>
+<span class="sd">                                 curve.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">calculate_calibration_curve</span><span class="p">(</span>
+        <span class="n">sensitivity</span><span class="p">,</span> <span class="n">spatial_bin_width</span><span class="p">,</span> <span class="n">wavelength_width</span><span class="p">,</span> <span class="n">voltage_gain</span><span class="p">,</span>
+        <span class="n">integration_time</span><span class="p">)</span></div>
+
+
+<span class="c1"># TODO: document this</span>
+<span class="k">class</span> <span class="nc">MLRFitInfo</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector_image_dark_subtracted</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">uncertainty</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spectral_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">starting_spectral_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spatial_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">wavelength_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">voltage_gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">integration_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_image_dark_subtracted</span> <span class="o">=</span> <span class="n">detector_image_dark_subtracted</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty</span> <span class="o">=</span> <span class="n">uncertainty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span> <span class="o">=</span> <span class="n">spectral_pixel_bin_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">starting_spectral_index</span> <span class="o">=</span> <span class="n">starting_spectral_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spatial_pixel_bin_width</span> <span class="o">=</span> <span class="n">spatial_pixel_bin_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_width</span> <span class="o">=</span> <span class="n">wavelength_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voltage_gain</span> <span class="o">=</span> <span class="n">voltage_gain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">integration_time</span> <span class="o">=</span> <span class="n">integration_time</span>
+
+
+    <span class="sd">&#39;&#39;&#39;def fit_templates_to_nightside_data(mlr_info: MLRFitInfo) -&gt; np.ndarray:</span>
+<span class="sd">    &quot;&quot;&quot;Use multiple linear regression (MLR) to fit templates to nightside data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -309,59 +483,64 @@
 <span class="sd">        n_integrations, n_positions). Index 0 is NO; index 1 is aurora.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Get data from the files. Assume nightside settings are the same each file</span>
-    <span class="n">fc</span><span class="o">.</span><span class="n">dayside</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">dds</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_detector_image_dark_subtracted</span><span class="p">()</span>
-    <span class="n">dn_unc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_detector_image_random_uncertainty_dn</span><span class="p">()</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_first_nightside_file</span><span class="p">()</span>
 
-    <span class="n">spectral_pixel_bin_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">))</span>
-    <span class="n">starting_spectral_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">spectral_pixel_bin_width</span><span class="p">)</span>
-    <span class="n">spatial_pixel_bin_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spatial_pixel_bin_width</span><span class="p">))</span>
-    <span class="n">wavelength_width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">wavelength_width</span><span class="p">)</span>
-    <span class="n">voltage_gain</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">voltage_gain</span>
-    <span class="n">integration_time</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">integration_time</span>
 
-    <span class="c1"># Load in miscellaneous info</span>
-    <span class="n">wavelength_center</span> <span class="o">=</span> <span class="n">load_muv_wavelength_center</span><span class="p">()</span>
-    <span class="n">rebinned_wavelengths</span> <span class="o">=</span> <span class="n">rebin_wavelengths</span><span class="p">(</span><span class="n">wavelength_center</span><span class="p">,</span>
-                                             <span class="n">spectral_pixel_bin_width</span><span class="p">)</span>
-    <span class="n">rebinned_sensitivity_curve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">rebinned_wavelengths</span><span class="p">,</span>
-                                           <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">()[</span>
-                                           <span class="p">:,</span> <span class="mi">0</span><span class="p">],</span>
-                                           <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">()[</span>
-                                           <span class="p">:,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">rebinned_calibration_curve</span> <span class="o">=</span> <span class="n">calculate_calibration_curve</span><span class="p">(</span>
-        <span class="n">spatial_pixel_bin_width</span><span class="p">,</span> <span class="n">rebinned_sensitivity_curve</span><span class="p">,</span> <span class="n">wavelength_width</span><span class="p">,</span>
-        <span class="n">voltage_gain</span><span class="p">,</span> <span class="n">integration_time</span><span class="p">)</span>
+<span class="sd">    # Load in miscellaneous info</span>
+<span class="sd">    wavelength_center = load_muv_wavelength_centers()</span>
+<span class="sd">    rebinned_wavelengths = rebin_wavelengths(wavelength_center,</span>
+<span class="sd">                                             spectral_pixel_bin_width)</span>
+<span class="sd">    rebinned_sensitivity_curve = np.interp(rebinned_wavelengths,</span>
+<span class="sd">                                           load_muv_sensitivity_curve_observational()[</span>
+<span class="sd">                                           :, 0],</span>
+<span class="sd">                                           load_muv_sensitivity_curve_observational()[</span>
+<span class="sd">                                           :, 1])</span>
+<span class="sd">    rebinned_calibration_curve = calculate_calibration_curve(</span>
+<span class="sd">        spatial_pixel_bin_width, rebinned_sensitivity_curve, wavelength_width,</span>
+<span class="sd">        voltage_gain, integration_time)</span>
 
-    <span class="c1"># Rebin the templates to match the data binning and stack them and add constant</span>
-    <span class="n">fit_templates</span> <span class="o">=</span> <span class="n">load_standard_fit_templates</span><span class="p">()</span>
-    <span class="n">rebinned_templates</span> <span class="o">=</span> <span class="n">rebin_templates</span><span class="p">(</span><span class="n">fit_templates</span><span class="p">,</span>
-                                         <span class="n">spectral_pixel_bin_width</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">templates</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">rebinned_templates</span><span class="p">)</span>
+<span class="sd">    # Rebin the templates to match the data binning and stack them and add constant</span>
+<span class="sd">    fit_templates = load_standard_fit_templates()</span>
+<span class="sd">    rebinned_templates = rebin_templates(fit_templates,</span>
+<span class="sd">                                         spectral_pixel_bin_width).T</span>
+<span class="sd">    templates = sm.add_constant(rebinned_templates)&#39;&#39;&#39;</span>
 
     <span class="c1"># Pad nans</span>
     <span class="sd">&#39;&#39;&#39;We have now taken our 40 bin spectrum and placed it in its original </span>
 <span class="sd">    position within a 256 bin spectrum so we can fit it to the 256 bin template</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">spectra</span> <span class="o">=</span> <span class="n">pad_spectral_axis_with_nan</span><span class="p">(</span><span class="n">dds</span><span class="p">,</span> <span class="n">starting_spectral_index</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
-    <span class="n">uncertainty</span> <span class="o">=</span> <span class="n">pad_spectral_axis_with_nan</span><span class="p">(</span><span class="n">dn_unc</span><span class="p">,</span> <span class="n">starting_spectral_index</span><span class="p">,</span>
-                                             <span class="mi">256</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;spectra = pad_spectral_axis_with_nan(dds, starting_spectral_index, 256)</span>
+<span class="sd">    uncertainty = pad_spectral_axis_with_nan(dn_unc, starting_spectral_index,</span>
+<span class="sd">                                             256)</span>
 
-    <span class="n">brightnesses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,)</span> <span class="o">+</span> <span class="n">dds</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">brightnesses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">brightnesses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
-            <span class="n">fit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">WLS</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="p">:],</span> <span class="n">templates</span><span class="p">,</span>
-                         <span class="n">weights</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">uncertainty</span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="p">:]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
-                         <span class="n">missing</span><span class="o">=</span><span class="s1">&#39;drop&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>  <span class="c1"># This ignores NaNs</span>
-            <span class="n">coeff</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">params</span>
-            <span class="n">no_brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">templates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">wavelength_width</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
-            <span class="n">aurora_brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">templates</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">wavelength_width</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
-            <span class="n">brightnesses</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_brightness</span>
-            <span class="n">brightnesses</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">aurora_brightness</span>
+<span class="sd">    brightnesses = np.zeros((2,) + dds[:, :, 0].shape)</span>
+<span class="sd">    for f in range(brightnesses.shape[1]):</span>
+<span class="sd">        for g in range(brightnesses.shape[2]):</span>
+<span class="sd">            fit = sm.WLS(spectra[f, g, :], templates,</span>
+<span class="sd">                         weights=1 / uncertainty[f, g, :] ** 2,</span>
+<span class="sd">                         missing=&#39;drop&#39;).fit()  # This ignores NaNs</span>
+<span class="sd">            coeff = fit.params</span>
+<span class="sd">            no_brightness = np.sum(coeff[1] * templates[:, 1] * wavelength_width / rebinned_calibration_curve)</span>
+<span class="sd">            aurora_brightness = np.sum(coeff[2] * templates[:, 2] * wavelength_width / rebinned_calibration_curve)</span>
+<span class="sd">            brightnesses[0, f, g] = no_brightness</span>
+<span class="sd">            brightnesses[1, f, g] = aurora_brightness</span>
 
-    <span class="k">return</span> <span class="n">brightnesses</span></div>
+<span class="sd">    return brightnesses&#39;&#39;&#39;</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1">#from pyuvs.data_files.content import L1b</span>
+    <span class="c1"># Get data from the files. Assume nightside settings are the same each file</span>
+    <span class="sd">&#39;&#39;&#39;fc.dayside = False</span>
+<span class="sd">    dds = fc.stack_detector_image_dark_subtracted()</span>
+<span class="sd">    dn_unc = fc.stack_detector_image_random_uncertainty_dn()</span>
+<span class="sd">    file = fc.get_first_nightside_file()</span>
+
+<span class="sd">    spectral_pixel_bin_width = int(np.median(file.binning.spectral_pixel_bin_width))</span>
+<span class="sd">    starting_spectral_index = int(file.binning.spectral_pixel_bin_width[0] / spectral_pixel_bin_width)</span>
+<span class="sd">    spatial_pixel_bin_width = int(np.median(file.binning.spatial_pixel_bin_width))</span>
+<span class="sd">    wavelength_width = np.median(file.observation.wavelength_width)</span>
+<span class="sd">    voltage_gain = file.observation.voltage_gain</span>
+<span class="sd">    integration_time = file.observation.integration_time&#39;&#39;&#39;</span>
 </pre></div>
 
               </div>
@@ -383,7 +562,7 @@
     
     <div class="footer-item">
       <p class="copyright">
-    &copy; Copyright 2021, kconnour and zachariahmilby.<br>
+    &copy; Copyright 2022, kconnour and zachariahmilby &#34;The dream team&#34;.<br>
 </p>
     </div>
     

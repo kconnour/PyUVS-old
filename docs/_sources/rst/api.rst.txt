@@ -16,5 +16,6 @@ These are the utilities in PyUVS, grouped by functionality.
    :maxdepth: 2
    :caption: Routines
 
+   api/spectra
    api/swath
    api/miscellaneous
