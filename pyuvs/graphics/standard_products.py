@@ -2,8 +2,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from pyuvs.constants import angular_slit_width, minimum_mirror_angle, maximum_mirror_angle
-from pyuvs.spectra import fit_templates_to_nightside_data
-from pyuvs.swath import swath_number, set_off_disk_pixels_to_nan
+from pyuvs.spectra import fit_muv_templates_to_nightside_data
+from pyuvs.swath import swath_number
+from pyuvs.utils import set_bad_pixels_to_nan
 from pyuvs.data_files.path import find_latest_apoapse_muv_file_paths_from_block
 from pyuvs.data_files.contents import L1bFileCollection, L1bFile
 from pyuvs.graphics.colorize import histogram_equalize_detector_image
@@ -109,10 +110,10 @@ def make_apoapse_muv_quicklook(orbit: int, data_location: Path, saveloc: str) ->
         on_disk_mask = fc.make_daynight_on_disk_mask()
         daynight_fov = fov[dayside_integration_mask == daynight]
         daynight_swath_number = swath_numbers[dayside_integration_mask == daynight]
-        sza = set_off_disk_pixels_to_nan(fc.stack_daynight_solar_zenith_angle(), on_disk_mask)
-        ea = set_off_disk_pixels_to_nan(fc.stack_daynight_emission_angle(), on_disk_mask)
-        pa = set_off_disk_pixels_to_nan(fc.stack_daynight_phase_angle(), on_disk_mask)
-        lt = set_off_disk_pixels_to_nan(fc.stack_daynight_local_time(), on_disk_mask)
+        sza = set_bad_pixels_to_nan(fc.stack_daynight_solar_zenith_angle(), on_disk_mask)
+        ea = set_bad_pixels_to_nan(fc.stack_daynight_emission_angle(), on_disk_mask)
+        pa = set_bad_pixels_to_nan(fc.stack_daynight_phase_angle(), on_disk_mask)
+        lt = set_bad_pixels_to_nan(fc.stack_daynight_local_time(), on_disk_mask)
         n_spatial_bins = primary.shape[1]
 
         # Do dayside specific things
@@ -121,7 +122,7 @@ def make_apoapse_muv_quicklook(orbit: int, data_location: Path, saveloc: str) ->
             rgb_primary = histogram_equalize_detector_image(primary) / 255
         # Do nightside specific things
         else:
-            brightnesses = fit_templates_to_nightside_data(fc)
+            brightnesses = fit_muv_templates_to_nightside_data(fc)
             no_kR = brightnesses[0, ...]
             aurora_kR = brightnesses[1, ...]
 
