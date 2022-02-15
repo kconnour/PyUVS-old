@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pad_spectral_image_with_nan &#8212; PyUVS  documentation</title>
+    <title>fit_muv_templates_to_nightside_data &#8212; PyUVS  documentation</title>
     
     <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -39,8 +39,8 @@
     <script src="../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="rebin_templates" href="rebin_templates.html" />
-    <link rel="prev" title="load_standard_fit_templates" href="load_standard_fit_templates.html" />
+    <link rel="next" title="load_standard_fit_templates" href="load_standard_fit_templates.html" />
+    <link rel="prev" title="calculate_muv_observational_calibration_curve" href="calculate_muv_observational_calibration_curve.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -221,8 +221,8 @@
      calculate_muv_observational_calibration_curve
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="fit_muv_templates_to_nightside_data.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      fit_muv_templates_to_nightside_data
     </a>
    </li>
@@ -231,8 +231,8 @@
      load_standard_fit_templates
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="pad_spectral_image_with_nan.html">
      pad_spectral_image_with_nan
     </a>
    </li>
@@ -302,49 +302,46 @@
               
               <div>
                 
-  <section id="pad-spectral-image-with-nan">
-<h1>pad_spectral_image_with_nan<a class="headerlink" href="#pad-spectral-image-with-nan" title="Permalink to this headline">¶</a></h1>
+  <section id="fit-muv-templates-to-nightside-data">
+<h1>fit_muv_templates_to_nightside_data<a class="headerlink" href="#fit-muv-templates-to-nightside-data" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.pad_spectral_image_with_nan">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.</span></span><span class="sig-name descname"><span class="pre">pad_spectral_image_with_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_wavelengths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_spectral_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/spectra.html#pad_spectral_image_with_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.pad_spectral_image_with_nan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pad the spectral axis of an image with NaNs.</p>
-<p>The spectral axis is assumed to be the last axis, consistent with the IUVS
-standard.</p>
+<dt class="sig sig-object py" id="pyuvs.fit_muv_templates_to_nightside_data">
+<span class="sig-prename descclassname"><span class="pre">pyuvs.</span></span><span class="sig-name descname"><span class="pre">fit_muv_templates_to_nightside_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector_image_dark_subtracted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixels_per_spatial_bin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixels_per_spectral_bin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_spectral_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voltage_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/spectra.html#fit_muv_templates_to_nightside_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.fit_muv_templates_to_nightside_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use multiple linear regression (MLR) to fit templates to nightside data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> (<em>np.ndarray</em>) – The image to pad with NaNs. This is assumed to be 3-dimensional with
-the last axis corresponding to wavelength.</p></li>
-<li><p><strong>n_wavelengths</strong> (<em>int</em>) – The number of wavelengths IUVS took data with.</p></li>
-<li><p><strong>starting_spectral_index</strong> (<em>int</em>) – The starting index of the</p></li>
+<li><p><strong>detector_image_dark_subtracted</strong> (<em>np.ndarray</em>) – The detector image with dark current subtracted. This array is assumed
+to be 3-dimensional.</p></li>
+<li><p><strong>uncertainty</strong> (<em>np.ndarray</em>) – The uncertainty associated with <code class="code docutils literal notranslate"><span class="pre">detector_image_dark_subtracted</span></code>.
+This array is assumed to have the same shape as
+<code class="code docutils literal notranslate"><span class="pre">detector_image_dark_subtracted</span></code>.</p></li>
+<li><p><strong>wavelength_width</strong> (<em>np.ndarray</em>) – The wavelength width. This array is assumed to be 1-dimensional and
+have the same shape as the last axis of
+<code class="code docutils literal notranslate"><span class="pre">detector_image_dark_subtracted</span></code>.</p></li>
+<li><p><strong>pixels_per_spatial_bin</strong> (<em>int</em>) – The number of detector pixels in each spatial bin.</p></li>
+<li><p><strong>pixels_per_spectral_bin</strong> (<em>int</em>) – The number of detector pixels in each spectral bin.</p></li>
+<li><p><strong>starting_spectral_index</strong> (<em>int</em>) – The starting spectral index.</p></li>
+<li><p><strong>voltage_gain</strong> (<em>float</em>) – The voltage gain settings.</p></li>
+<li><p><strong>integration_time</strong> (<em>float</em>) – The integration time.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The input array with NaNs padded on the ends.</p>
+<dd class="field-even"><p>The fitted brightnesses of the spectral components. This array has
+shape (3, n_integrations, n_positions). Along the first axis, index 0
+corresponds to NO nightglow, index 1 corresponds to aurora, and index
+2 corresponds to solar continuum.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>IUVS takes data with different spectral binning schemes. Frequently, it
-doesn’t have the bandwidth to transmit all the spectral data, so it only
-transmits a fraction of that data. This function puts the image in the
-place of a hypothetical array where it transmitted all data.</p>
-<p>This is particularly useful when fitting spectral templates to data.</p>
-<p class="rubric">Examples</p>
-<p>Fit an image of shape (200, 50, 40) into a 256 spectral bin array that
-transmitted data starting at the 60th spectral bin.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dummy_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">200</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">padded_data</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">pad_spectral_image_with_nan</span><span class="p">(</span><span class="n">dummy_data</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">padded_data</span><span class="o">.</span><span class="n">shape</span>
-<span class="go">(200, 50, 256)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">padded_data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">59</span><span class="p">],</span> <span class="n">padded_data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
-<span class="go">(nan, 1.0)</span>
-</pre></div>
-</div>
+<p>This fits 4 nightside templates to IUVS data: NO nightglow, CO Cameron
+bands, the ultraviolet doublet (UVD), and solar continuum. The CO Cameron
+bands and UVD collectively make an aurora template.</p>
+<p>This function also uses the MUV wavelengths and MUV sensitivity curve that
+comes with pyuvs.</p>
 </dd></dl>
 
 </section>
@@ -355,17 +352,17 @@ transmitted data starting at the 60th spectral bin.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="load_standard_fit_templates.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="calculate_muv_observational_calibration_curve.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">load_standard_fit_templates</p>
+            <p class="prev-next-title">calculate_muv_observational_calibration_curve</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="rebin_templates.html" title="next page">
+    <a class='right-next' id="next-link" href="load_standard_fit_templates.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">rebin_templates</p>
+        <p class="prev-next-title">load_standard_fit_templates</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

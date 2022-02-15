@@ -264,68 +264,81 @@ def calculate_muv_observational_calibration_curve(
         integration_time)
 
 
-# TODO: document this
-class MLRFitInfo:
-    def __init__(self, detector_image_dark_subtracted: np.ndarray,
-                 uncertainty: np.ndarray, spectral_pixel_bin_width: int,
-                 starting_spectral_index: int, spatial_pixel_bin_width: int,
-                 wavelength_width: float, voltage_gain: float,
-                 integration_time: float):
-        self.detector_image_dark_subtracted = detector_image_dark_subtracted
-        self.uncertainty = uncertainty
-        self.spectral_pixel_bin_width = spectral_pixel_bin_width
-        self.starting_spectral_index = starting_spectral_index
-        self.spatial_pixel_bin_width = spatial_pixel_bin_width
-        self.wavelength_width = wavelength_width
-        self.voltage_gain = voltage_gain
-        self.integration_time = integration_time
-
-
-    '''def fit_templates_to_nightside_data(mlr_info: MLRFitInfo) -> np.ndarray:
+def fit_muv_templates_to_nightside_data(
+        detector_image_dark_subtracted: np.ndarray,
+        uncertainty: np.ndarray, wavelength_width: np.ndarray,
+        pixels_per_spatial_bin: int, pixels_per_spectral_bin: int,
+        starting_spectral_index: int, voltage_gain: float,
+        integration_time: float) -> np.ndarray:
     """Use multiple linear regression (MLR) to fit templates to nightside data.
 
     Parameters
     ----------
-    fc: L1bFileCollection
-        Collection of files.
+    detector_image_dark_subtracted: np.ndarray
+        The detector image with dark current subtracted. This array is assumed
+        to be 3-dimensional.
+    uncertainty: np.ndarray
+        The uncertainty associated with :code:`detector_image_dark_subtracted`.
+        This array is assumed to have the same shape as
+        :code:`detector_image_dark_subtracted`.
+    wavelength_width: np.ndarray
+        The wavelength width. This array is assumed to be 1-dimensional and
+        have the same shape as the last axis of
+        :code:`detector_image_dark_subtracted`.
+    pixels_per_spatial_bin: int
+        The number of detector pixels in each spatial bin.
+    pixels_per_spectral_bin: int
+        The number of detector pixels in each spectral bin.
+    starting_spectral_index: int
+        The starting spectral index.
+    voltage_gain: float
+        The voltage gain settings.
+    integration_time: float
+        The integration time.
 
     Returns
     -------
     np.ndarray
-        The fitted brightnesses of NO and aurora. This array has shape (2,
-        n_integrations, n_positions). Index 0 is NO; index 1 is aurora.
+        The fitted brightnesses of the spectral components. This array has
+        shape (3, n_integrations, n_positions). Along the first axis, index 0
+        corresponds to NO nightglow, index 1 corresponds to aurora, and index
+        2 corresponds to solar continuum.
+
+    Notes
+    -----
+    This fits 4 nightside templates to IUVS data: NO nightglow, CO Cameron
+    bands, the ultraviolet doublet (UVD), and solar continuum. The CO Cameron
+    bands and UVD collectively make an aurora template.
+
+    This function also uses the MUV wavelengths and MUV sensitivity curve that
+    comes with pyuvs.
 
     """
-
-
-    # Load in miscellaneous info
-    wavelength_center = load_muv_wavelength_centers()
-    rebinned_wavelengths = rebin_wavelengths(wavelength_center,
-                                             spectral_pixel_bin_width)
-    rebinned_sensitivity_curve = np.interp(rebinned_wavelengths,
-                                           load_muv_sensitivity_curve_observational()[
-                                           :, 0],
-                                           load_muv_sensitivity_curve_observational()[
-                                           :, 1])
+    # Compute some detector curves
+    rebinned_wavelengths = rebin_muv_wavelengths(pixels_per_spectral_bin)
+    rebinned_sensitivity_curve = np.interp(
+        rebinned_wavelengths,
+        load_muv_sensitivity_curve_observational()[:, 0],
+        load_muv_sensitivity_curve_observational()[:, 1])
     rebinned_calibration_curve = calculate_calibration_curve(
-        spatial_pixel_bin_width, rebinned_sensitivity_curve, wavelength_width,
+        rebinned_sensitivity_curve,
+        pixels_per_spatial_bin, wavelength_width,
         voltage_gain, integration_time)
 
-    # Rebin the templates to match the data binning and stack them and add constant
+    # Rebin the templates
     fit_templates = load_standard_fit_templates()
-    rebinned_templates = rebin_templates(fit_templates,
-                                         spectral_pixel_bin_width).T
-    templates = sm.add_constant(rebinned_templates)'''
+    rebinned_templates = rebin_templates(fit_templates, pixels_per_spectral_bin).T
+    templates = sm.add_constant(rebinned_templates)
 
     # Pad nans
-    '''We have now taken our 40 bin spectrum and placed it in its original 
-    position within a 256 bin spectrum so we can fit it to the 256 bin template
-    '''
-    '''spectra = pad_spectral_axis_with_nan(dds, starting_spectral_index, 256)
-    uncertainty = pad_spectral_axis_with_nan(dn_unc, starting_spectral_index,
-                                             256)
+    spectral_scheme = 1024 // pixels_per_spectral_bin
+    spectra = pad_spectral_image_with_nan(
+        detector_image_dark_subtracted, spectral_scheme, starting_spectral_index)
+    uncertainty = pad_spectral_image_with_nan(
+        uncertainty, spectral_scheme, starting_spectral_index)
 
-    brightnesses = np.zeros((2,) + dds[:, :, 0].shape)
+    # Fit templates to the data
+    brightnesses = np.zeros((3,) + detector_image_dark_subtracted.shape[:-1])
     for f in range(brightnesses.shape[1]):
         for g in range(brightnesses.shape[2]):
             fit = sm.WLS(spectra[f, g, :], templates,
@@ -333,24 +346,58 @@ class MLRFitInfo:
                          missing='drop').fit()  # This ignores NaNs
             coeff = fit.params
             no_brightness = np.sum(coeff[1] * templates[:, 1] * wavelength_width / rebinned_calibration_curve)
-            aurora_brightness = np.sum(coeff[2] * templates[:, 2] * wavelength_width / rebinned_calibration_curve)
+            aurora_brightness = np.sum(coeff[2] * templates[:, 2] * wavelength_width  / rebinned_calibration_curve) + \
+                                np.sum(coeff[3] * templates[:, 3] * wavelength_width / rebinned_calibration_curve)
+            solar_brightness = np.sum(coeff[4] * templates[:, 4] * wavelength_width  / rebinned_calibration_curve)
+
+            if f == 40 and g == 3:
+                fig, ax = plt.subplots()
+                ax.plot(wavs, dds[f, g])
+                ax.plot(rebinned_wavelengths, rebinned_templates[:, 0] * no_brightness / rebinned_calibration_curve)
+                ax.plot(rebinned_wavelengths, rebinned_templates[:, 1] * aurora_brightness / rebinned_calibration_curve)
+                ax.plot(rebinned_wavelengths, rebinned_templates[:, 3] * solar_brightness / rebinned_calibration_curve)
+                plt.savefig('/home/kyle/ql_testing/spectrafit.png')
             brightnesses[0, f, g] = no_brightness
             brightnesses[1, f, g] = aurora_brightness
+            brightnesses[2, f, g] = solar_brightness
 
-    return brightnesses'''
+    return brightnesses
 
 
 if __name__ == '__main__':
-    #from pyuvs.data_files.content import L1b
+    from pathlib import Path
+    import matplotlib.colors as colors
+    import matplotlib.pyplot as plt
+    from pyuvs.data_files.contents import L1bFileCollection, L1bFile
+    from pyuvs.data_files.path import find_latest_apoapse_muv_file_paths_from_block
+    #p = Path('/media/kyle/T7/IUVS_data')
+    #files = find_latest_apoapse_muv_file_paths_from_block(p, 13000)
+    p = Path('/media/kyle/T7/IUVS_data')
+    o = 13000
+    files = find_latest_apoapse_muv_file_paths_from_block(p, o)
+
+    fc = L1bFileCollection([L1bFile(f) for f in files])
+
+    wavs = L1bFile(files[0]).observation.wavelength[0, :]
     # Get data from the files. Assume nightside settings are the same each file
-    '''fc.dayside = False
+    fc.dayside = False
     dds = fc.stack_detector_image_dark_subtracted()
     dn_unc = fc.stack_detector_image_random_uncertainty_dn()
     file = fc.get_first_nightside_file()
 
-    spectral_pixel_bin_width = int(np.median(file.binning.spectral_pixel_bin_width))
-    starting_spectral_index = int(file.binning.spectral_pixel_bin_width[0] / spectral_pixel_bin_width)
-    spatial_pixel_bin_width = int(np.median(file.binning.spatial_pixel_bin_width))
-    wavelength_width = np.median(file.observation.wavelength_width)
-    voltage_gain = file.observation.voltage_gain
-    integration_time = file.observation.integration_time'''
+    spbw = int(np.median(file.binning.spectral_pixel_bin_width))
+    print(spbw)
+    ssi = int(file.binning.spectral_pixel_bin_width[0] / spbw)
+    spapbw = int(np.median(file.binning.spatial_pixel_bin_width))
+    ww = np.median(file.observation.wavelength_width)
+    vg = file.observation.voltage_gain
+    it = file.observation.integration_time
+
+    kray = fit_muv_templates_to_nightside_data(dds, dn_unc, ww, spapbw, spbw, ssi, vg, it)
+
+    fig, ax = plt.subplots(1, 3)
+    n = colors.SymLogNorm(linthresh=1, vmin=0, vmax=10)
+    ax[0].imshow(kray[0, ...], cmap='viridis', norm=n)
+    ax[1].imshow(kray[1, ...], cmap='magma', norm=n)
+    ax[2].imshow(kray[2, ...], cmap='viridis', norm=n)
+    plt.savefig(f'/home/kyle/ql_testing/mlr{o}.png', dpi=150)

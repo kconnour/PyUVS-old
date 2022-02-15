@@ -451,96 +451,143 @@
         <span class="n">integration_time</span><span class="p">)</span></div>
 
 
-<span class="c1"># TODO: document this</span>
-<span class="k">class</span> <span class="nc">MLRFitInfo</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detector_image_dark_subtracted</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                 <span class="n">uncertainty</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">spectral_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                 <span class="n">starting_spectral_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spatial_pixel_bin_width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                 <span class="n">wavelength_width</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">voltage_gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-                 <span class="n">integration_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">detector_image_dark_subtracted</span> <span class="o">=</span> <span class="n">detector_image_dark_subtracted</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uncertainty</span> <span class="o">=</span> <span class="n">uncertainty</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span> <span class="o">=</span> <span class="n">spectral_pixel_bin_width</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">starting_spectral_index</span> <span class="o">=</span> <span class="n">starting_spectral_index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spatial_pixel_bin_width</span> <span class="o">=</span> <span class="n">spatial_pixel_bin_width</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_width</span> <span class="o">=</span> <span class="n">wavelength_width</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">voltage_gain</span> <span class="o">=</span> <span class="n">voltage_gain</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">integration_time</span> <span class="o">=</span> <span class="n">integration_time</span>
-
-
-    <span class="sd">&#39;&#39;&#39;def fit_templates_to_nightside_data(mlr_info: MLRFitInfo) -&gt; np.ndarray:</span>
-<span class="sd">    &quot;&quot;&quot;Use multiple linear regression (MLR) to fit templates to nightside data.</span>
+<div class="viewcode-block" id="fit_muv_templates_to_nightside_data"><a class="viewcode-back" href="../../rst/api/spectra/fit_muv_templates_to_nightside_data.html#pyuvs.fit_muv_templates_to_nightside_data">[docs]</a><span class="k">def</span> <span class="nf">fit_muv_templates_to_nightside_data</span><span class="p">(</span>
+        <span class="n">detector_image_dark_subtracted</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">uncertainty</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">wavelength_width</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">pixels_per_spatial_bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pixels_per_spectral_bin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">starting_spectral_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">voltage_gain</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">integration_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Use multiple linear regression (MLR) to fit templates to nightside data.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    fc: L1bFileCollection</span>
-<span class="sd">        Collection of files.</span>
+<span class="sd">    detector_image_dark_subtracted: np.ndarray</span>
+<span class="sd">        The detector image with dark current subtracted. This array is assumed</span>
+<span class="sd">        to be 3-dimensional.</span>
+<span class="sd">    uncertainty: np.ndarray</span>
+<span class="sd">        The uncertainty associated with :code:`detector_image_dark_subtracted`.</span>
+<span class="sd">        This array is assumed to have the same shape as</span>
+<span class="sd">        :code:`detector_image_dark_subtracted`.</span>
+<span class="sd">    wavelength_width: np.ndarray</span>
+<span class="sd">        The wavelength width. This array is assumed to be 1-dimensional and</span>
+<span class="sd">        have the same shape as the last axis of</span>
+<span class="sd">        :code:`detector_image_dark_subtracted`.</span>
+<span class="sd">    pixels_per_spatial_bin: int</span>
+<span class="sd">        The number of detector pixels in each spatial bin.</span>
+<span class="sd">    pixels_per_spectral_bin: int</span>
+<span class="sd">        The number of detector pixels in each spectral bin.</span>
+<span class="sd">    starting_spectral_index: int</span>
+<span class="sd">        The starting spectral index.</span>
+<span class="sd">    voltage_gain: float</span>
+<span class="sd">        The voltage gain settings.</span>
+<span class="sd">    integration_time: float</span>
+<span class="sd">        The integration time.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    np.ndarray</span>
-<span class="sd">        The fitted brightnesses of NO and aurora. This array has shape (2,</span>
-<span class="sd">        n_integrations, n_positions). Index 0 is NO; index 1 is aurora.</span>
+<span class="sd">        The fitted brightnesses of the spectral components. This array has</span>
+<span class="sd">        shape (3, n_integrations, n_positions). Along the first axis, index 0</span>
+<span class="sd">        corresponds to NO nightglow, index 1 corresponds to aurora, and index</span>
+<span class="sd">        2 corresponds to solar continuum.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This fits 4 nightside templates to IUVS data: NO nightglow, CO Cameron</span>
+<span class="sd">    bands, the ultraviolet doublet (UVD), and solar continuum. The CO Cameron</span>
+<span class="sd">    bands and UVD collectively make an aurora template.</span>
+
+<span class="sd">    This function also uses the MUV wavelengths and MUV sensitivity curve that</span>
+<span class="sd">    comes with pyuvs.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Compute some detector curves</span>
+    <span class="n">rebinned_wavelengths</span> <span class="o">=</span> <span class="n">rebin_muv_wavelengths</span><span class="p">(</span><span class="n">pixels_per_spectral_bin</span><span class="p">)</span>
+    <span class="n">rebinned_sensitivity_curve</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span>
+        <span class="n">rebinned_wavelengths</span><span class="p">,</span>
+        <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">()[:,</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="n">load_muv_sensitivity_curve_observational</span><span class="p">()[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">rebinned_calibration_curve</span> <span class="o">=</span> <span class="n">calculate_calibration_curve</span><span class="p">(</span>
+        <span class="n">rebinned_sensitivity_curve</span><span class="p">,</span>
+        <span class="n">pixels_per_spatial_bin</span><span class="p">,</span> <span class="n">wavelength_width</span><span class="p">,</span>
+        <span class="n">voltage_gain</span><span class="p">,</span> <span class="n">integration_time</span><span class="p">)</span>
 
-
-<span class="sd">    # Load in miscellaneous info</span>
-<span class="sd">    wavelength_center = load_muv_wavelength_centers()</span>
-<span class="sd">    rebinned_wavelengths = rebin_wavelengths(wavelength_center,</span>
-<span class="sd">                                             spectral_pixel_bin_width)</span>
-<span class="sd">    rebinned_sensitivity_curve = np.interp(rebinned_wavelengths,</span>
-<span class="sd">                                           load_muv_sensitivity_curve_observational()[</span>
-<span class="sd">                                           :, 0],</span>
-<span class="sd">                                           load_muv_sensitivity_curve_observational()[</span>
-<span class="sd">                                           :, 1])</span>
-<span class="sd">    rebinned_calibration_curve = calculate_calibration_curve(</span>
-<span class="sd">        spatial_pixel_bin_width, rebinned_sensitivity_curve, wavelength_width,</span>
-<span class="sd">        voltage_gain, integration_time)</span>
-
-<span class="sd">    # Rebin the templates to match the data binning and stack them and add constant</span>
-<span class="sd">    fit_templates = load_standard_fit_templates()</span>
-<span class="sd">    rebinned_templates = rebin_templates(fit_templates,</span>
-<span class="sd">                                         spectral_pixel_bin_width).T</span>
-<span class="sd">    templates = sm.add_constant(rebinned_templates)&#39;&#39;&#39;</span>
+    <span class="c1"># Rebin the templates</span>
+    <span class="n">fit_templates</span> <span class="o">=</span> <span class="n">load_standard_fit_templates</span><span class="p">()</span>
+    <span class="n">rebinned_templates</span> <span class="o">=</span> <span class="n">rebin_templates</span><span class="p">(</span><span class="n">fit_templates</span><span class="p">,</span> <span class="n">pixels_per_spectral_bin</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">templates</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">rebinned_templates</span><span class="p">)</span>
 
     <span class="c1"># Pad nans</span>
-    <span class="sd">&#39;&#39;&#39;We have now taken our 40 bin spectrum and placed it in its original </span>
-<span class="sd">    position within a 256 bin spectrum so we can fit it to the 256 bin template</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="sd">&#39;&#39;&#39;spectra = pad_spectral_axis_with_nan(dds, starting_spectral_index, 256)</span>
-<span class="sd">    uncertainty = pad_spectral_axis_with_nan(dn_unc, starting_spectral_index,</span>
-<span class="sd">                                             256)</span>
+    <span class="n">spectral_scheme</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">//</span> <span class="n">pixels_per_spectral_bin</span>
+    <span class="n">spectra</span> <span class="o">=</span> <span class="n">pad_spectral_image_with_nan</span><span class="p">(</span>
+        <span class="n">detector_image_dark_subtracted</span><span class="p">,</span> <span class="n">spectral_scheme</span><span class="p">,</span> <span class="n">starting_spectral_index</span><span class="p">)</span>
+    <span class="n">uncertainty</span> <span class="o">=</span> <span class="n">pad_spectral_image_with_nan</span><span class="p">(</span>
+        <span class="n">uncertainty</span><span class="p">,</span> <span class="n">spectral_scheme</span><span class="p">,</span> <span class="n">starting_spectral_index</span><span class="p">)</span>
 
-<span class="sd">    brightnesses = np.zeros((2,) + dds[:, :, 0].shape)</span>
-<span class="sd">    for f in range(brightnesses.shape[1]):</span>
-<span class="sd">        for g in range(brightnesses.shape[2]):</span>
-<span class="sd">            fit = sm.WLS(spectra[f, g, :], templates,</span>
-<span class="sd">                         weights=1 / uncertainty[f, g, :] ** 2,</span>
-<span class="sd">                         missing=&#39;drop&#39;).fit()  # This ignores NaNs</span>
-<span class="sd">            coeff = fit.params</span>
-<span class="sd">            no_brightness = np.sum(coeff[1] * templates[:, 1] * wavelength_width / rebinned_calibration_curve)</span>
-<span class="sd">            aurora_brightness = np.sum(coeff[2] * templates[:, 2] * wavelength_width / rebinned_calibration_curve)</span>
-<span class="sd">            brightnesses[0, f, g] = no_brightness</span>
-<span class="sd">            brightnesses[1, f, g] = aurora_brightness</span>
+    <span class="c1"># Fit templates to the data</span>
+    <span class="n">brightnesses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,)</span> <span class="o">+</span> <span class="n">detector_image_dark_subtracted</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">brightnesses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">brightnesses</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">WLS</span><span class="p">(</span><span class="n">spectra</span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="p">:],</span> <span class="n">templates</span><span class="p">,</span>
+                         <span class="n">weights</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">uncertainty</span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="p">:]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+                         <span class="n">missing</span><span class="o">=</span><span class="s1">&#39;drop&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>  <span class="c1"># This ignores NaNs</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">params</span>
+            <span class="n">no_brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">templates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">wavelength_width</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
+            <span class="n">aurora_brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">templates</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">wavelength_width</span>  <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span> <span class="o">+</span> \
+                                <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">templates</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">wavelength_width</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
+            <span class="n">solar_brightness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">templates</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">*</span> <span class="n">wavelength_width</span>  <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
 
-<span class="sd">    return brightnesses&#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">40</span> <span class="ow">and</span> <span class="n">g</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">wavs</span><span class="p">,</span> <span class="n">dds</span><span class="p">[</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">])</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rebinned_wavelengths</span><span class="p">,</span> <span class="n">rebinned_templates</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">no_brightness</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rebinned_wavelengths</span><span class="p">,</span> <span class="n">rebinned_templates</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">aurora_brightness</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rebinned_wavelengths</span><span class="p">,</span> <span class="n">rebinned_templates</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">solar_brightness</span> <span class="o">/</span> <span class="n">rebinned_calibration_curve</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/home/kyle/ql_testing/spectrafit.png&#39;</span><span class="p">)</span>
+            <span class="n">brightnesses</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_brightness</span>
+            <span class="n">brightnesses</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">aurora_brightness</span>
+            <span class="n">brightnesses</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="n">solar_brightness</span>
+
+    <span class="k">return</span> <span class="n">brightnesses</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="c1">#from pyuvs.data_files.content import L1b</span>
-    <span class="c1"># Get data from the files. Assume nightside settings are the same each file</span>
-    <span class="sd">&#39;&#39;&#39;fc.dayside = False</span>
-<span class="sd">    dds = fc.stack_detector_image_dark_subtracted()</span>
-<span class="sd">    dn_unc = fc.stack_detector_image_random_uncertainty_dn()</span>
-<span class="sd">    file = fc.get_first_nightside_file()</span>
+    <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">colors</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">pyuvs.data_files.contents</span> <span class="kn">import</span> <span class="n">L1bFileCollection</span><span class="p">,</span> <span class="n">L1bFile</span>
+    <span class="kn">from</span> <span class="nn">pyuvs.data_files.path</span> <span class="kn">import</span> <span class="n">find_latest_apoapse_muv_file_paths_from_block</span>
+    <span class="c1">#p = Path(&#39;/media/kyle/T7/IUVS_data&#39;)</span>
+    <span class="c1">#files = find_latest_apoapse_muv_file_paths_from_block(p, 13000)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/media/kyle/T7/IUVS_data&#39;</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="mi">13000</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">find_latest_apoapse_muv_file_paths_from_block</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
 
-<span class="sd">    spectral_pixel_bin_width = int(np.median(file.binning.spectral_pixel_bin_width))</span>
-<span class="sd">    starting_spectral_index = int(file.binning.spectral_pixel_bin_width[0] / spectral_pixel_bin_width)</span>
-<span class="sd">    spatial_pixel_bin_width = int(np.median(file.binning.spatial_pixel_bin_width))</span>
-<span class="sd">    wavelength_width = np.median(file.observation.wavelength_width)</span>
-<span class="sd">    voltage_gain = file.observation.voltage_gain</span>
-<span class="sd">    integration_time = file.observation.integration_time&#39;&#39;&#39;</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">L1bFileCollection</span><span class="p">([</span><span class="n">L1bFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">])</span>
+
+    <span class="n">wavs</span> <span class="o">=</span> <span class="n">L1bFile</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">wavelength</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="c1"># Get data from the files. Assume nightside settings are the same each file</span>
+    <span class="n">fc</span><span class="o">.</span><span class="n">dayside</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">dds</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_detector_image_dark_subtracted</span><span class="p">()</span>
+    <span class="n">dn_unc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_detector_image_random_uncertainty_dn</span><span class="p">()</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_first_nightside_file</span><span class="p">()</span>
+
+    <span class="n">spbw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">spbw</span><span class="p">)</span>
+    <span class="n">ssi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">spbw</span><span class="p">)</span>
+    <span class="n">spapbw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spatial_pixel_bin_width</span><span class="p">))</span>
+    <span class="n">ww</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">wavelength_width</span><span class="p">)</span>
+    <span class="n">vg</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">voltage_gain</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">integration_time</span>
+
+    <span class="n">kray</span> <span class="o">=</span> <span class="n">fit_muv_templates_to_nightside_data</span><span class="p">(</span><span class="n">dds</span><span class="p">,</span> <span class="n">dn_unc</span><span class="p">,</span> <span class="n">ww</span><span class="p">,</span> <span class="n">spapbw</span><span class="p">,</span> <span class="n">spbw</span><span class="p">,</span> <span class="n">ssi</span><span class="p">,</span> <span class="n">vg</span><span class="p">,</span> <span class="n">it</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">colors</span><span class="o">.</span><span class="n">SymLogNorm</span><span class="p">(</span><span class="n">linthresh</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">kray</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">kray</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">kray</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/home/kyle/ql_testing/mlr</span><span class="si">{</span><span class="n">o</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 </pre></div>
 
               </div>
