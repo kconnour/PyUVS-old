@@ -7,10 +7,7 @@ provide several standard graphic templates, functions to make standard
 graphics, and general utility routines.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: pyuvs.graphics modules:
+   :maxdepth: 2
+   :caption: Colorization Routines
 
    graphics/colorize
-   graphics/detector_image
-   graphics/standard_products
-   graphics/templates

@@ -19,3 +19,9 @@ These are the utilities in PyUVS, grouped by functionality.
    api/spectra
    api/swath
    api/miscellaneous
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Subpackages
+
+   api/graphics

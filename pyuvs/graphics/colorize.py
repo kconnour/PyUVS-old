@@ -7,22 +7,19 @@ def histogram_equalize_grayscale_image(
         image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
     """Histogram equalize a grayscale image.
 
-    This applies a histogram equalization algorithm to the input image. The
-    image can have any shape, though it doesn't make much sense unless it is
-    2D.
-
     Parameters
     ----------
-    image
-        The image to histogram equalize.
-    mask
+    image: np.ndarray
+        The image to histogram equalize. This is assumed to be 2-dimensional.
+    mask: np.ndarray
         A mask of booleans where :code:`False` values are excluded from the
         histogram equalization scaling. This must be the same shape as
         :code:`image`.
 
     Returns
     -------
-    Histogram equalized values ranging from 0 to 255.
+    np.ndarray
+        Histogram equalized values ranging from 0 to 255.
 
     See Also
     --------
@@ -40,6 +37,18 @@ def histogram_equalize_grayscale_image(
        corresponding data values.
     4. Take the floor of the interpolated values since I'm using left cutoffs.
 
+    Examples
+    --------
+    Histogram equalize a 1024x1024 image. 1024x1024/256 = 4096 so there will
+    be 4096 values of each value between 0 and 255.
+
+    >>> import numpy as np
+    >>> import pyuvs as pu
+    >>> random_arr = np.random.rand(1024, 1024)
+    >>> heq_image = pu.graphics.histogram_equalize_grayscale_image(random_arr)
+    >>> np.sum(heq_image==0), np.sum(heq_image==1), np.sum(heq_image==255)
+    (4096, 4096, 4096)
+
     """
     sorted_values = np.sort(image[mask], axis=None)
     left_cutoffs = np.array([sorted_values[int(i / 256 * len(sorted_values))]
@@ -52,17 +61,16 @@ def histogram_equalize_rgb_image(
         image: np.ndarray, mask: np.ndarray = None) -> np.ndarray:
     """Histogram equalize an RGB image.
 
-    This applies a histogram equalization algorithm to the input image. The
-    RGB dimension is assumed to be the last dimension and should have a length
-    of 3. Indices 0, 1, and 2 correspond to R, G, and B, respectively. The
-    input image can be any shape, though it doesn't make much sense unless it
-    is 3D.
+    This applies a histogram equalization algorithm to the input image.
 
     Parameters
     ----------
-    image
-        The image to histogram equalize.
-    mask
+    image: np.ndarray
+        The image to histogram equalize. This is assumed to be 3-dimensional.
+        Additionally, the RGB dimension is assumed to be the last dimension and
+        should have a length of 3. Indices 0, 1, and 2 correspond to R, G, and
+        B, respectively.
+    mask: np.ndarray
         A mask of booleans where :code:`False` values are excluded from the
         histogram equalization scaling. This must be the same shape as the
         first N-1 dimensions of :code:`image`.
@@ -83,9 +91,10 @@ def histogram_equalize_rgb_image(
     return np.dstack([red, green, blue])
 
 
-def make_spectral_cutoff_indices(n_wavelengths: int) -> tuple[int, int]:
+def make_equidistant_spectral_cutoff_indices(n_wavelengths: int) \
+        -> tuple[int, int]:
     """Make the cutoff indices so that the spectral dimension can be
-    downsampled to 3 color channels.
+    downsampled to 3 equally spaced color channels.
 
     Parameters
     ----------
@@ -96,6 +105,14 @@ def make_spectral_cutoff_indices(n_wavelengths: int) -> tuple[int, int]:
     -------
     tuple[int, int]
         The blue-green and the green-red cutoff indices.
+
+    Examples
+    --------
+    Get the wavelength cutoffs for IUVS 19 spectral binning scheme.
+
+    >>> import pyuvs as pu
+    >>> pu.graphics.make_equidistant_spectral_cutoff_indices(19)
+    (6, 12)
 
     """
     blue_green_cutoff = int(n_wavelengths / 3)
@@ -115,27 +132,35 @@ def turn_detector_image_to_3_channels(image: np.ndarray) -> np.ndarray:
     Returns
     -------
     np.ndarray
-        A co-added detector image (n_integrations, n_spatial_bins, 3).
+        A co-added detector image of shape (n_integrations, n_spatial_bins, 3).
 
     """
     n_wavelengths = image.shape[2]
     blue_green_cutoff, green_red_cutoff = \
-        make_spectral_cutoff_indices(n_wavelengths)
+        make_equidistant_spectral_cutoff_indices(n_wavelengths)
     red = np.sum(image[..., green_red_cutoff:], axis=-1)
     green = np.sum(image[..., blue_green_cutoff:green_red_cutoff], axis=-1)
     blue = np.sum(image[..., :blue_green_cutoff], axis=-1)
     return np.dstack([red, green, blue])
 
 
-def histogram_equalize_detector_image(image: np.ndarray, mask=None) -> np.ndarray:
-    """
+def histogram_equalize_detector_image(
+        image: np.ndarray, mask: np.ndarray=None) -> np.ndarray:
+    """Histogram equalize an IUVS detector image.
 
     Parameters
     ----------
-    image
+    image: np.ndarray
+        The image to histogram equalize.
+    mask: np.ndarray
+        A mask of booleans where :code:`False` values are excluded from the
+        histogram equalization scaling. This must be the same shape as the
+        first N-1 dimensions of :code:`image`.
 
     Returns
     -------
+    np.ndarray
+        Histogram equalized IUVS image.
 
     """
     coadded_image = turn_detector_image_to_3_channels(image)

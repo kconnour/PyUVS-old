@@ -39,6 +39,8 @@
     <script src="../../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="histogram_equalize_grayscale_image" href="colorize/histogram_equalize_grayscale_image.html" />
+    <link rel="prev" title="graphics" href="../graphics.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -85,7 +87,7 @@
  </a>
 </li>
 
-<li class="toctree-l1 nav-item">
+<li class="toctree-l1 current active nav-item">
  <a class="reference internal nav-link" href="../../api.html">
   API Reference
  </a>
@@ -161,7 +163,117 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Constants and Data
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../constants.html">
+   Constants
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../flatfields.html">
+   Flatfields
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../instrument.html">
+   Instrument
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../maps.html">
+   Maps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../templates.html">
+   Templates
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Routines
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../spectra.html">
+   Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../swath.html">
+   Swath
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../miscellaneous.html">
+   Miscellaneous
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Subpackages
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="../graphics.html">
+   graphics
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active has-children">
+    <a class="current reference internal" href="#">
+     colorize
+    </a>
+    <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+    <label for="toctree-checkbox-2">
+     <i class="fas fa-chevron-down">
+     </i>
+    </label>
+    <ul>
+     <li class="toctree-l3">
+      <a class="reference internal" href="colorize/histogram_equalize_grayscale_image.html">
+       histogram_equalize_grayscale_image
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="colorize/histogram_equalize_rgb_image.html">
+       histogram_equalize_rgb_image
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="colorize/histogram_equalize_detector_image.html">
+       histogram_equalize_detector_image
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="colorize/make_equidistant_spectral_cutoff_indices.html">
+       make_equidistant_spectral_cutoff_indices
+      </a>
+     </li>
+     <li class="toctree-l3">
+      <a class="reference internal" href="colorize/turn_detector_image_to_3_channels.html">
+       turn_detector_image_to_3_channels
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
   </div>
 </nav>
               </div>
@@ -199,125 +311,19 @@
               
               <div>
                 
-  <section id="module-pyuvs.graphics.colorize">
-<span id="colorize"></span><h1>colorize<a class="headerlink" href="#module-pyuvs.graphics.colorize" title="Permalink to this headline">¶</a></h1>
-<p>This module provides functions to help colorize images.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.graphics.colorize.histogram_equalize_grayscale_image">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.colorize.</span></span><span class="sig-name descname"><span class="pre">histogram_equalize_grayscale_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/graphics/colorize.html#histogram_equalize_grayscale_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.colorize.histogram_equalize_grayscale_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Histogram equalize a grayscale image.</p>
-<p>This applies a histogram equalization algorithm to the input image. The
-image can have any shape, though it doesn’t make much sense unless it is
-2D.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> – The image to histogram equalize.</p></li>
-<li><p><strong>mask</strong> – A mask of booleans where <code class="code docutils literal notranslate"><span class="pre">False</span></code> values are excluded from the
-histogram equalization scaling. This must be the same shape as
-<code class="code docutils literal notranslate"><span class="pre">image</span></code>.</p></li>
+  <section id="colorize">
+<h1>colorize<a class="headerlink" href="#colorize" title="Permalink to this headline">¶</a></h1>
+<p>These functions will colorize an image.</p>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Image colorization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="colorize/histogram_equalize_grayscale_image.html">histogram_equalize_grayscale_image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colorize/histogram_equalize_rgb_image.html">histogram_equalize_rgb_image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colorize/histogram_equalize_detector_image.html">histogram_equalize_detector_image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colorize/make_equidistant_spectral_cutoff_indices.html">make_equidistant_spectral_cutoff_indices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colorize/turn_detector_image_to_3_channels.html">turn_detector_image_to_3_channels</a></li>
 </ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Histogram equalized values ranging from 0 to 255.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#pyuvs.graphics.colorize.histogram_equalize_rgb_image" title="pyuvs.graphics.colorize.histogram_equalize_rgb_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">histogram_equalize_rgb_image</span></code></a></dt><dd><p>Histogram equalize a 3-color channel image.</p>
-</dd>
-</dl>
 </div>
-<p class="rubric">Notes</p>
-<p>I could not get the scikit-learn algorithm to work so I created this.</p>
-<p>The algorithm works like this:</p>
-<ol class="arabic simple">
-<li><p>Sort all data used in the coloring.</p></li>
-<li><p>Use these sorted values to determine the 256 left bin cutoffs.</p></li>
-<li><p>Linearly interpolate each value in the grid over 256 RGB values and the
-corresponding data values.</p></li>
-<li><p>Take the floor of the interpolated values since I’m using left cutoffs.</p></li>
-</ol>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.graphics.colorize.histogram_equalize_rgb_image">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.colorize.</span></span><span class="sig-name descname"><span class="pre">histogram_equalize_rgb_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/graphics/colorize.html#histogram_equalize_rgb_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.colorize.histogram_equalize_rgb_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Histogram equalize an RGB image.</p>
-<p>This applies a histogram equalization algorithm to the input image. The
-RGB dimension is assumed to be the last dimension and should have a length
-of 3. Indices 0, 1, and 2 correspond to R, G, and B, respectively. The
-input image can be any shape, though it doesn’t make much sense unless it
-is 3D.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> – The image to histogram equalize.</p></li>
-<li><p><strong>mask</strong> – A mask of booleans where <code class="code docutils literal notranslate"><span class="pre">False</span></code> values are excluded from the
-histogram equalization scaling. This must be the same shape as the
-first N-1 dimensions of <code class="code docutils literal notranslate"><span class="pre">image</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Histogram equalized values ranging from 0 to 255.</p>
-</dd>
-</dl>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#pyuvs.graphics.colorize.histogram_equalize_grayscale_image" title="pyuvs.graphics.colorize.histogram_equalize_grayscale_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">histogram_equalize_grayscale_image</span></code></a></dt><dd><p>Histogram equalize a 1-color channel image.</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.graphics.colorize.make_spectral_cutoff_indices">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.colorize.</span></span><span class="sig-name descname"><span class="pre">make_spectral_cutoff_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_wavelengths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/pyuvs/graphics/colorize.html#make_spectral_cutoff_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.colorize.make_spectral_cutoff_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make the cutoff indices so that the spectral dimension can be
-downsampled to 3 color channels.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n_wavelengths</strong> (<em>int</em>) – The number of wavelengths.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The blue-green and the green-red cutoff indices.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple[int, int]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.graphics.colorize.turn_detector_image_to_3_channels">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.colorize.</span></span><span class="sig-name descname"><span class="pre">turn_detector_image_to_3_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/graphics/colorize.html#turn_detector_image_to_3_channels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.colorize.turn_detector_image_to_3_channels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Turn a detector image into 3 channels by coadding over the spectral
-dimension.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> (<em>np.ndarray</em>) – Any 3D detector image (n_integrations, n_spatial_bins, n_wavelengths).</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A co-added detector image (n_integrations, n_spatial_bins, 3).</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyuvs.graphics.colorize.histogram_equalize_detector_image">
-<span class="sig-prename descclassname"><span class="pre">pyuvs.graphics.colorize.</span></span><span class="sig-name descname"><span class="pre">histogram_equalize_detector_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="reference internal" href="../../../_modules/pyuvs/graphics/colorize.html#histogram_equalize_detector_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyuvs.graphics.colorize.histogram_equalize_detector_image" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 
 
@@ -326,6 +332,20 @@ dimension.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../graphics.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">graphics</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="colorize/histogram_equalize_grayscale_image.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">histogram_equalize_grayscale_image</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
 </div>
               
           </main>

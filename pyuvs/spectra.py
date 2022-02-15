@@ -350,12 +350,12 @@ def fit_muv_templates_to_nightside_data(
                                 np.sum(coeff[3] * templates[:, 3] * wavelength_width / rebinned_calibration_curve)
             solar_brightness = np.sum(coeff[4] * templates[:, 4] * wavelength_width  / rebinned_calibration_curve)
 
-            if f == 40 and g == 3:
+            if f == 150 and g == 5:
                 fig, ax = plt.subplots()
                 ax.plot(wavs, dds[f, g])
-                ax.plot(rebinned_wavelengths, rebinned_templates[:, 0] * no_brightness / rebinned_calibration_curve)
-                ax.plot(rebinned_wavelengths, rebinned_templates[:, 1] * aurora_brightness / rebinned_calibration_curve)
-                ax.plot(rebinned_wavelengths, rebinned_templates[:, 3] * solar_brightness / rebinned_calibration_curve)
+                ax.plot(rebinned_wavelengths, coeff[0] + rebinned_templates[:, 0] * coeff[1] +
+                        rebinned_templates[:, 1] * coeff[2] + rebinned_templates[:, 2] * coeff[3] +
+                        rebinned_templates[:, 3] * coeff[4])
                 plt.savefig('/home/kyle/ql_testing/spectrafit.png')
             brightnesses[0, f, g] = no_brightness
             brightnesses[1, f, g] = aurora_brightness
@@ -396,8 +396,12 @@ if __name__ == '__main__':
     kray = fit_muv_templates_to_nightside_data(dds, dn_unc, ww, spapbw, spbw, ssi, vg, it)
 
     fig, ax = plt.subplots(1, 3)
-    n = colors.SymLogNorm(linthresh=1, vmin=0, vmax=10)
-    ax[0].imshow(kray[0, ...], cmap='viridis', norm=n)
+    #n = colors.SymLogNorm(linthresh=1, vmin=0, vmax=10)
+    # NO: LogNorm from 0.5 to 4
+    # Aurora: LogNorm from 0.1 to 1
+    noo = colors.LogNorm()
+    n = colors.LogNorm()
+    ax[0].imshow(kray[0, ...], cmap='viridis', norm=noo)
     ax[1].imshow(kray[1, ...], cmap='magma', norm=n)
     ax[2].imshow(kray[2, ...], cmap='viridis', norm=n)
     plt.savefig(f'/home/kyle/ql_testing/mlr{o}.png', dpi=150)
