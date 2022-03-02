@@ -39,8 +39,8 @@
     <script src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Apoapse dayside image" href="plot_apoapse_dayside_detector_image.html" />
-    <link rel="prev" title="Graphics" href="index.html" />
+    <link rel="next" title="Tools" href="../tools.html" />
+    <link rel="prev" title="MUV Pointspread Function" href="plot_muv_pointspread_function.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -163,14 +163,7 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    <ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   Apoapse MUV quicklook
-  </a>
- </li>
-</ul>
-<ul class="nav bd-sidenav">
+    <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="plot_apoapse_dayside_detector_image.html">
    Apoapse dayside image
@@ -195,6 +188,13 @@
  <li class="toctree-l1">
   <a class="reference internal" href="plot_muv_pointspread_function.html">
    MUV Pointspread Function
+  </a>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Apoapse MUV quicklook
   </a>
  </li>
 </ul>
@@ -244,24 +244,157 @@ to download the full example code</p>
 <section class="sphx-glr-example-title" id="apoapse-muv-quicklook">
 <span id="sphx-glr-rst-examples-plot-apoapse-muv-quicklook-py"></span><h1>Apoapse MUV quicklook<a class="headerlink" href="#apoapse-muv-quicklook" title="Permalink to this headline">¶</a></h1>
 <p>Create a standard apoapse MUV quicklook.</p>
-<img src="../../_images/sphx_glr_plot_apoapse_muv_quicklook_001.png" srcset="../../_images/sphx_glr_plot_apoapse_muv_quicklook_001.png" alt="plot apoapse muv quicklook" class = "sphx-glr-single-img"/><p class="sphx-glr-script-out">Out:</p>
+<p>There are tons of options when it comes to creating images:</p>
+<ul class="simple">
+<li><p>Will the data come from data files or a database?</p></li>
+<li><p>Should the dayside coloring use histogram equalization or a linear scaling?</p></li>
+<li><p>What templates should be fit to the nightside data?</p></li>
+<li><p>Will there be a dayside mask that sets the coloring?</p></li>
+</ul>
+<p>It’s therefore nearly impossible to create a function that handles all the
+potential options. This example will walk through how to create a standard
+apoapse quicklook. It uses data from data files, uses dayside histogram
+equalization, and fits 4 templates to nightside data.</p>
+<p>Import everything we’ll need.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyuvs</span> <span class="k">as</span> <span class="nn">pu</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/kyle/repos/PyUVS/venv/lib/python3.9/site-packages/statsmodels/compat/pandas.py:65: FutureWarning: pandas.Int64Index is deprecated and will be removed from pandas in a future version. Use pandas.Index with the appropriate dtype instead.
   from pandas import Int64Index as NumericIndex
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">pyuvs.graphics.standard_products</span> <span class="kn">import</span> <span class="n">make_apoapse_muv_quicklook</span>
-
-<span class="n">orbit</span> <span class="o">=</span> <span class="mi">13000</span>
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/media/kyle/T7/IUVS_data&#39;</span><span class="p">)</span>
-<span class="n">sl</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/home/kyle/ql_testing/apoapse-muv-quicklook-orbit</span><span class="si">{</span><span class="n">orbit</span><span class="si">}</span><span class="s1">.pdf&#39;</span>
-<span class="n">make_apoapse_muv_quicklook</span><span class="p">(</span><span class="n">orbit</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span>
+<p>Set variables on where we’ll pull the data from and where we’ll save the
+data. Note that if you turn this into a function, these will be the only
+required inputs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">orbit</span> <span class="o">=</span> <span class="mi">5738</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;/media/kyle/Samsung_T5/IUVS_data&#39;</span><span class="p">)</span>
+<span class="n">save_location</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/home/kyle/ql_testing/apoapse-muv-quicklook-orbit</span><span class="si">{</span><span class="n">orbit</span><span class="si">}</span><span class="s1">.pdf&#39;</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  28.016 seconds)</p>
+<p>Load the graphical template where we’ll put the images.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># sphinx_gallery_thumbnail_number = -1</span>
+<span class="n">template</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">ApoapseMUVQuicklook</span><span class="p">()</span>
+<span class="c1"># sphinx_gallery_defer_figures</span>
+</pre></div>
+</div>
+<p>Load in the data into a file collection. This object will help us pull the
+info from the IUVS files that we need.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data_paths</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">datafiles</span><span class="o">.</span><span class="n">find_latest_apoapse_muv_file_paths_from_block</span><span class="p">(</span>
+    <span class="n">data_path</span><span class="p">,</span> <span class="n">orbit</span><span class="p">)</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">pu</span><span class="o">.</span><span class="n">datafiles</span><span class="o">.</span><span class="n">L1bFile</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data_paths</span><span class="p">]</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">datafiles</span><span class="o">.</span><span class="n">L1bFileCollection</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+<span class="c1"># sphinx_gallery_defer_figures</span>
+</pre></div>
+</div>
+<p>Make the data that’s independent of day/night.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fov</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_field_of_view</span><span class="p">()</span>
+<span class="n">swath_numbers</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">swath_number</span><span class="p">(</span><span class="n">fov</span><span class="p">)</span>
+<span class="n">fc</span><span class="o">.</span><span class="n">make_daynight_integration_mask</span><span class="p">()</span>
+<span class="n">dayside_integration_mask</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_daynight_integration_mask</span><span class="p">()</span>
+<span class="c1"># sphinx_gallery_defer_figures</span>
+</pre></div>
+</div>
+<p>Stack pixels that are either dayside or nightside. Plot them</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">daynight</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+    <span class="n">fc</span><span class="o">.</span><span class="n">dayside</span> <span class="o">=</span> <span class="n">daynight</span>
+    <span class="k">if</span> <span class="n">daynight</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dayside_integration_mask</span><span class="p">:</span>
+        <span class="k">continue</span>
+
+    <span class="n">primary</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_daynight_calibrated_detector_image</span><span class="p">()</span>
+    <span class="n">on_disk_mask</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_daynight_on_disk_mask</span><span class="p">()</span>
+    <span class="n">daynight_fov</span> <span class="o">=</span> <span class="n">fov</span><span class="p">[</span><span class="n">dayside_integration_mask</span> <span class="o">==</span> <span class="n">daynight</span><span class="p">]</span>
+    <span class="n">daynight_swath_number</span> <span class="o">=</span> <span class="n">swath_numbers</span><span class="p">[</span><span class="n">dayside_integration_mask</span> <span class="o">==</span> <span class="n">daynight</span><span class="p">]</span>
+    <span class="n">sza</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">set_bad_pixels_to_nan</span><span class="p">(</span>
+        <span class="n">fc</span><span class="o">.</span><span class="n">stack_daynight_solar_zenith_angle</span><span class="p">(),</span> <span class="n">on_disk_mask</span><span class="p">)</span>
+    <span class="n">ea</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">set_bad_pixels_to_nan</span><span class="p">(</span>
+        <span class="n">fc</span><span class="o">.</span><span class="n">stack_daynight_emission_angle</span><span class="p">(),</span> <span class="n">on_disk_mask</span><span class="p">)</span>
+    <span class="n">pa</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">set_bad_pixels_to_nan</span><span class="p">(</span>
+        <span class="n">fc</span><span class="o">.</span><span class="n">stack_daynight_phase_angle</span><span class="p">(),</span> <span class="n">on_disk_mask</span><span class="p">)</span>
+    <span class="n">lt</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">set_bad_pixels_to_nan</span><span class="p">(</span>
+        <span class="n">fc</span><span class="o">.</span><span class="n">stack_daynight_local_time</span><span class="p">(),</span> <span class="n">on_disk_mask</span><span class="p">)</span>
+    <span class="n">n_spatial_bins</span> <span class="o">=</span> <span class="n">primary</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Do dayside specific things</span>
+    <span class="k">if</span> <span class="n">daynight</span><span class="p">:</span>
+        <span class="c1"># TODO: FF correct here</span>
+        <span class="n">rgb_primary</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">histogram_equalize_detector_image</span><span class="p">(</span><span class="n">primary</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span>
+    <span class="c1"># Do nightside specific things</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dds</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_detector_image_dark_subtracted</span><span class="p">()</span>
+        <span class="n">dn_unc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">stack_detector_image_random_uncertainty_dn</span><span class="p">()</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">get_first_nightside_file</span><span class="p">()</span>
+
+        <span class="n">spbw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">))</span>
+        <span class="n">ssi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spectral_pixel_bin_width</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">spbw</span><span class="p">)</span>
+        <span class="n">spapbw</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">binning</span><span class="o">.</span><span class="n">spatial_pixel_bin_width</span><span class="p">))</span>
+        <span class="n">ww</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">wavelength_width</span><span class="p">)</span>
+        <span class="n">vg</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">voltage_gain</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">observation</span><span class="o">.</span><span class="n">integration_time</span>
+
+        <span class="n">brightnesses</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">fit_muv_templates_to_nightside_data</span><span class="p">(</span>
+            <span class="n">dds</span><span class="p">,</span> <span class="n">dn_unc</span><span class="p">,</span> <span class="n">ww</span><span class="p">,</span> <span class="n">spapbw</span><span class="p">,</span> <span class="n">spbw</span><span class="p">,</span> <span class="n">ssi</span><span class="p">,</span> <span class="n">vg</span><span class="p">,</span> <span class="n">it</span><span class="p">)</span>
+        <span class="n">no_kR</span> <span class="o">=</span> <span class="n">brightnesses</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+        <span class="n">aurora_kR</span> <span class="o">=</span> <span class="n">brightnesses</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">swath</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">swath_numbers</span><span class="p">):</span>
+        <span class="c1"># Do this no matter if I&#39;m plotting primary or angles</span>
+        <span class="n">swath_inds</span> <span class="o">=</span> <span class="n">daynight_swath_number</span> <span class="o">==</span> <span class="n">swath</span>
+        <span class="n">n_integrations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">swath_inds</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">make_swath_grid</span><span class="p">(</span><span class="n">daynight_fov</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">swath</span><span class="p">,</span>
+                               <span class="n">n_spatial_bins</span><span class="p">,</span> <span class="n">n_integrations</span><span class="p">)</span>
+        <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_detector_image</span><span class="p">(</span>
+            <span class="n">template</span><span class="o">.</span><span class="n">solar_zenith_angle_swath</span><span class="p">,</span>
+            <span class="n">sza</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">angle_colormap</span><span class="p">,</span>
+            <span class="n">norm</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">angle_norm</span><span class="p">)</span>
+        <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_detector_image</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">emission_angle_swath</span><span class="p">,</span>
+                                  <span class="n">ea</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                  <span class="n">cmap</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">angle_colormap</span><span class="p">,</span>
+                                  <span class="n">norm</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">angle_norm</span><span class="p">)</span>
+        <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_detector_image</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">phase_angle_swath</span><span class="p">,</span>
+                                  <span class="n">pa</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                  <span class="n">cmap</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">angle_colormap</span><span class="p">,</span>
+                                  <span class="n">norm</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">angle_norm</span><span class="p">)</span>
+        <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_detector_image</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">local_time_swath</span><span class="p">,</span>
+                                  <span class="n">lt</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                                  <span class="n">cmap</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">local_time_colormap</span><span class="p">,</span>
+                                  <span class="n">norm</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">local_time_norm</span><span class="p">)</span>
+
+        <span class="c1"># Plot the primary for dayside data</span>
+        <span class="k">if</span> <span class="n">daynight</span><span class="p">:</span>
+            <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_rgb_detector_image</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">no_data_swath</span><span class="p">,</span>
+                                          <span class="n">rgb_primary</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_rgb_detector_image</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">aurora_data_swath</span><span class="p">,</span>
+                                          <span class="n">rgb_primary</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_detector_image</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">.</span><span class="n">no_data_swath</span><span class="p">,</span> <span class="n">no_kR</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                <span class="n">cmap</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">no_colormap</span><span class="p">,</span>
+                <span class="n">norm</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">no_norm</span><span class="p">)</span>
+            <span class="n">pu</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">pcolormesh_detector_image</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">.</span><span class="n">aurora_data_swath</span><span class="p">,</span> <span class="n">aurora_kR</span><span class="p">[</span><span class="n">swath_inds</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                <span class="n">cmap</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">aurora_colormap</span><span class="p">,</span>
+                <span class="n">norm</span><span class="o">=</span><span class="n">template</span><span class="o">.</span><span class="n">aurora_norm</span><span class="p">)</span>
+<span class="c1"># sphinx_gallery_defer_figures</span>
+</pre></div>
+</div>
+<p>Set the axis limits in the subplots</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">[</span><span class="n">template</span><span class="o">.</span><span class="n">no_data_swath</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">aurora_data_swath</span><span class="p">,</span>
+           <span class="n">template</span><span class="o">.</span><span class="n">solar_zenith_angle_swath</span><span class="p">,</span>
+           <span class="n">template</span><span class="o">.</span><span class="n">emission_angle_swath</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">phase_angle_swath</span><span class="p">,</span>
+           <span class="n">template</span><span class="o">.</span><span class="n">local_time_swath</span><span class="p">]:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pu</span><span class="o">.</span><span class="n">angular_slit_width</span> <span class="o">*</span> <span class="p">(</span><span class="n">swath_numbers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">pu</span><span class="o">.</span><span class="n">minimum_mirror_angle</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">pu</span><span class="o">.</span><span class="n">maximum_mirror_angle</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_location</span><span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_plot_apoapse_muv_quicklook_001.png" srcset="../../_images/sphx_glr_plot_apoapse_muv_quicklook_001.png" alt="plot apoapse muv quicklook" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  20.919 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-rst-examples-plot-apoapse-muv-quicklook-py">
 <div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../../_downloads/736e0fc14e3175b62caa177cea9e6232/plot_apoapse_muv_quicklook.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_apoapse_muv_quicklook.py</span></code></a></p>
@@ -279,17 +412,17 @@ to download the full example code</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="plot_muv_pointspread_function.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Graphics</p>
+            <p class="prev-next-title">MUV Pointspread Function</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="plot_apoapse_dayside_detector_image.html" title="next page">
+    <a class='right-next' id="next-link" href="../tools.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Apoapse dayside image</p>
+        <p class="prev-next-title">Tools</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

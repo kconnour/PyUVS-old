@@ -15,27 +15,6 @@ example graphics (on-demand graphics). For now they are all mixed together.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Create a standard apoapse MUV quicklook.">
-
-.. only:: html
-
- .. figure:: /rst/examples/images/thumb/sphx_glr_plot_apoapse_muv_quicklook_thumb.png
-     :alt: Apoapse MUV quicklook
-
-     :ref:`sphx_glr_rst_examples_plot_apoapse_muv_quicklook.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /rst/examples/plot_apoapse_muv_quicklook
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="Create a histogram equalized dayside image from data files.">
 
 .. only:: html
@@ -117,6 +96,27 @@ example graphics (on-demand graphics). For now they are all mixed together.
    :hidden:
 
    /rst/examples/plot_muv_pointspread_function
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Create a standard apoapse MUV quicklook.">
+
+.. only:: html
+
+ .. figure:: /rst/examples/images/thumb/sphx_glr_plot_apoapse_muv_quicklook_thumb.png
+     :alt: Apoapse MUV quicklook
+
+     :ref:`sphx_glr_rst_examples_plot_apoapse_muv_quicklook.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /rst/examples/plot_apoapse_muv_quicklook
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

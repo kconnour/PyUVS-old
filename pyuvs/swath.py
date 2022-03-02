@@ -3,6 +3,8 @@
 import numpy as np
 
 
+# TODO: This will not work if there are not an approximately equal number of
+#  dayside/nightside files due to the median!
 def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
     """Make the swath number associated with each mirror angle.
 
@@ -51,7 +53,7 @@ def swath_number(mirror_angles: np.ndarray) -> np.ndarray:
 
     """
     mirror_change = np.diff(mirror_angles)
-    threshold = np.abs(np.median(mirror_change)) * 2
+    threshold = np.abs(np.median(mirror_change)) * 4
     mirror_discontinuities = np.where(np.abs(mirror_change) > threshold)[0] + 1
     if any(mirror_discontinuities):
         n_swaths = len(mirror_discontinuities) + 1

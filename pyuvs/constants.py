@@ -36,3 +36,6 @@ muv_wavelength_width: float = 0.16367098
 
 kR: float = 10**10 / (4 * np.pi)
 """Definition of the kilorayleigh [photons/second/m**2/steradian]."""
+
+radius_mars: float = 3.3895 * 10**6
+"""Radius of Mars [m]"""

@@ -350,13 +350,6 @@ def fit_muv_templates_to_nightside_data(
                                 np.sum(coeff[3] * templates[:, 3] * wavelength_width / rebinned_calibration_curve)
             solar_brightness = np.sum(coeff[4] * templates[:, 4] * wavelength_width  / rebinned_calibration_curve)
 
-            if f == 150 and g == 5:
-                fig, ax = plt.subplots()
-                ax.plot(wavs, dds[f, g])
-                ax.plot(rebinned_wavelengths, coeff[0] + rebinned_templates[:, 0] * coeff[1] +
-                        rebinned_templates[:, 1] * coeff[2] + rebinned_templates[:, 2] * coeff[3] +
-                        rebinned_templates[:, 3] * coeff[4])
-                plt.savefig('/home/kyle/ql_testing/spectrafit.png')
             brightnesses[0, f, g] = no_brightness
             brightnesses[1, f, g] = aurora_brightness
             brightnesses[2, f, g] = solar_brightness
@@ -365,43 +358,13 @@ def fit_muv_templates_to_nightside_data(
 
 
 if __name__ == '__main__':
-    from pathlib import Path
-    import matplotlib.colors as colors
-    import matplotlib.pyplot as plt
-    from pyuvs.data_files.contents import L1bFileCollection, L1bFile
-    from pyuvs.data_files.path import find_latest_apoapse_muv_file_paths_from_block
-    #p = Path('/media/kyle/T7/IUVS_data')
-    #files = find_latest_apoapse_muv_file_paths_from_block(p, 13000)
-    p = Path('/media/kyle/T7/IUVS_data')
-    o = 13000
-    files = find_latest_apoapse_muv_file_paths_from_block(p, o)
-
-    fc = L1bFileCollection([L1bFile(f) for f in files])
-
-    wavs = L1bFile(files[0]).observation.wavelength[0, :]
-    # Get data from the files. Assume nightside settings are the same each file
-    fc.dayside = False
-    dds = fc.stack_detector_image_dark_subtracted()
-    dn_unc = fc.stack_detector_image_random_uncertainty_dn()
-    file = fc.get_first_nightside_file()
-
-    spbw = int(np.median(file.binning.spectral_pixel_bin_width))
-    print(spbw)
-    ssi = int(file.binning.spectral_pixel_bin_width[0] / spbw)
-    spapbw = int(np.median(file.binning.spatial_pixel_bin_width))
-    ww = np.median(file.observation.wavelength_width)
-    vg = file.observation.voltage_gain
-    it = file.observation.integration_time
-
-    kray = fit_muv_templates_to_nightside_data(dds, dn_unc, ww, spapbw, spbw, ssi, vg, it)
-
-    fig, ax = plt.subplots(1, 3)
+    pass
     #n = colors.SymLogNorm(linthresh=1, vmin=0, vmax=10)
     # NO: LogNorm from 0.5 to 4
     # Aurora: LogNorm from 0.1 to 1
-    noo = colors.LogNorm()
+    '''    noo = colors.LogNorm()
     n = colors.LogNorm()
     ax[0].imshow(kray[0, ...], cmap='viridis', norm=noo)
     ax[1].imshow(kray[1, ...], cmap='magma', norm=n)
     ax[2].imshow(kray[2, ...], cmap='viridis', norm=n)
-    plt.savefig(f'/home/kyle/ql_testing/mlr{o}.png', dpi=150)
+    plt.savefig(f'/home/kyle/ql_testing/mlr{o}.png', dpi=150)'''

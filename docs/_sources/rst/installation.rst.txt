@@ -51,7 +51,10 @@ The following lists all available optional dependencies.
    Install all libraries needed for the whole project.
 
    .. warning::
-      This requires GEOS and PROJ to already be installed on the system.
+      This requires GEOS and PROJ to already be installed on the system. These
+      can be installed with :code:`sudo apt -y install libproj-dev libgeos-dev`
+      . Note that this requires dev tools which should be installed if they
+      aren't with :code:`sudo apt install libpython3.9-dev`.
 
 * **database**
    Install all libraries needed to work with PyUVS data via a database.

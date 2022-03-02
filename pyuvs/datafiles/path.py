@@ -2,7 +2,7 @@
 """
 import math
 from pathlib import Path
-from pyuvs.data_files.filename import DataFilename
+from pyuvs.datafiles.filename import DataFilename
 
 
 def make_orbit_code(orbit: int) -> str:

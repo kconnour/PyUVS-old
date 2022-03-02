@@ -106,7 +106,7 @@ def make_swath_grid(field_of_view: np.ndarray, swath_number: int,
     slit_angles = np.linspace(angular_slit_width * swath_number,
                               angular_slit_width * (swath_number + 1),
                               num=n_positions+1)
-    mean_angle_difference = np.abs(np.mean(np.diff(field_of_view)))
+    mean_angle_difference = np.mean(np.diff(field_of_view))
     field_of_view = np.linspace(field_of_view[0] - mean_angle_difference / 2,
                                 field_of_view[-1] + mean_angle_difference / 2,
                                 num=n_integrations + 1)
