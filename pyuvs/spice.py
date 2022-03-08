@@ -6,9 +6,23 @@ import os
 from pathlib import Path
 import re
 import numpy as np
+from numpy.typing import ArrayLike
 import spiceypy as spice
+import pytz
 
 import pyuvs.datafiles
+
+
+class Longitude(np.ndarray):
+    def __new__(cls, array: ArrayLike):
+        obj = np.asarray(array).view(cls)
+        obj = cls.cast_to_o_to_360_degrees(obj)
+        return obj
+
+    @staticmethod
+    def cast_to_o_to_360_degrees(obj):
+        return np.where(obj < 0, obj + 360, obj)
+
 
 
 class Spice:
@@ -421,14 +435,74 @@ class Spice:
         # return the calculations
         return orbit_data
 
-    def rotated_transform(self, et):
+
+class PositionFinder:
+    def __init__(self, ephemeris_time: float):
+        self.et = ephemeris_time
+        self.abcorr = 'LT+S'
+        self.target = 'Mars'
+        self.observer = 'MAVEN'
+
+    def get_ls(self):
+        return np.degrees(spice.lspcn(self.target, self.et, self.abcorr))
+
+    def get_subsolar_point(self):
+        sspoint, strgepc, ssrfvec = spice.subslr(
+            'Intercept: ellipsoid', self.target, self.et, 'IAU_MARS',
+             self.abcorr, self.observer)
+        srpoint, scolatpoint, slonpoint = spice.recsph(sspoint)
+        if slonpoint > np.pi:
+            slonpoint -= 2 * np.pi
+        subsolar_lat = 90 - np.degrees(scolatpoint)
+        subsolar_lon = Longitude(np.degrees(slonpoint))
+        return subsolar_lat, subsolar_lon
+
+    def get_subspacecraft_point(self):
+        spoint, trgepc, srfvec = spice.subpnt(
+            'Intercept: ellipsoid', self.target, self.et, 'IAU_MARS', self.abcorr,
+            self.observer)
+        rpoint, colatpoint, lonpoint = spice.recsph(spoint)
+        if lonpoint > np.pi:
+            lonpoint -= 2 * np.pi
+        subsc_lat = 90 - np.degrees(colatpoint)
+        subsc_lon = Longitude(np.degrees(lonpoint))
+        return subsc_lat, subsc_lon
+
+    def get_subspacecraft_altitude(self):
+        """Get the sub-spacecraft altitude [km].
+
+        Returns
+        -------
+        float
+        """
+        spoint, trgepc, srfvec = spice.subpnt(
+            'Intercept: ellipsoid', self.target, self.et, 'IAU_MARS',
+            self.abcorr, self.observer)
+        return np.sqrt(np.sum(srfvec ** 2))
+
+    def get_mars_sun_distance(self):
+        """Get the Mars-sun distance [km].
+
+        Returns
+        -------
+        float
+        """
+        _, _, srvec_sun = spice.subpnt(
+            'Intercept: ellipsoid', self.target, self.et, 'IAU_MARS',
+            self.abcorr, 'SUN')
+        return np.sqrt(np.sum(srvec_sun**2))
+
+    def get_datetime(self):
+        dt = spice.et2datetime(self.et).replace(tzinfo=pytz.utc)
+        # define the ISO calendar format for datetime
+        #isoformat = '%Y-%m-%dT%H:%M:%S.%f'
+        # return the datetime object version of the input ephemeris time
+        #return datetime.strptime(dt, isoformat).replace(tzinfo=pytz.utc)
+        return dt
+
+    def rotated_transform(self):
         """
         Calculate the rotated pole transform for a particular orbit to replicate the viewing geometry at MAVEN apoapse.
-
-        Parameters
-        ----------
-        et : obj
-            MAVEN apoapsis ephemeris time.
 
         Returns
         -------
@@ -440,9 +514,9 @@ class Spice:
         frame = 'MAVEN_MME_2000'
         abcorr = 'LT+S'
         observer = 'MAVEN'
-        state, ltime = spice.spkezr(self.target, et, frame, abcorr, observer)
+        state, ltime = spice.spkezr(self.target, self.et, frame, abcorr, observer)
         spoint, trgepc, srfvec = spice.subpnt('Intercept: ellipsoid', self.target,
-                                              et, 'IAU_MARS', abcorr, observer)
+                                              self.et, 'IAU_MARS', abcorr, observer)
         rpoint, colatpoint, lonpoint = spice.recsph(spoint)
         if lonpoint < 0.:
             lonpoint += 2 * np.pi
@@ -511,18 +585,26 @@ class Spice:
 
 if __name__ == '__main__':
     import time
-    d = Path('/media/kyle/Samsung_T5/IUVS_data/')
-    p = Path('/media/kyle/Samsung_T5/IUVS_data/spice')
+    p = Path('/media/kyle/Samsung_T5/spice')
     t0 = time.time()
     s = Spice(p)
     s.load_spice()
-    d = datetime(2014, 11, 11)
-    print(spice.datetime2et(d))
-    t1=time.time()
-    et = s.find_all_maven_apsis_et('apoapse', endtime=datetime(2020, 1, 1))
-    o = et[1][5000]
-    foo = s.orbital_geometry(o)
-    print(foo)
+    t1 = time.time()
+    et = s.find_all_maven_apsis_et('apoapse', endtime=datetime(2022, 2, 1))
+    t2 = time.time()
+    print(t2-t1, t1-t0)
+
+    testet = et[1][et[0]==4010][0]
+    pf = PositionFinder(testet)
+    foo = pf.rotated_transform()
+    print(foo[0])
+    print(foo[1])
+    print(foo[2])
+
+
+    #o = et[1][5000]
+    #foo = s.orbital_geometry(o)
+    #print(foo)
 
     #from astropy.io import fits
     #files = pyuvs.datafiles.find_latest_apoapse_muv_file_paths_from_block(d, 5738)
