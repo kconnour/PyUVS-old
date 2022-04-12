@@ -13,16 +13,18 @@ import matplotlib.pyplot as plt
 l1cp = '/media/kyle/Samsung_T5/l1ctxt/orbit03400/mvn_iuv_l1c_apoapse-orbit03400-muv_20160628T104609_v13_r01.txt'
 l1c = L1CTxt(l1cp)
 
-# NOTE: this file has 1024 spectral binning and it agrees with Franck
+fig, ax = plt.subplots(1, 6, figsize=(9, 1.5))
+
+# Read in wavelengths
 refhdul = fits.open('/media/kyle/Samsung_T5/IUVS_data/orbit03300/mvn_iuv_l1b_periapse-orbit03334-muv_20160616T054624_v13_r01.fits.gz')
-muv_wavelength_centers = refhdul['observation'].data['wavelength'][0, 0, :]
+
+muv_wavelength_centers = refhdul['observation'].data['wavelength'][0, 0, :] - 3 * 0.16535
 median_diff = np.abs(np.median(np.diff(muv_wavelength_centers)))
 muv_wavelength_edges = np.concatenate((muv_wavelength_centers - median_diff/2, np.array([muv_wavelength_centers[-1] + median_diff/2])))
 
 # Load in an l1b file
 p = Path('/media/kyle/Samsung_T5/IUVS_data/orbit03400')
 files = sorted(p.glob('*apoapse*3400*muv*.gz'))
-print(files[0])
 hdul = fits.open(files[0])
 file = L1bFile(files[0])
 
@@ -42,9 +44,8 @@ psf = load_muv_point_spread_function()
 # Load in the calibration factor and rebin it to 19 wavs
 calfactorgrid = np.genfromtxt('/home/kyle/Downloads/calibration_factor_20191024.txt')  # 0 is bin, 1 in wav, 2 is factor
 calfactor = calfactorgrid[:, 2]
+
 # Rebin the calibration factor to the real wavelengths
-# TODO: select the top one for Zac's wavelengths; bottom for Franck/Justin
-#calfactor = np.interp(muv_wavelength_centers, calfactorgrid[:, 1], calfactorgrid[:, 2])
 calfactor = np.array([np.mean(calfactor[binned_low_wavs[i]: binned_low_wavs[i+1]]) for i in range(19)])
 volt_correction = 2.925 - 0.0045167*voltage + 2.7333e-6*voltage**2
 
@@ -55,7 +56,7 @@ primary = primary * calfactor / ff * binned_wavelength_width * volt_correction
 np.savetxt('/home/kyle/ql_testing/spectrum.txt', primary[-1, -1, :])
 
 # Load in the solar spectrum
-solstice = np.genfromtxt('/home/kyle/solar/solsticev17/solar_flux_solstice_muv_201606.txt')   # 0 is wav (nm), 1 is flux in W/m2/nm
+solstice = np.genfromtxt('/home/kyle/solar/solsticev18/solar_flux_solstice_muv_201606.txt')   # 0 is wav (nm), 1 is flux in W/m2/nm
 
 # Turn the flux into kR
 solar_flux = solstice[:, 1] * 1e-9 / (Planck * speed_of_light) * 4 * np.pi * 1e-10 * solstice[:, 0] / 1000
@@ -73,10 +74,7 @@ def integrate_solar(low, high):
 
 
 # Integrate the solar flux / rebin it to 1024 bin
-# TODO: select the top one for Zac's wavelengths; bottom for Franck/Justin
-#intsolar = np.array([integrate_solar(muv_wavelength_edges[i], muv_wavelength_edges[i+1]) for i in range(len(muv_wavelength_edges)-1)])
 intsolar = np.array([integrate_solar(muv_wavelength_edges[i], muv_wavelength_edges[i+1]) for i in range(1024)])
-print(intsolar)
 # Divide the flux by 1/R**2
 intsolar *= 1 / 1.4738**2
 
@@ -84,15 +82,20 @@ intsolar *= 1 / 1.4738**2
 convolved_flux = np.convolve(intsolar, psf, mode='same')
 rebinned_solar_flux = np.array([np.sum(convolved_flux[binned_low_wavs[i]: binned_low_wavs[i+1]]) for i in range(19)])
 
-np.savetxt('/home/kyle/ql_testing/solar_flux.txt', rebinned_solar_flux)
-
 # Make I/F
 sza = np.tile(hdul['pixelgeometry'].data['pixel_solar_zenith_angle'][..., None], 19)
 reflectance = primary * np.pi / np.cos(np.radians(sza)) / rebinned_solar_flux
 
-print(reflectance[-1, -1, :])
+print(reflectance[0, 1, :])
+print(reflectance[1, 0, :])
 
-plt.plot(binned_wavelength_centers, reflectance[73, 71, :], label='kyle')
-plt.plot(binned_wavelength_centers, l1c.reflectance[73, 71, :], label='franck')
-plt.legend()
-plt.savefig('/home/kyle/ql_testing/best_attempt_other.png')
+'''testfile = '/home/kyle/ql_testing/mvn_iuv_l1c_apoapse-orbit03400-muv_20160628T104609_v13_r01.txt'
+f = open(testfile, 'r')
+for lineno, line in enumerate(f):
+    print(lineno, line)
+    if lineno == 7:
+        raise SystemExit(9)'''
+
+g = np.reshape(reflectance, (reflectance.shape[0] * reflectance.shape[1], 19), order='F')
+np.savetxt('/home/kyle/ql_testing/test.txt', g)
+
