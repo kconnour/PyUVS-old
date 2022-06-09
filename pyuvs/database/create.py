@@ -2,13 +2,13 @@ import psycopg
 from pathlib import Path
 from pyuvs.spice import Spice, PositionFinder
 
-'''
+apse = 'apoapse'
 with psycopg.connect(host='localhost', dbname='iuvs', user='kyle', password='iuvs') as connection:
     # I still need Mars year, Sol
     # Open a cursor for db operations
     with connection.cursor() as cursor:
-        cursor.execute("""create table periapse (
-        orbit serial constraint periapse_pk primary key,
+        cursor.execute(f"""create table {apse} (
+        orbit serial constraint {apse}_pk primary key,
         ephemeris_time double precision not null,
         mars_year integer not null,
         sol double precision not null,
@@ -23,20 +23,20 @@ with psycopg.connect(host='localhost', dbname='iuvs', user='kyle', password='iuv
         
         """)
 
-        cursor.execute("""
-        create unique index periapse_orbit_uindex on periapse (orbit);""")'''
+        cursor.execute(f"""
+        create unique index {apse}_orbit_uindex on {apse} (orbit);""")
 
 
 if __name__ == '__main__':
     import time
     from datetime import datetime
     import mer
-    '''p = Path('/media/kyle/Samsung_T5/spice')
+    p = Path('/media/kyle/McDataFace/spice')
     t0 = time.time()
     s = Spice(p)
     s.load_spice()
     t1 = time.time()
-    orbits, all_et = s.find_all_maven_apsis_et('periapse', endtime=datetime(2022, 2, 1))
+    orbits, all_et = s.find_all_maven_apsis_et('apoapse', endtime=datetime(2022, 5, 29))
 
     print('found apsis info')
 
@@ -61,10 +61,10 @@ if __name__ == '__main__':
                              password='iuvs') as connection:
             # Open a cursor for db operations
             with connection.cursor() as cursor:
-                cursor.execute(f'insert into periapse (orbit, ephemeris_time, '
+                cursor.execute(f'insert into apoapse (orbit, ephemeris_time, '
                                f'mars_year, sol, solar_longitude, utc, '
                                f'subspacecraft_latitude, subspacecraft_longitude, '
                                f'subspacecraft_altitude, solar_distance, '
                                f'subsolar_latitude, subsolar_longitude) '
                                f'values ({orbit}, {et}, {my}, {sol}, {ls}, {ft}, {sc_lat}, {sc_lon}, {sc_alt}, {dist}, {sol_lat}, {sol_lon})'
-                )'''
+                )

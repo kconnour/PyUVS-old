@@ -1319,6 +1319,32 @@ class L1bFileCollection:
         return np.vstack([f.detector_image.calibrated for f in self._files if
                           f.is_dayside_file() == self.dayside])
 
+    def stack_daynight_latitude(self) -> np.ndarray:
+        """Stack the latitude that matches the given daynight
+        settings.
+
+        Returns
+        -------
+        np.ndarray
+            Array of the stacked solar zenith angles.
+
+        """
+        return np.vstack([f.pixel_geometry.latitude for f in self._files
+                          if f.is_dayside_file() == self.dayside])
+
+    def stack_daynight_longitude(self) -> np.ndarray:
+        """Stack the longitude that matches the given daynight
+        settings.
+
+        Returns
+        -------
+        np.ndarray
+            Array of the stacked solar zenith angles.
+
+        """
+        return np.vstack([f.pixel_geometry.longitude for f in self._files
+                          if f.is_dayside_file() == self.dayside])
+
     def stack_daynight_solar_zenith_angle(self) -> np.ndarray:
         """Stack the solar zenith angles that matches the given daynight
         settings.
@@ -1427,10 +1453,3 @@ class L1bFileCollection:
         dayside = [f.is_dayside_file() for f in self._files]
         return self._files[dayside.index(False)]
 
-
-if __name__ == '__main__':
-    from pyuvs.data_files.path import find_latest_apoapse_muv_file_paths_from_block
-    p = Path('/media/kyle/Samsung_T5/IUVS_Data')
-    files = find_latest_apoapse_muv_file_paths_from_block(p, 5675)
-    l = L1bFile(files[0])
-    print(l.flip, l.is_relay_file())

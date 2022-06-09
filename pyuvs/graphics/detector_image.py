@@ -34,7 +34,7 @@ def pcolormesh_rgb_detector_image(
 
 def pcolormesh_detector_image(
         axis: plt.Axes, image: np.ndarray, horizontal_meshgrid: np.ndarray,
-        vertical_meshgrid: np.ndarray, **kwargs) -> None:
+        vertical_meshgrid: np.ndarray) -> None:
     """Pcolormesh a single-channel detector image in a given axis.
 
     Parameters
@@ -60,8 +60,7 @@ def pcolormesh_detector_image(
         horizontal_meshgrid, vertical_meshgrid, image,
         linewidth=0,
         edgecolors='none',
-        rasterized=True,
-        **kwargs)
+        rasterized=True)
 
 
 def reshape_data_for_pcolormesh(image: np.ndarray):
