@@ -28,6 +28,11 @@ lon = fc.stack_daynight_longitude()[:, :, 4]
 alt = fc.stack_daynight_altitude_center()
 slit = np.broadcast_to(np.arange(0, 50), lat.shape)
 
+# Note: fliplr = flip(axis=1), which for the primary is the spatial bin
+# dimension. flipud = flip(axis=0), which for the flatfield is the spatial
+# bin dimesion. primary = (n_integrations, n_spatial, n_spectral).
+# ff = (n_spatial, n_spectral)
+
 primary = fc.stack_daynight_calibrated_detector_image()
 primary = primary[:, :, :-1] / np.flipud(load_flatfield_mid_res_app_flip())
 
