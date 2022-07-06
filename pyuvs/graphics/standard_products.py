@@ -97,8 +97,7 @@ def make_dayside_segment_detector_image(orbit: int, data_location: Path, saveloc
     fc = L1bFileCollection(files)
 
     # Load in my slit correction test
-    #slit = np.load('/home/kyle/iuvs/slit/slit_correction.npy')
-    #slit = np.load('/home/kyle/iuvs/slit/slit_correction_3points.npy')
+    #slit = np.load('/home/kyle/iuvs/slit/orbit16308-crater-happy-correction.npy')
 
     # Make data that's independent of day/night
     fov = fc.stack_field_of_view()
@@ -111,7 +110,7 @@ def make_dayside_segment_detector_image(orbit: int, data_location: Path, saveloc
 
     # Do the day/night stuff
     fc.dayside = True
-    for daynight in [True, False]:
+    for daynight in [True]:
         if daynight not in dayside_integration_mask:
             continue
 
@@ -128,12 +127,12 @@ def make_dayside_segment_detector_image(orbit: int, data_location: Path, saveloc
             on_disk_mask[:] = True
 
         if daynight:
-            #primary = primary[:, :, :-1] / np.flipud(load_flatfield_mid_res_app_flip())
-            #primary = primary# * slit
-            sbins = primary.shape[-1]
-            primary = primary / load_flatfield_mid_hi_res_my34gds()[:, :sbins]    # 14 spectral bins?
-            rgb_primary = histogram_equalize_detector_image(primary, mask=np.logical_and(np.logical_and((sza <= 180), on_disk_mask), (sza >= 90))) / 255
-            #rgb_primary = histogram_equalize_detector_image(primary, mask=np.logical_and((sza <= 102), on_disk_mask)) / 255
+            primary = primary[:, :, :-1] / np.flipud(load_flatfield_mid_res_app_flip())
+            #primary = primary * slit
+            #sbins = primary.shape[-1]
+            #primary = primary / load_flatfield_mid_hi_res_my34gds()[:, :sbins]    # 14 spectral bins?
+            #rgb_primary = histogram_equalize_detector_image(primary, mask=np.logical_and(np.logical_and((sza <= 180), on_disk_mask), (sza >= 90))) / 255
+            rgb_primary = histogram_equalize_detector_image(primary, mask=on_disk_mask) / 255
         else:
             dds = fc.stack_detector_image_dark_subtracted()
             dn_unc = fc.stack_detector_image_random_uncertainty_dn()
@@ -221,12 +220,9 @@ def make_apoapse_muv_globe(orbit: int, data_location: Path, saveloc: str) -> Non
     checkerboard_surface = checkerboard() * 0.1
     globe_ax.imshow(checkerboard_surface, transform=transform, extent=[-180, 180, -90, 90])
 
-    plt.savefig(saveloc)
-    plt.close(fig)
-    raise SystemExit(9)
-
     # Do the slit correction
-    '''old_slit = np.load('/home/kyle/iuvs/slit/slit_correction_3points.npy')
+    '''old_slit = np.load('/home/kyle/iuvs/slit/orbit16308-crater-happy-correction.npy')
+    old_slit = np.flipud(np.fliplr(old_slit))
     foo = np.linspace(0, 1, num=50)
     bar = np.linspace(0, 1, num=133)
     new_slit = np.zeros((133, 19))
@@ -247,8 +243,9 @@ def make_apoapse_muv_globe(orbit: int, data_location: Path, saveloc: str) -> Non
 
         if daynight:
             # Flatfield correct
-            #primary = primary[:, :, :-1] / np.flipud(load_flatfield_mid_res_app_flip())
+            #primary = primary / load_flatfield_mid_res_app_flip()
             primary = primary / load_flatfield_mid_hi_res_update()
+            #primary = primary * new_slit
             #sbins = primary.shape[-1]
             #primary = primary / load_flatfield_mid_hi_res_my34gds()[:, :sbins]    # 14 spectral bins?
             rgb_primary = histogram_equalize_detector_image(primary, mask=on_disk_mask) / 255
@@ -292,13 +289,23 @@ if __name__ == '__main__':
     p = Path('/media/kyle/McDataFace/iuvsdata/stage')
     #p = Path('/media/kyle/Samsung_T5/IUVS_data')
 
-    for o in [16471]:
+    '''from mpl_toolkits.axes_grid1 import make_axes_locatable
+    slit = np.load(f'/home/kyle/iuvs/slit/orbit16308-crater-happy-correction.npy')
+    fig, ax = plt.subplots()
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes('right', size='5%', pad=0.05)
+    im = ax.imshow((1 / slit).T, origin='lower')
+    fig.colorbar(im, cax=cax, orientation='vertical')
+    plt.savefig('/home/kyle/iuvs/slit/orbit16308-crater-happy-correction.png')
+    raise SystemExit(9)'''
+
+    for o in range(16400, 16500):
         print(o)
-        #try:
-        make_dayside_segment_detector_image(o, p, f'/home/kyle/iuvs/ql/orbit{o}-twilight-mask.png')
-            #make_apoapse_muv_globe(o, p, f'/home/kyle/iuvs/globe/orbit{o}-mask.png')
-        #except ValueError:
-        #    print(f'skipping orbit {o}')
-        #    continue
-
-
+        try:
+            make_dayside_segment_detector_image(o, p, f'/home/kyle/iuvs/ql/orbit16400/orbit{o}.png')
+        #make_apoapse_muv_globe(o, p, f'/home/kyle/iuvs/globe/orbit{o}.png')
+        except ValueError:
+            print(f'skipping orbit {o}')
+            continue
+        except IndexError:
+            continue

@@ -12,10 +12,11 @@ import warnings
 from scipy.io import readsav
 import glob
 import psycopg
+from datetime import date
 
-orbit = 3464
+orbit = 16308
 #fileno = 0
-for fileno in range(1, 14):
+for fileno in range(10):
 
     # Do the DB query
     with psycopg.connect(host='localhost', dbname='iuvs', user='kyle', password='iuvs') as connection:
@@ -34,7 +35,8 @@ for fileno in range(1, 14):
     dt = a[0][1]
 
     if dt.year >= 2020 and dt.month > 2:
-        raise SystemExit('The orbit does not have a corresponding solar flux')
+        #raise SystemExit('The orbit does not have a corresponding solar flux')
+        dt = date(2019, dt.month, 1)
 
     # Format the stuff for Franck's solstice naming convention
     month = f'{dt.month}'.zfill(2)
@@ -44,17 +46,19 @@ for fileno in range(1, 14):
     code = 'orbit' + f'{math.floor(orbit/100)*100}'.zfill(5)
 
     # Load in an l1b file. This only works for 3D primaries!
-    p = Path(f'/media/kyle/Samsung_T5/IUVS_data/{code}')
-    files = sorted(p.glob(f'*apoapse*{orbit}*muv*.gz'))
+    #p = Path(f'/media/kyle/Samsung_T5/IUVS_data/{code}')
+    p = Path(f'/media/kyle/McDataFace/iuvsdata/stage/{code}')
+    files = sorted(p.glob(f'*apoapse*{orbit}*muv*s02*.gz'))
     hdul = fits.open(files[fileno])
-    primary = hdul['primary'].data
+    primary = hdul['primary'].data[:, :, :19]
     sza = hdul['pixelgeometry'].data['pixel_solar_zenith_angle']
+    og_wavs = hdul['observation'].data['wavelength'][0][0, :19]
 
     # Read in Justin's wavelengths, which are independent of integration
     # TODO: load in the proper Justin's wavelengths. It may be better to just modify the .fits file
-    #files = sorted(glob.glob('/home/kyle/Downloads/mvn_iuv_wl_apoapse-orbit03400-muv_18APR22_final/*.sav'))
-    files = sorted(glob.glob('/home/kyle/Downloads/mvn_iuv_wl_apoapse-orbit03464-muv/*.sav'))
-    wavelengths_grid = readsav(files[fileno])['wavelength_muv']   # (133/50, 19) --- the same shape as the .fits structure
+    #files = sorted(glob.glob('/home/kyle/Downloads/mvn_iuv_wl_apoapse-orbit03464-muv/*.sav'))
+    files = sorted(glob.glob(f'/home/kyle/iuvs/wavelengths/broken-spacecraft/*orbit{orbit}*.sav'))
+    wavelengths_grid = readsav(files[fileno])['wavelength_muv'][:, :19]   # (133/50, 19) --- the same shape as the .fits structure
     reflectance = np.zeros(primary.shape)
 
     # Load in the calibration factor. The wavelengths provided here aren't correct
@@ -62,7 +66,14 @@ for fileno in range(1, 14):
     calfactor = calfactorgrid[:, 2]
 
     # Load in the flatfield
-    flatfield = load_flatfield_mid_hi_res_update()   # (133, 19)
+    flatfield = load_flatfield_mid_res_app_flip() #load_flatfield_mid_hi_res_update()   # (133, 19)
+
+    # New wavelength-dependent FF
+    '''new_ff = np.zeros((primary.shape[1:]))
+    spatial_bins = np.arange(primary.shape[1])
+    for spabin in spatial_bins:
+        new_ff[spabin, :] = np.interp(wavelengths_grid[spabin, :], og_wavs, flatfield[spabin, :])
+    flatfield = new_ff'''
 
     # Load in the point spread function
     psf = load_muv_point_spread_function()
@@ -90,8 +101,8 @@ for fileno in range(1, 14):
 
         # Get info from the l1b file
         spectral_bin_width = hdul['binning'].data['spebinwidth'][0]
-        spectral_bin_low = hdul['binning'].data['spepixlo'][0, :]
-        spectral_bin_high = hdul['binning'].data['spepixhi'][0, :]
+        spectral_bin_low = hdul['binning'].data['spepixlo'][0, :19]
+        spectral_bin_high = hdul['binning'].data['spepixhi'][0, :19]
         voltage = hdul['observation'].data['mcp_volt'][0]
 
         # Make binning info
@@ -126,4 +137,5 @@ for fileno in range(1, 14):
 
 
     # Save the reflectance
-    np.save(f'/home/kyle/iuvs/reflectance/orbit03400/reflectance{orbit}-{fileno}.npy', reflectance)
+    print(np.amax(reflectance), np.amin(reflectance))
+    np.save(f'/home/kyle/iuvs/reflectance/orbit16300/reflectance{orbit}-{fileno}-linear.npy', reflectance)

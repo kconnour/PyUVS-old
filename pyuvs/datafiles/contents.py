@@ -32,6 +32,7 @@ def app_flip(func):
         f = func(*args)
         flip = args[0].flip
         return np.fliplr(f) if flip else f
+        #return f
     return wrapper
 
 
