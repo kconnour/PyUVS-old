@@ -29,12 +29,12 @@ pixel_size: float = 0.023438
 
 pixel_omega: float = pixel_size / telescope_focal_length * \
                      spatial_slit_width / telescope_focal_length
-"""Detector pixel angular dispersion along the slit."""
+"""Detector pixel angular dispersion along the slit [sr]."""
 
 muv_wavelength_width: float = 0.16367098
 """Docstring."""
 
-kR: float = 10**10 / (4 * np.pi)
+kR: float = 10**9 / (4 * np.pi)
 """Definition of the kilorayleigh [photons/second/m**2/steradian]."""
 
 radius_mars: float = 3.3895 * 10**6
