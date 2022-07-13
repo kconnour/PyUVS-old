@@ -1,3 +1,7 @@
+"""This script will make a l1c file (NOT flatfield corrected) for a given
+orbit using a reference solar spectrum.
+"""
+
 from datetime import date
 import glob
 import math
@@ -5,6 +9,7 @@ from pathlib import Path
 import warnings
 
 from astropy.io import fits
+from netCDF4 import Dataset
 import numpy as np
 import psycopg
 from scipy.constants import Planck, speed_of_light
@@ -26,7 +31,6 @@ for fileno in range(10):
     sza = hdul['pixelgeometry'].data['pixel_solar_zenith_angle']
     spectral_bin_width: int = int(np.median(hdul['binning'].data['spebinwidth'][0]))  # bins
     spatial_bin_width: int = int(np.median(hdul['binning'].data['spabinwidth'][0]))  # bins
-    #starting_spectral_index = hdul['binning'].data['spebinwidth'][0][0] / spectral_bin_width
     spectral_bin_low = hdul['binning'].data['spepixlo'][0, :]  # bin number
     spectral_bin_high = hdul['binning'].data['spepixhi'][0, :]  # bin number
     voltage: float = hdul['observation'].data['mcp_volt'][0]
@@ -39,11 +43,11 @@ for fileno in range(10):
     # Read in Justin's wavelengths
     justins_files = sorted(glob.glob(f'/home/kyle/iuvs/wavelengths/broken-spacecraft-nonlin-edges/*orbit{orbit}*.sav'))
     wavelength_center = readsav(justins_files[fileno])['wavelength_muv']  # shape: (50, 20)
-    wavelength_low = readsav(justins_files[fileno])['wavelength_muv_lo']
-    wavelength_high = readsav(justins_files[fileno])['wavelength_muv_hi']
+    wavelength_low = readsav(justins_files[fileno])['wavelength_muv_lo']  # shape: (50, 20)
+    wavelength_high = readsav(justins_files[fileno])['wavelength_muv_hi']  # shape: (50, 20)
 
     # Make wavelength edges from these data
-    wavelength_edges = np.zeros((wavelength_low.shape[0], wavelength_low.shape[1]+1))
+    wavelength_edges = np.zeros((wavelength_low.shape[0], wavelength_low.shape[1]+1))  # shape: (50, 21)
     wavelength_edges[:, :-1] = wavelength_low
     wavelength_edges[:, -1] = wavelength_high[:, -1]
     spectral_bin_edges = np.concatenate((spectral_bin_low, np.array([spectral_bin_high[-1]])))
@@ -69,15 +73,16 @@ for fileno in range(10):
     radius = orb_dist_mars / orb_dist_earth
 
     # Get the year and month of the orbit for the solar flux computation
-    dt = a[0][1]
+    '''dt = a[0][1]
 
     if dt.year >= 2020 and dt.month > 2:
         # raise SystemExit('The orbit does not have a corresponding solar flux')
-        dt = date(2019, dt.month, 1)
+        dt = date(2018, dt.month, 1)
 
     # Format the stuff for Franck's solstice naming convention
     month = f'{dt.month}'.zfill(2)
     yearmonth = f'{dt.year}{month}'
+    '''
 
     # Make the orbit code
     code = 'orbit' + f'{math.floor(orbit / 100) * 100}'.zfill(5)
@@ -89,14 +94,17 @@ for fileno in range(10):
     psf = load_muv_point_spread_function()
 
     # Load in the solar spectrum
-    solstice = np.genfromtxt(f'/home/kyle/solar/solsticev18/solar_flux_solstice_muv_{yearmonth}.txt')   # 0 is wav (nm), 1 is flux in W/m2/nm
+    #solstice = np.genfromtxt(f'/home/kyle/solar/solsticev18/solar_flux_solstice_muv_{yearmonth}.txt')   # 0 is wav (nm), 1 is flux in W/m2/nm
+    d = Dataset('/home/kyle/iuvs/hybrid_reference_spectrum_c2021-03-04_with_unc.nc', "r", format='NETCDF4')
+    solar_spectrum = d.variables['SSI'][:150000]
+    solar_wavelengths = d.variables['Vacuum Wavelength'][:150000]   # This goes to 352 nm
 
     # Turn the flux into kR
-    solar_flux = solstice[:, 1] * 1e-9 / (Planck * speed_of_light) * 4 * np.pi * 1e-10 * solstice[:, 0] / 1000
+    solar_flux = solar_spectrum * 1e-9 / (Planck * speed_of_light) * 4 * np.pi * 1e-10 * solar_wavelengths / 1000
 
     # Get the solar flux
     def solar(wav):
-        return np.interp(wav, solstice[:, 0], solar_flux)
+        return np.interp(wav, solar_wavelengths, solar_flux)
 
 
     def integrate_solar(low, high):
@@ -125,9 +133,9 @@ for fileno in range(10):
         rebinned_solar_flux = np.array([np.sum(convolved_flux[edge_indices[i]: edge_indices[i+1]]) for i in range(reflectance.shape[2])])
 
         for integration in range(reflectance.shape[0]):
-            kR[integration, spabin, :19] = kR[integration, spabin, :19] / flatfield[spabin, :] * volt_correction
-            reflectance[integration, spabin, :19] = kR[integration, spabin, :19] * np.pi / np.cos(np.radians(sza[integration, spabin])) / rebinned_solar_flux[..., :19]
+            reflectance[integration, spabin, :] = \
+                kR[integration, spabin, :] * volt_correction * np.pi / np.cos(np.radians(sza[integration, spabin])) / rebinned_solar_flux
 
     # Save the reflectance
     print(np.amax(reflectance), np.amin(reflectance))
-    np.save(f'/home/kyle/iuvs/reflectance/{code}/reflectance{orbit}-{fileno}-nonlinear.npy', reflectance)
+    np.save(f'/home/kyle/iuvs/reflectance/{code}/reflectance{orbit}-{fileno}-nonlinear-hires.npy', reflectance)
